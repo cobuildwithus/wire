@@ -6,3 +6,4 @@ export * from "./evm.js";
 export * from "./wallet.js";
 export * from "./x402.js";
 export * from "./farcaster.js";
+export * from "./protocol-abis.js";

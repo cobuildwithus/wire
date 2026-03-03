@@ -35,4 +35,5 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` | Cross-agent ownership ledger. |
 | `agent-docs/exec-plans/active/2026-03-03-farcaster-wire-contract.md` | Active execution plan for Farcaster wire contract additions. |
 | `agent-docs/exec-plans/completed/README.md` | Completed plan archive conventions. |
+| `agent-docs/exec-plans/completed/2026-03-03-abi-source-of-truth-centralization.md` | Completed execution record for ABI source-of-truth centralization in wire. |
 | `agent-docs/exec-plans/tech-debt-tracker.md` | Shared tech debt tracker. |

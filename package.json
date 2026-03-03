@@ -28,6 +28,8 @@
     "node": ">=20"
   },
   "scripts": {
+    "wagmi": "wagmi generate",
+    "generate": "pnpm wagmi && pnpm build",
     "build": "tsc -p tsconfig.build.json",
     "prepare": "pnpm build && husky",
     "prepack": "pnpm build",
@@ -48,6 +50,7 @@
     "release:major": "bash scripts/release.sh major"
   },
   "devDependencies": {
+    "@wagmi/cli": "^2.8.0",
     "@cobuild/review-gpt": "^0.2.7",
     "@types/node": "^25.2.3",
     "@vitest/coverage-v8": "^4.0.18",
