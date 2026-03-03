@@ -37,19 +37,19 @@ export default defineConfig(() => {
   }
 
   const missingProtocolEnvKeys: string[] = [];
-  const protocolContracts = PROTOCOL_CONTRACT_ADDRESS_ENV.flatMap((entry) => {
+  const protocolContracts = PROTOCOL_CONTRACT_ADDRESS_ENV.map((entry) => {
     const address = asAddress(env[entry.env]);
     if (!address) {
       missingProtocolEnvKeys.push(entry.env);
-      return [];
+      return null;
     }
 
-    return [{ name: entry.name, address }];
+    return { name: entry.name, address };
   });
 
   if (missingProtocolEnvKeys.length > 0) {
-    console.warn(
-      `[wagmi] Skipping protocol ABI fetch for unset/invalid env vars: ${missingProtocolEnvKeys.join(", ")}`
+    throw new Error(
+      `Missing or invalid required protocol address env vars: ${missingProtocolEnvKeys.join(", ")}`
     );
   }
 
@@ -60,7 +60,10 @@ export default defineConfig(() => {
       etherscan({
         apiKey: basescanApiKey,
         chainId: 8453,
-        contracts: [{ name: "CobuildSwapImpl", address: COBUILD_SWAP_IMPL }, ...protocolContracts],
+        contracts: [{ name: "CobuildSwapImpl", address: COBUILD_SWAP_IMPL }, ...(protocolContracts as {
+          name: string;
+          address: `0x${string}`;
+        }[])],
       }),
     ],
   };

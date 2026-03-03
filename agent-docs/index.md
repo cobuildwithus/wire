@@ -37,3 +37,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/completed/README.md` | Completed plan archive conventions. |
 | `agent-docs/exec-plans/completed/2026-03-03-abi-source-of-truth-centralization.md` | Completed execution record for ABI source-of-truth centralization in wire. |
 | `agent-docs/exec-plans/tech-debt-tracker.md` | Shared tech debt tracker. |
+
+## Recent Updates
+
+- ABI source-of-truth now relies on generated-only wagmi ABI exports (manual fallback parsing removed).
