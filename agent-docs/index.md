@@ -21,7 +21,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/references/data-infra-map.md` | Data/infra touchpoint map for contract owners. |
 | `agent-docs/references/runtime-ai-flow.md` | Runtime flow notes. |
 | `agent-docs/references/tool-catalog.md` | Tooling references used during development. |
-| `agent-docs/references/testing-ci-map.md` | Verification and CI map. |
+| `agent-docs/references/testing-ci-map.md` | Verification, CI, and release publish workflow map. |
 | `agent-docs/prompts/simplify.md` | Simplification audit prompt. |
 | `agent-docs/prompts/test-coverage-audit.md` | Coverage audit prompt. |
 | `agent-docs/prompts/task-finish-review.md` | Completion review prompt. |
