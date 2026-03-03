@@ -1,16 +1,15 @@
 const LOOPBACK_HOSTS = new Set(["127.0.0.1", "localhost", "::1", "[::1]"]);
 const AGENT_KEY_PATTERN = /^[A-Za-z0-9._-]{1,64}$/;
 const PKCE_VERIFIER_PATTERN = /^[A-Za-z0-9._~-]{43,128}$/;
-const PKCE_CHALLENGE_PATTERN = /^[A-Za-z0-9_-]{43,128}$/;
+const PKCE_CHALLENGE_PATTERN = /^[A-Za-z0-9_-]{43}$/;
 const STATE_PATTERN = /^[A-Za-z0-9._~-]{8,512}$/;
 const LABEL_PATTERN = /^[A-Za-z0-9 ._()-]{1,128}$/;
 
-export const OAUTH_PUBLIC_CLIENT_ID = "buildbot_cli";
-export const OAUTH_CLIENT_ID = OAUTH_PUBLIC_CLIENT_ID;
-export const OAUTH_RESPONSE_TYPE = "code";
-export const OAUTH_REDIRECT_PATH = "/auth/callback";
+export const CLI_OAUTH_PUBLIC_CLIENT_ID = "buildbot_cli";
+export const CLI_OAUTH_RESPONSE_TYPE = "code";
+export const CLI_OAUTH_REDIRECT_PATH = "/auth/callback";
 
-export const OAUTH_SUPPORTED_SCOPES = [
+export const CLI_OAUTH_SUPPORTED_SCOPES = [
   "tools:read",
   "tools:write",
   "wallet:read",
@@ -18,35 +17,40 @@ export const OAUTH_SUPPORTED_SCOPES = [
   "offline_access",
 ] as const;
 
-export const OAUTH_REQUIRED_SCOPES = ["offline_access"] as const;
+export const CLI_OAUTH_REQUIRED_SCOPES = ["offline_access"] as const;
 
-export const OAUTH_DEFAULT_SCOPE = ["tools:read", "wallet:read", "offline_access"].join(" ");
+export type CliOAuthScope = (typeof CLI_OAUTH_SUPPORTED_SCOPES)[number];
 
-export const OAUTH_WRITE_SCOPE = [
+export const CLI_OAUTH_DEFAULT_SCOPES = [
+  "offline_access",
+  "tools:read",
+  "wallet:read",
+] as const satisfies readonly CliOAuthScope[];
+
+export const CLI_OAUTH_WRITE_SCOPES = [
+  "offline_access",
   "tools:read",
   "tools:write",
-  "wallet:read",
   "wallet:execute",
-  "offline_access",
-].join(" ");
+  "wallet:read",
+] as const satisfies readonly CliOAuthScope[];
 
 export const CLI_SETUP_PAYER_MODES = ["hosted", "local-generate", "local-key", "skip"] as const;
 
-export const CLI_OAUTH_PUBLIC_CLIENT_ID = OAUTH_PUBLIC_CLIENT_ID;
-export const CLI_OAUTH_RESPONSE_TYPE = OAUTH_RESPONSE_TYPE;
-export const CLI_OAUTH_REDIRECT_PATH = OAUTH_REDIRECT_PATH;
-export const CLI_OAUTH_SUPPORTED_SCOPES = OAUTH_SUPPORTED_SCOPES;
-export const CLI_OAUTH_REQUIRED_SCOPES = OAUTH_REQUIRED_SCOPES;
+export const CLI_OAUTH_DEFAULT_SCOPE = CLI_OAUTH_DEFAULT_SCOPES.join(" ");
+export const CLI_OAUTH_WRITE_SCOPE = CLI_OAUTH_WRITE_SCOPES.join(" ");
 
-const supportedScopeSet = new Set<string>(OAUTH_SUPPORTED_SCOPES);
-
-export type CliOAuthScope = (typeof OAUTH_SUPPORTED_SCOPES)[number];
+const supportedScopeSet = new Set<string>(CLI_OAUTH_SUPPORTED_SCOPES);
+const allowedScopeBundles = new Set<string>([
+  normalizeScope(CLI_OAUTH_DEFAULT_SCOPE),
+  normalizeScope(CLI_OAUTH_WRITE_SCOPE),
+]);
 export type CliSetupPayerModeHint = (typeof CLI_SETUP_PAYER_MODES)[number];
 
 type SearchParamReader = Pick<URLSearchParams, "get">;
 
-export type CliAuthorizeRequest = {
-  responseType: "code";
+export type CliOAuthAuthorizeRequest = {
+  responseType: typeof CLI_OAUTH_RESPONSE_TYPE;
   clientId: string;
   redirectUri: string;
   scope: string;
@@ -59,12 +63,9 @@ export type CliAuthorizeRequest = {
   payerMode?: CliSetupPayerModeHint;
 };
 
-export type CliAuthorizeParseResult =
-  | { ok: true; value: CliAuthorizeRequest }
+export type CliOAuthAuthorizeParseResult =
+  | { ok: true; value: CliOAuthAuthorizeRequest }
   | { ok: false; error: string };
-
-export type CliOauthAuthorizeRequest = CliAuthorizeRequest;
-export type CliOauthAuthorizeParseResult = CliAuthorizeParseResult;
 
 export function splitScope(scope: string): string[] {
   return scope
@@ -72,8 +73,6 @@ export function splitScope(scope: string): string[] {
     .map((value) => value.trim())
     .filter((value) => value.length > 0);
 }
-
-export const parseScopeString = splitScope;
 
 export function normalizeScope(scope: string): string {
   return Array.from(new Set(splitScope(scope))).sort().join(" ");
@@ -91,26 +90,42 @@ export function validateScope(scope: string): string {
     }
   }
 
-  for (const required of OAUTH_REQUIRED_SCOPES) {
+  for (const required of CLI_OAUTH_REQUIRED_SCOPES) {
     if (!parsed.includes(required)) {
       throw new Error(`scope must include ${required}`);
     }
   }
 
-  return parsed.sort().join(" ");
+  const normalized = parsed.sort().join(" ");
+  if (!allowedScopeBundles.has(normalized)) {
+    throw new Error("scope must match either the default read bundle or the full write bundle");
+  }
+
+  return normalized;
 }
 
 export function hasScope(scope: string, required: string): boolean {
   return splitScope(scope).includes(required);
 }
 
-export function canWriteFromScope(scope: string): boolean {
-  const parsed = splitScope(scope);
-  return parsed.includes("tools:write") && parsed.includes("wallet:execute");
+export function hasToolsWrite(scope: string): boolean {
+  return hasScope(scope, "tools:write");
+}
+
+export function hasWalletExecute(scope: string): boolean {
+  return hasScope(scope, "wallet:execute");
+}
+
+export function hasWriteToolCapability(scope: string): boolean {
+  return hasToolsWrite(scope) && hasWalletExecute(scope);
+}
+
+export function hasAnyWriteCapability(scope: string): boolean {
+  return hasToolsWrite(scope) || hasWalletExecute(scope);
 }
 
 export function defaultCliScope(): string {
-  return OAUTH_DEFAULT_SCOPE;
+  return CLI_OAUTH_DEFAULT_SCOPE;
 }
 
 export function validatePkceCodeChallenge(value: string): string {
@@ -197,8 +212,8 @@ export function validateCliRedirectUri(rawRedirectUri: string): string {
   if (parsed.search || parsed.hash) {
     throw new Error("redirect_uri must not include query params or fragments");
   }
-  if (parsed.pathname !== OAUTH_REDIRECT_PATH) {
-    throw new Error(`redirect_uri path must be ${OAUTH_REDIRECT_PATH}`);
+  if (parsed.pathname !== CLI_OAUTH_REDIRECT_PATH) {
+    throw new Error(`redirect_uri path must be ${CLI_OAUTH_REDIRECT_PATH}`);
   }
 
   return parsed.toString();
@@ -220,24 +235,11 @@ export function normalizeCliSessionLabel(rawLabel: string | undefined): string |
 }
 
 function parseScopeForAuthorize(scope: string): { normalizedScope: string; scopes: string[] } {
-  const entries = Array.from(new Set(splitScope(scope))).sort();
-  if (entries.length === 0) {
-    throw new Error("scope is required");
-  }
-  for (const entry of entries) {
-    if (!supportedScopeSet.has(entry)) {
-      throw new Error(`Unsupported scope: ${entry}`);
-    }
-  }
-  for (const required of OAUTH_REQUIRED_SCOPES) {
-    if (!entries.includes(required)) {
-      throw new Error(`scope must include ${required}`);
-    }
-  }
-  return { normalizedScope: entries.join(" "), scopes: entries };
+  const normalizedScope = validateScope(scope);
+  return { normalizedScope, scopes: splitScope(normalizedScope) };
 }
 
-export function validateCliAuthorizeRequest(input: {
+export function validateCliOAuthAuthorizeRequest(input: {
   responseType: string;
   clientId: string;
   redirectUri: string;
@@ -248,11 +250,11 @@ export function validateCliAuthorizeRequest(input: {
   agentKey: string;
   label?: string;
   payerMode?: string;
-}): CliAuthorizeRequest {
-  if (input.responseType !== OAUTH_RESPONSE_TYPE) {
+}): CliOAuthAuthorizeRequest {
+  if (input.responseType !== CLI_OAUTH_RESPONSE_TYPE) {
     throw new Error("response_type must be code");
   }
-  if (input.clientId !== OAUTH_PUBLIC_CLIENT_ID) {
+  if (input.clientId !== CLI_OAUTH_PUBLIC_CLIENT_ID) {
     throw new Error("Unsupported client_id");
   }
 
@@ -281,8 +283,8 @@ export function validateCliAuthorizeRequest(input: {
   }
 
   return {
-    responseType: OAUTH_RESPONSE_TYPE,
-    clientId: OAUTH_PUBLIC_CLIENT_ID,
+    responseType: CLI_OAUTH_RESPONSE_TYPE,
+    clientId: CLI_OAUTH_PUBLIC_CLIENT_ID,
     redirectUri,
     scope: normalizedScope,
     scopes,
@@ -295,9 +297,9 @@ export function validateCliAuthorizeRequest(input: {
   };
 }
 
-export const validateCliOauthAuthorizeRequest = validateCliAuthorizeRequest;
-
-export function parseCliAuthorizeQuery(searchParams: SearchParamReader): CliAuthorizeParseResult {
+export function parseCliOAuthAuthorizeQuery(
+  searchParams: SearchParamReader
+): CliOAuthAuthorizeParseResult {
   const responseType = searchParams.get("response_type");
   const clientId = searchParams.get("client_id");
   const redirectUri = searchParams.get("redirect_uri");
@@ -327,7 +329,7 @@ export function parseCliAuthorizeQuery(searchParams: SearchParamReader): CliAuth
   }
 
   try {
-    const value = validateCliAuthorizeRequest({
+    const value = validateCliOAuthAuthorizeRequest({
       responseType,
       clientId,
       redirectUri,
@@ -347,5 +349,3 @@ export function parseCliAuthorizeQuery(searchParams: SearchParamReader): CliAuth
     };
   }
 }
-
-export const parseCliOauthAuthorizeQuery = parseCliAuthorizeQuery;

@@ -9,7 +9,9 @@ import {
   buildFarcasterSignedKeyRequestMetadata,
   buildFarcasterSignedKeyRequestTypedData,
   buildFarcasterSignupCallPlan,
+  buildFarcasterSignupExecutableCalls,
   computeFarcasterSignedKeyRequestDeadline,
+  encodeFarcasterSignedKeyRequestMetadata,
   evaluateFarcasterSignupPreflight,
   normalizeFarcasterSignerPublicKey,
 } from "../src/farcaster.js";
@@ -104,6 +106,18 @@ describe("farcaster wire contract", () => {
         },
       },
     });
+
+    const encodedMetadata = encodeFarcasterSignedKeyRequestMetadata(metadata);
+    expect(encodedMetadata.startsWith("0x")).toBe(true);
+
+    const executableCalls = buildFarcasterSignupExecutableCalls(plan);
+    expect(executableCalls).toHaveLength(2);
+    expect(executableCalls[0].to).toBe(FARCASTER_CONTRACTS.idGateway);
+    expect(executableCalls[0].value).toBe(700n);
+    expect(executableCalls[0].data.startsWith("0x")).toBe(true);
+    expect(executableCalls[1].to).toBe(FARCASTER_CONTRACTS.keyGateway);
+    expect(executableCalls[1].value).toBe(0n);
+    expect(executableCalls[1].data.startsWith("0x")).toBe(true);
   });
 
   it("evaluates preflight status transitions", () => {

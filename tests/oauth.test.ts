@@ -1,17 +1,20 @@
 import { describe, expect, it } from "vitest";
 import {
-  OAUTH_DEFAULT_SCOPE,
-  OAUTH_WRITE_SCOPE,
-  canWriteFromScope,
+  CLI_OAUTH_DEFAULT_SCOPE,
+  CLI_OAUTH_WRITE_SCOPE,
   createPkcePair,
   defaultCliScope,
   deriveS256CodeChallenge,
+  hasAnyWriteCapability,
   hasScope,
+  hasToolsWrite,
+  hasWalletExecute,
+  hasWriteToolCapability,
   normalizeCliSessionLabel,
   normalizeScope,
-  parseScopeString,
-  parseCliAuthorizeQuery,
-  validateCliAuthorizeRequest,
+  parseCliOAuthAuthorizeQuery,
+  splitScope,
+  validateCliOAuthAuthorizeRequest,
   validateCliRedirectUri,
   validatePkceCodeChallenge,
   validateScope,
@@ -23,13 +26,22 @@ describe("oauth contract", () => {
     expect(normalizeScope("wallet:read  tools:read offline_access")).toBe(
       "offline_access tools:read wallet:read"
     );
-    expect(parseScopeString(" tools:read   wallet:read ")).toEqual(["tools:read", "wallet:read"]);
+    expect(splitScope(" tools:read   wallet:read ")).toEqual(["tools:read", "wallet:read"]);
     expect(validateScope("wallet:read tools:read offline_access")).toBe(
       "offline_access tools:read wallet:read"
     );
-    expect(defaultCliScope()).toBe(OAUTH_DEFAULT_SCOPE);
-    expect(hasScope(OAUTH_WRITE_SCOPE, "wallet:execute")).toBe(true);
-    expect(canWriteFromScope(OAUTH_WRITE_SCOPE)).toBe(true);
+    expect(defaultCliScope()).toBe(CLI_OAUTH_DEFAULT_SCOPE);
+    expect(hasScope(CLI_OAUTH_WRITE_SCOPE, "wallet:execute")).toBe(true);
+    expect(hasToolsWrite(CLI_OAUTH_WRITE_SCOPE)).toBe(true);
+    expect(hasWalletExecute(CLI_OAUTH_WRITE_SCOPE)).toBe(true);
+    expect(hasWriteToolCapability(CLI_OAUTH_WRITE_SCOPE)).toBe(true);
+    expect(hasAnyWriteCapability("tools:write offline_access")).toBe(true);
+    expect(() => validateScope("tools:read offline_access")).toThrow(
+      "scope must match either the default read bundle or the full write bundle"
+    );
+    expect(() => validateScope("wallet:read wallet:execute offline_access")).toThrow(
+      "scope must match either the default read bundle or the full write bundle"
+    );
   });
 
   it("validates redirect uri", () => {
@@ -41,7 +53,7 @@ describe("oauth contract", () => {
   });
 
   it("validates authorize request", () => {
-    const parsed = validateCliAuthorizeRequest({
+    const parsed = validateCliOAuthAuthorizeRequest({
       responseType: "code",
       clientId: "buildbot_cli",
       redirectUri: "http://127.0.0.1:43111/auth/callback",
@@ -60,7 +72,7 @@ describe("oauth contract", () => {
 
   it("rejects invalid authorize payload fields", () => {
     expect(() =>
-      validateCliAuthorizeRequest({
+      validateCliOAuthAuthorizeRequest({
         responseType: "code",
         clientId: "buildbot_cli",
         redirectUri: "http://127.0.0.1:43111/auth/callback",
@@ -73,7 +85,7 @@ describe("oauth contract", () => {
     ).toThrow("agent_key is invalid");
 
     expect(() =>
-      validateCliAuthorizeRequest({
+      validateCliOAuthAuthorizeRequest({
         responseType: "code",
         clientId: "buildbot_cli",
         redirectUri: "http://127.0.0.1:43111/auth/callback",
@@ -99,19 +111,19 @@ describe("oauth contract", () => {
       agent_key: "default",
     });
 
-    const result = parseCliAuthorizeQuery(search);
+    const result = parseCliOAuthAuthorizeQuery(search);
     expect(result.ok).toBe(true);
   });
 
   it("handles missing and invalid authorize query payloads", () => {
-    const missing = parseCliAuthorizeQuery(new URLSearchParams());
+    const missing = parseCliOAuthAuthorizeQuery(new URLSearchParams());
     expect(missing).toEqual({
       ok: false,
       error:
         "Missing required OAuth parameters. Start setup again from the CLI so all PKCE values are included.",
     });
 
-    const invalid = parseCliAuthorizeQuery(
+    const invalid = parseCliOAuthAuthorizeQuery(
       new URLSearchParams({
         response_type: "code",
         client_id: "buildbot_cli",
@@ -132,6 +144,9 @@ describe("oauth contract", () => {
   it("supports PKCE pair generation and verification", async () => {
     const pair = await createPkcePair();
     expect(validatePkceCodeChallenge(pair.codeChallenge)).toBe(pair.codeChallenge);
+    expect(() => validatePkceCodeChallenge(`${pair.codeChallenge}a`)).toThrow(
+      "code_challenge must be a valid base64url PKCE challenge"
+    );
     const expectedChallenge = await deriveS256CodeChallenge(pair.codeVerifier);
     expect(expectedChallenge).toBe(pair.codeChallenge);
     await expect(

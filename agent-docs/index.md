@@ -1,5 +1,7 @@
 # @cobuild/wire Agent Docs Index
 
+Last verified: 2026-03-03
+
 ## Purpose
 
 Canonical map for docs used by agents working in this repository.

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  DEFAULT_BUILD_BOT_JWT_AUDIENCE,
+  DEFAULT_BUILD_BOT_JWT_ISSUER,
+  DEFAULT_DEV_BUILD_BOT_JWT_PUBLIC_KEY,
+  deriveCliScopeCapabilities,
   parseCliJwtClaims,
   parseCliJwtVerifiedClaims,
   toCliJwtPayloadClaims,
@@ -75,5 +79,29 @@ describe("jwt claim helpers", () => {
       iss: "issuer",
       aud: ["ok", 1],
     })).toBeNull();
+  });
+
+  it("exports canonical default build-bot JWT values", () => {
+    expect(DEFAULT_DEV_BUILD_BOT_JWT_PUBLIC_KEY).toContain("BEGIN PUBLIC KEY");
+    expect(DEFAULT_BUILD_BOT_JWT_ISSUER).toBe("cobuild-chat-api");
+    expect(DEFAULT_BUILD_BOT_JWT_AUDIENCE).toBe("buildbot");
+  });
+
+  it("derives write capabilities from scope", () => {
+    expect(deriveCliScopeCapabilities("tools:read wallet:read")).toEqual({
+      hasToolsWrite: false,
+      hasWalletExecute: false,
+      hasAnyWriteScope: false,
+    });
+    expect(deriveCliScopeCapabilities("tools:write wallet:read")).toEqual({
+      hasToolsWrite: true,
+      hasWalletExecute: false,
+      hasAnyWriteScope: true,
+    });
+    expect(deriveCliScopeCapabilities("wallet:execute")).toEqual({
+      hasToolsWrite: false,
+      hasWalletExecute: true,
+      hasAnyWriteScope: true,
+    });
   });
 });

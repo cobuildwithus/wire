@@ -1,18 +1,23 @@
 import {
   FARCASTER_CONTRACTS,
+  FARCASTER_ID_GATEWAY_ABI,
   FARCASTER_KEY_METADATA_TYPE_SIGNED_KEY_REQUEST,
   FARCASTER_KEY_TYPE_ED25519,
+  FARCASTER_KEY_GATEWAY_ABI,
   FARCASTER_SIGNUP_GAS_BUFFER_WEI,
   FARCASTER_SIGNUP_NETWORK,
 } from "./constants.js";
+import { encodeAbiParameters, encodeFunctionData } from "viem";
 import {
   normalizeFarcasterAddress,
   normalizeFarcasterNonNegativeBigInt,
   normalizeFarcasterSignerPublicKey,
 } from "./normalize.js";
 import type {
+  FarcasterExecutableCall,
   FarcasterSignedKeyRequestMetadata,
   FarcasterSignupCallPlan,
+  FarcasterSignupExecutableCalls,
   FarcasterSignupPreflightResult,
 } from "./types.js";
 
@@ -57,6 +62,69 @@ export function buildFarcasterSignupCallPlan(params: {
       },
     ],
   };
+}
+
+export function encodeFarcasterSignedKeyRequestMetadata(
+  metadata: FarcasterSignedKeyRequestMetadata
+): `0x${string}` {
+  return encodeAbiParameters(
+    [
+      {
+        type: "tuple",
+        components: [
+          { name: "requestFid", type: "uint256" },
+          { name: "requestSigner", type: "address" },
+          { name: "signature", type: "bytes" },
+          { name: "deadline", type: "uint256" },
+        ],
+      },
+    ],
+    [metadata]
+  );
+}
+
+function buildExecutableCall(params: { to: string; value: bigint; data: `0x${string}` }): FarcasterExecutableCall {
+  return {
+    to: normalizeFarcasterAddress(params.to, "to"),
+    value: normalizeFarcasterNonNegativeBigInt(params.value, "value"),
+    data: params.data,
+  };
+}
+
+export function buildFarcasterSignupExecutableCalls(
+  plan: FarcasterSignupCallPlan
+): FarcasterSignupExecutableCalls {
+  const registerCall = plan.calls[0];
+  const addKeyCall = plan.calls[1];
+
+  const registerData = encodeFunctionData({
+    abi: FARCASTER_ID_GATEWAY_ABI,
+    functionName: registerCall.functionName,
+    args: [registerCall.args.recoveryAddress, registerCall.args.extraStorage],
+  });
+  const addKeyData = encodeFunctionData({
+    abi: FARCASTER_KEY_GATEWAY_ABI,
+    functionName: addKeyCall.functionName,
+    args: [
+      addKeyCall.args.keyType,
+      addKeyCall.args.key,
+      addKeyCall.args.metadataType,
+      encodeFarcasterSignedKeyRequestMetadata(addKeyCall.args.metadata),
+    ],
+  });
+
+  return [
+    buildExecutableCall({
+      to: registerCall.to,
+      value: registerCall.value,
+      data: registerData,
+    }),
+    buildExecutableCall({
+      to: addKeyCall.to,
+      value: addKeyCall.value,
+      data: addKeyData,
+    }),
+  ];
 }
 
 export function evaluateFarcasterSignupPreflight(params: {

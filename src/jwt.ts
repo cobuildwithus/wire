@@ -1,3 +1,9 @@
+import {
+  hasAnyWriteCapability,
+  hasToolsWrite,
+  hasWalletExecute,
+} from "./oauth.js";
+
 export type CliJwtClaims = {
   sub: string;
   sid: string;
@@ -21,6 +27,22 @@ export type CliJwtPayloadClaims = {
 
 export type CliAccessTokenClaims = CliJwtClaims;
 export type VerifiedCliAccessTokenClaims = CliJwtVerifiedClaims;
+
+export const DEFAULT_DEV_BUILD_BOT_JWT_PUBLIC_KEY = [
+  "-----BEGIN PUBLIC KEY-----",
+  "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEJez1f0LBeC5VJfNUE7v3bEwk79JO",
+  "itJMKsbBgPEGjEsgKKnjHceciarnRNwVlwSj7Xx7j8gIUKdB+grhzp5jNQ==",
+  "-----END PUBLIC KEY-----",
+].join("\n");
+
+export const DEFAULT_BUILD_BOT_JWT_ISSUER = "cobuild-chat-api";
+export const DEFAULT_BUILD_BOT_JWT_AUDIENCE = "buildbot";
+
+export type CliScopeCapabilities = {
+  hasToolsWrite: boolean;
+  hasWalletExecute: boolean;
+  hasAnyWriteScope: boolean;
+};
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -58,6 +80,17 @@ export function parseCliJwtClaims(payload: unknown): CliJwtClaims | null {
 }
 
 export const parseCliAccessTokenClaims = parseCliJwtClaims;
+
+export function deriveCliScopeCapabilities(scope: string): CliScopeCapabilities {
+  const toolsWrite = hasToolsWrite(scope);
+  const walletExecute = hasWalletExecute(scope);
+
+  return {
+    hasToolsWrite: toolsWrite,
+    hasWalletExecute: walletExecute,
+    hasAnyWriteScope: hasAnyWriteCapability(scope),
+  };
+}
 
 export function parseCliJwtVerifiedClaims(payload: unknown): CliJwtVerifiedClaims | null {
   const parsed = parseCliJwtClaims(payload);

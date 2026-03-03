@@ -32,6 +32,14 @@ Add a wire-level Farcaster signup contract module that captures shared constants
   - `typed-data.ts`
   - `signup-plan.ts`
 - Kept `src/farcaster.ts` as a compatibility barrel that re-exports all module symbols.
+- Added wallet-focused wire modules and exports:
+  - `src/evm.ts` for EVM private-key/address/network validation + normalization.
+  - `src/wallet.ts` for wallet mode and network/token surface contracts.
+- Added `src/farcaster/signup-plan.ts` executable-call builders:
+  - `encodeFarcasterSignedKeyRequestMetadata`
+  - `buildFarcasterSignupExecutableCalls`
+- Expanded OAuth/JWT/x402 contract surfaces for hard cutover naming parity and write-capability checks.
+- Added/updated tests for wallet contracts, OAuth/JWT parsing, bearer parsing, x402 payloads, and Farcaster planning helpers.
 - Ran required checks:
   - `pnpm typecheck`
   - `pnpm test`
@@ -45,4 +53,4 @@ Add a wire-level Farcaster signup contract module that captures shared constants
 
 ## Next
 
-- Integrate `@cobuild/wire` Farcaster contracts into `interface` and `cli` executors to remove duplicated constants/builders.
+- Publish a wire release containing these contracts, then move this plan into `agent-docs/exec-plans/completed/`.

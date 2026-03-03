@@ -9,6 +9,7 @@ describe("parseBearerToken", () => {
 
   it("returns null for non-bearer values", () => {
     expect(parseBearerToken("Token abc")).toBeNull();
+    expect(parseBearerToken("Bearer abc def")).toBeNull();
     expect(parseBearerToken(undefined)).toBeNull();
   });
 });

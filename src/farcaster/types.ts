@@ -4,9 +4,10 @@ import {
   FARCASTER_KEY_TYPE_ED25519,
   FARCASTER_SIGNUP_NETWORK,
 } from "./constants.js";
+import type { EvmAddress } from "../evm.js";
 
 export type FarcasterHexString = `0x${string}`;
-export type EvmAddress = `0x${string}`;
+export type { EvmAddress };
 
 export type FarcasterSignedKeyRequestTypedDataDomain = {
   name: string;
@@ -72,6 +73,14 @@ export type FarcasterSignupCallPlan = {
   network: typeof FARCASTER_SIGNUP_NETWORK;
   calls: [FarcasterSignupRegisterCallIntent, FarcasterSignupAddKeyCallIntent];
 };
+
+export type FarcasterExecutableCall = {
+  to: EvmAddress;
+  value: bigint;
+  data: FarcasterHexString;
+};
+
+export type FarcasterSignupExecutableCalls = [FarcasterExecutableCall, FarcasterExecutableCall];
 
 type FarcasterPreflightCommon = {
   custodyAddress: EvmAddress;

@@ -3,8 +3,11 @@ import {
   X402_NETWORK,
   X402_PAY_TO_ADDRESS,
   X402_VALUE_MICRO_USDC,
+  buildX402AuthorizationPayload,
+  buildX402PaymentPayload,
   buildX402TypedDataDomain,
   buildX402TypedDataTypes,
+  createX402AuthorizationNonce,
   decodeAndValidateX402PaymentPayload,
   decodeX402PaymentPayload,
   encodeX402PaymentPayload,
@@ -21,6 +24,11 @@ describe("x402 contract", () => {
         verifyingContract: "0x833589FCD6EDB6E08F4C7C32D4F71B54BDA02913",
       }).version
     ).toBe("3");
+    expect(() =>
+      buildX402TypedDataDomain({
+        verifyingContract: "not-an-address" as `0x${string}`,
+      })
+    ).toThrow("verifyingContract must be a valid 20-byte hex address");
 
     const types = buildX402TypedDataTypes();
     expect(types.TransferWithAuthorization).toHaveLength(6);
@@ -32,7 +40,7 @@ describe("x402 contract", () => {
       scheme: "exact",
       network: X402_NETWORK,
       payload: {
-        signature: "0xabc",
+        signature: "0xabcd",
         authorization: {
           from: "0x1111111111111111111111111111111111111111",
           to: X402_PAY_TO_ADDRESS,
@@ -55,7 +63,7 @@ describe("x402 contract", () => {
       scheme: "exact",
       network: X402_NETWORK,
       payload: {
-        signature: "0xabc",
+        signature: "0xabcd",
         authorization: {
           from: "0x1111111111111111111111111111111111111111",
           to: X402_PAY_TO_ADDRESS,
@@ -91,7 +99,7 @@ describe("x402 contract", () => {
       scheme: "exact",
       network: X402_NETWORK,
       payload: {
-        signature: "0xabc",
+        signature: "0xabcd",
         authorization: {
           from: "0x1111111111111111111111111111111111111111",
           to: X402_PAY_TO_ADDRESS,
@@ -108,13 +116,56 @@ describe("x402 contract", () => {
     );
   });
 
+  it("builds shared authorization and payment payload shapes", () => {
+    const nonce = createX402AuthorizationNonce();
+    expect(nonce).toMatch(/^0x[0-9a-f]{64}$/);
+
+    const authorization = buildX402AuthorizationPayload({
+      from: "0x1111111111111111111111111111111111111111",
+      validBefore: 2_000_000_000,
+      nonce,
+    });
+    expect(authorization).toEqual({
+      from: "0x1111111111111111111111111111111111111111",
+      to: X402_PAY_TO_ADDRESS,
+      value: X402_VALUE_MICRO_USDC,
+      validAfter: "0",
+      validBefore: "2000000000",
+      nonce,
+    });
+
+    const payload = buildX402PaymentPayload({
+      signature: "0xabcd",
+      authorization,
+    });
+    expect(payload).toEqual({
+      x402Version: 1,
+      scheme: "exact",
+      network: X402_NETWORK,
+      payload: {
+        signature: "0xabcd",
+        authorization,
+      },
+    });
+  });
+
+  it("rejects invalid builder nonce values", () => {
+    expect(() =>
+      buildX402AuthorizationPayload({
+        from: "0x1111111111111111111111111111111111111111",
+        validBefore: 2_000_000_000,
+        nonce: "0x1234",
+      })
+    ).toThrow("nonce must be a 32-byte hex value");
+  });
+
   it("rejects missing/invalid/expired validBefore values", () => {
     const basePayload = {
       x402Version: 1,
       scheme: "exact",
       network: X402_NETWORK,
       payload: {
-        signature: "0xabc",
+        signature: "0xabcd",
         authorization: {
           from: "0x1111111111111111111111111111111111111111",
           to: X402_PAY_TO_ADDRESS,
@@ -161,5 +212,84 @@ describe("x402 contract", () => {
     expect(() =>
       validateX402PaymentPayload(basePayload, { nowSeconds: 2_000_000_000 })
     ).toThrow("x402 payment header has expired");
+  });
+
+  it("rejects unsupported x402 version and scheme", () => {
+    const payload = {
+      x402Version: 2,
+      scheme: "other",
+      network: X402_NETWORK,
+      payload: {
+        signature: "0xabcd",
+        authorization: {
+          from: "0x1111111111111111111111111111111111111111",
+          to: X402_PAY_TO_ADDRESS,
+          value: X402_VALUE_MICRO_USDC,
+          validAfter: "0",
+          validBefore: "2000000000",
+          nonce: `0x${"1".repeat(64)}` as `0x${string}`,
+        },
+      },
+    };
+
+    expect(() => validateX402PaymentPayload(payload, { nowSeconds: 100 })).toThrow(
+      "x402 payment header version mismatch"
+    );
+
+    expect(() =>
+      validateX402PaymentPayload(
+        {
+          ...payload,
+          x402Version: 1,
+        },
+        { nowSeconds: 100 }
+      )
+    ).toThrow("x402 payment header scheme mismatch");
+  });
+
+  it("rejects invalid signature and address fields on decode", () => {
+    const encoded = encodeX402PaymentPayload({
+      x402Version: 1,
+      scheme: "exact",
+      network: X402_NETWORK,
+      payload: {
+        signature: "0xabcd",
+        authorization: {
+          from: "0x1111111111111111111111111111111111111111",
+          to: X402_PAY_TO_ADDRESS,
+          value: X402_VALUE_MICRO_USDC,
+          validAfter: "0",
+          validBefore: "2000000000",
+          nonce: `0x${"1".repeat(64)}` as `0x${string}`,
+        },
+      },
+    });
+    const decoded = decodeX402PaymentPayload(encoded);
+    expect(decoded.payload.signature).toBe("0xabcd");
+
+    const badSignature = encodeX402PaymentPayload({
+      ...decoded,
+      payload: {
+        ...decoded.payload,
+        signature: "not-hex",
+      },
+    });
+    expect(() => decodeX402PaymentPayload(badSignature)).toThrow(
+      "x402 payment header has invalid payload.signature"
+    );
+
+    const badFrom = encodeX402PaymentPayload({
+      ...decoded,
+      payload: {
+        ...decoded.payload,
+        authorization: {
+          ...decoded.payload.authorization,
+          from: "0x1234",
+        },
+      },
+    });
+    expect(() => decodeX402PaymentPayload(badFrom)).toThrow(
+      "x402 payment header has invalid payload.authorization.from"
+    );
   });
 });

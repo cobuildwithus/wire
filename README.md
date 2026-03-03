@@ -6,10 +6,11 @@ Shared wire-level contracts for Cobuild clients/services.
 
 - OAuth constants + scope/PKCE/redirect validation helpers
 - JWT claim parsing helpers for CLI access token payloads
+- EVM/wallet validation helpers for network/token/mode contracts
 - Bearer token parsing
 - Idempotency key/header contract
 - x402 payload/domain/type builders + payload validation
-- Farcaster signup wire contracts (typed-data, preflight, call-plan builders)
+- Farcaster signup wire contracts (typed-data, preflight, call-plan + executable-call builders)
 
 ## Non-goals
 
