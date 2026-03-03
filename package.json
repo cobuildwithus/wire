@@ -37,7 +37,14 @@
     "docs:gardening": "bash scripts/doc-gardening.sh --fail-on-issues",
     "review:gpt": "scripts/chatgpt-oracle-review.sh",
     "zip:src": "bash scripts/package-audit-context.sh --zip",
-    "verify": "pnpm typecheck && pnpm test:coverage"
+    "verify": "pnpm typecheck && pnpm test:coverage",
+    "changelog:update": "bash scripts/update-changelog.sh",
+    "release:notes": "bash scripts/generate-release-notes.sh",
+    "release:check": "bash scripts/release.sh check",
+    "release:dry-run": "bash scripts/release.sh patch --dry-run",
+    "release:patch": "bash scripts/release.sh patch",
+    "release:minor": "bash scripts/release.sh minor",
+    "release:major": "bash scripts/release.sh major"
   },
   "devDependencies": {
     "@cobuild/review-gpt": "^0.2.7",
