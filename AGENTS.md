@@ -30,8 +30,8 @@ If instructions still conflict after applying this order, ask the user before ac
 - Never access `.env` or `.env*` files.
 - Never print or commit full tokens or raw `Authorization` headers.
 - Historical plan docs under `agent-docs/exec-plans/completed/` are immutable snapshots.
-- Always keep `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` current for every coding task (single-agent and multi-agent): claim scope before first edit, list planned symbol add/rename/delete work, and remove your entry when done.
-- Any spawned subagent that may review or edit code must read `COORDINATION_LEDGER.md` first and must not touch files or symbols owned by another active entry.
+- COORDINATION_LEDGER hard gate for every coding task (single-agent and multi-agent): before any code change, add or update your active entry in `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` with scope and planned symbol add/rename/delete work; do not edit code, generate code, or apply patches until that entry exists; if you cannot update the ledger first, stop and escalate; keep the entry current as scope changes, and remove your entry when done.
+- Any spawned subagent that may review or edit code must read `COORDINATION_LEDGER.md`, follow the same hard gate before making code changes, and must not touch files or symbols owned by another active entry.
 - Keep this file short and route-oriented; move durable detail into `agent-docs/`.
 
 ## How To Work
