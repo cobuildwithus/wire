@@ -12,10 +12,6 @@ import {
   baseEntrypoints,
   baseImplementations,
   budgetTcrFactoryAddress,
-  cobuild_revnet_id,
-  cobuild_swap,
-  cobuild_swap_impl,
-  cobuild_token,
   cobuildSwapAddress,
   cobuildTokenAddress,
   goalFactoryAddress,
@@ -25,12 +21,10 @@ describe("protocol address exports", () => {
   it("exports canonical Base chain constants", () => {
     expect(baseAddresses.chainId).toBe(8453);
     expect(cobuildTokenAddress).toBe("0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD");
-    expect(cobuild_revnet_id).toBe(138);
     expect(COBUILD_TOKEN).toBe("0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD");
     expect(COBUILD_REVNET_ID).toBe(138);
     expect(cobuildSwapAddress).toBe("0x5d09ddd53feffc52f5139a59246ced560d8c45df");
     expect(COBUILD_SWAP).toBe("0x5d09ddd53feffc52f5139a59246ced560d8c45df");
-    expect(cobuild_swap_impl).toBe("0x21a580054e7a5e833f38033f2d958e00e4c50f0f");
     expect(COBUILD_SWAP_IMPL).toBe("0x21a580054e7a5e833f38033f2d958e00e4c50f0f");
   });
 
@@ -38,11 +32,7 @@ describe("protocol address exports", () => {
     expect(goalFactoryAddress).toBe(baseEntrypoints.goalFactory);
     expect(budgetTcrFactoryAddress).toBe(baseEntrypoints.budgetTcrFactory);
     expect(cobuildTokenAddress).toBe(baseEntrypoints.cobuildToken);
-    expect(cobuild_token).toBe(baseEntrypoints.cobuildToken);
-    expect(cobuild_revnet_id).toBe(baseConfig.cobuildRevnetId);
     expect(cobuildSwapAddress).toBe(baseEntrypoints.cobuildSwap);
-    expect(cobuild_swap).toBe(baseEntrypoints.cobuildSwap);
-    expect(cobuild_swap_impl).toBe(baseImplementations.cobuildSwapImpl);
     expect(COBUILD_TOKEN).toBe(baseEntrypoints.cobuildToken);
     expect(COBUILD_REVNET_ID).toBe(baseConfig.cobuildRevnetId);
     expect(COBUILD_SWAP).toBe(baseEntrypoints.cobuildSwap);
