@@ -7,6 +7,7 @@ export {
   cobuildSwapImplAddress,
   cobuildSwapImplConfig,
   flowAbi,
+  goalFactoryAbi,
   goalFlowAllocationLedgerPipelineAbi,
   goalRevnetSplitHookAbi,
   goalStakeVaultAbi,

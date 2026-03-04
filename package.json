@@ -19,6 +19,9 @@
       "import": "./dist/index.js"
     }
   },
+  "bin": {
+    "wire-ensure-published": "./dist/bin/wire-ensure-published.js"
+  },
   "files": [
     "dist",
     "README.md",
