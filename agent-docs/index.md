@@ -45,3 +45,4 @@ Canonical map for docs used by agents working in this repository.
 - ABI source-of-truth now relies on generated-only wagmi ABI exports (manual fallback parsing removed).
 - Added canonical Base V1 core address exports (`protocol-addresses`) for entrypoints and implementation addresses.
 - Added an active execution plan to track docs drift-gate remediation for release patch verification.
+- Synced Base `8453` implementation/default/config addresses to latest `DeployGoalFactoryImplementations.8453.txt` and updated wagmi ABI generation to fetch verified impl ABIs from Basescan with local factory ABI fallback.

@@ -2,6 +2,9 @@
 // BudgetStakeLedger
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x46aFa73DcD27e08a68c639BCD885469B19f64AbB)
+ */
 export const budgetStakeLedgerAbi = [
   {
     type: 'constructor',
@@ -9,6 +12,187 @@ export const budgetStakeLedgerAbi = [
       { name: 'goalTreasury_', internalType: 'address', type: 'address' },
     ],
     stateMutability: 'nonpayable',
+  },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'account', internalType: 'address', type: 'address' },
+      { name: 'budget', internalType: 'address', type: 'address' },
+      { name: 'storedAllocated', internalType: 'uint256', type: 'uint256' },
+      { name: 'expectedAllocated', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'ALLOCATION_DRIFT',
+  },
+  { type: 'error', inputs: [], name: 'BLOCK_NOT_YET_MINED' },
+  { type: 'error', inputs: [], name: 'BUDGET_ALREADY_REGISTERED' },
+  { type: 'error', inputs: [], name: 'CheckpointUnorderedInsertion' },
+  { type: 'error', inputs: [], name: 'GOAL_TERMINAL' },
+  {
+    type: 'error',
+    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_ACTIVATED_AT',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_EXECUTION_DURATION',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'budget', internalType: 'address', type: 'address' },
+      { name: 'budgetFlow', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_BUDGET_FLOW',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_FLOW_READ',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_FUNDING_DEADLINE',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_NOT_CONTRACT',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'budgetFlow', internalType: 'address', type: 'address' },
+      { name: 'expectedParent', internalType: 'address', type: 'address' },
+      { name: 'actualParent', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_BUDGET_PARENT_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'budgetFlow', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_PARENT_READ',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_RESOLVED_AT',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_STATE',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_CHECKPOINT_DATA' },
+  {
+    type: 'error',
+    inputs: [{ name: 'goalFlow', internalType: 'address', type: 'address' }],
+    name: 'INVALID_GOAL_FLOW',
+  },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  { type: 'error', inputs: [], name: 'ONLY_BUDGET_REGISTRY_MANAGER' },
+  { type: 'error', inputs: [], name: 'ONLY_GOAL_FLOW_OR_PIPELINE' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'bits', internalType: 'uint8', type: 'uint8' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'SafeCastOverflowedUintDowncast',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'budget', internalType: 'address', type: 'address' },
+      { name: 'totalAllocated', internalType: 'uint256', type: 'uint256' },
+      { name: 'attemptedDecrease', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'TOTAL_ALLOCATED_UNDERFLOW',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'budget',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'allocatedStake',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'checkpointTime',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'AllocationCheckpointed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'recipientId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budget',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'BudgetRegistered',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'recipientId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budget',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'BudgetRemoved',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'version',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'Initialized',
   },
   {
     type: 'function',
@@ -235,74 +419,502 @@ export const budgetStakeLedgerAbi = [
     ],
     stateMutability: 'view',
   },
+] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x46aFa73DcD27e08a68c639BCD885469B19f64AbB)
+ */
+export const budgetStakeLedgerAddress = {
+  8453: '0x46aFa73DcD27e08a68c639BCD885469B19f64AbB',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x46aFa73DcD27e08a68c639BCD885469B19f64AbB)
+ */
+export const budgetStakeLedgerConfig = {
+  address: budgetStakeLedgerAddress,
+  abi: budgetStakeLedgerAbi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BudgetTCR
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB7dE8c3D18DdaB6f39C30493b7F41138E1e5cbA0)
+ */
+export const budgetTcrAbi = [
+  { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  { type: 'error', inputs: [], name: 'ARBITRATOR_ARBITRABLE_MISMATCH' },
+  { type: 'error', inputs: [], name: 'ARBITRATOR_TOKEN_MISMATCH' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'token', internalType: 'address', type: 'address' },
+      { name: 'account', internalType: 'address', type: 'address' },
+      { name: 'beforeBalance', internalType: 'uint256', type: 'uint256' },
+      { name: 'afterBalance', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'BALANCE_DECREASED_UNEXPECTEDLY',
+  },
+  { type: 'error', inputs: [], name: 'BUDGET_STAKE_LEDGER_NOT_CONFIGURED' },
+  { type: 'error', inputs: [], name: 'CHALLENGE_MUST_BE_WITHIN_TIME_LIMIT' },
+  { type: 'error', inputs: [], name: 'CHALLENGE_PERIOD_MUST_PASS' },
+  { type: 'error', inputs: [], name: 'DISPUTE_MUST_NOT_BE_RESOLVED' },
+  { type: 'error', inputs: [], name: 'DISPUTE_NOT_SOLVED' },
+  { type: 'error', inputs: [], name: 'DISPUTE_TIMEOUT_DISABLED' },
+  { type: 'error', inputs: [], name: 'DISPUTE_TIMEOUT_NOT_PASSED' },
+  { type: 'error', inputs: [], name: 'GOAL_TERMINAL' },
+  { type: 'error', inputs: [], name: 'INVALID_BOUNDS' },
+  { type: 'error', inputs: [], name: 'INVALID_DISPUTE_ID' },
+  { type: 'error', inputs: [], name: 'INVALID_ITEM_DATA' },
+  {
+    type: 'error',
+    inputs: [{ name: 'ppmValue', internalType: 'uint32', type: 'uint32' }],
+    name: 'INVALID_PPM',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'implementation', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_PREMIUM_ESCROW_IMPLEMENTATION',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_RULING_OPTION' },
+  { type: 'error', inputs: [], name: 'INVALID_SUBMISSION_DEPOSIT_ACTION' },
+  { type: 'error', inputs: [], name: 'INVALID_SUBMISSION_DEPOSIT_RECIPIENT' },
+  { type: 'error', inputs: [], name: 'INVALID_SUBMISSION_DEPOSIT_STRATEGY' },
+  { type: 'error', inputs: [], name: 'INVALID_VOTING_TOKEN_COMPATIBILITY' },
+  {
+    type: 'error',
+    inputs: [{ name: 'decimals', internalType: 'uint8', type: 'uint8' }],
+    name: 'INVALID_VOTING_TOKEN_DECIMALS',
+  },
+  { type: 'error', inputs: [], name: 'ITEM_MUST_HAVE_PENDING_REQUEST' },
+  { type: 'error', inputs: [], name: 'ITEM_NOT_DEPLOYED' },
+  { type: 'error', inputs: [], name: 'ITEM_NOT_REGISTERED' },
+  { type: 'error', inputs: [], name: 'ITEM_NOT_TERMINAL' },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  {
+    type: 'error',
+    inputs: [],
+    name: 'MANAGER_REWARD_DISTRIBUTION_POOL_NOT_CONFIGURED',
+  },
+  { type: 'error', inputs: [], name: 'MUST_BE_ABSENT_TO_BE_ADDED' },
+  { type: 'error', inputs: [], name: 'MUST_BE_A_REQUEST' },
+  { type: 'error', inputs: [], name: 'MUST_BE_REGISTERED_TO_BE_REMOVED' },
+  { type: 'error', inputs: [], name: 'MUST_FULLY_FUND_YOUR_SIDE' },
+  {
+    type: 'error',
+    inputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'NO_REQUESTS_FOR_ITEM',
+  },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  { type: 'error', inputs: [], name: 'ONLY_ARBITRATOR_CAN_RULE' },
+  { type: 'error', inputs: [], name: 'REGISTRATION_NOT_PENDING' },
+  { type: 'error', inputs: [], name: 'REMOVAL_FINALIZATION_PENDING' },
+  { type: 'error', inputs: [], name: 'REMOVAL_NOT_PENDING' },
+  { type: 'error', inputs: [], name: 'REQUEST_ALREADY_DISPUTED' },
+  { type: 'error', inputs: [], name: 'REQUEST_MUST_BE_DISPUTED' },
+  { type: 'error', inputs: [], name: 'REQUEST_MUST_BE_RESOLVED' },
+  { type: 'error', inputs: [], name: 'REQUEST_MUST_NOT_BE_DISPUTED' },
+  { type: 'error', inputs: [], name: 'REQUEST_MUST_NOT_BE_RESOLVED' },
+  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
+  { type: 'error', inputs: [], name: 'STACK_ALREADY_ACTIVE' },
+  { type: 'error', inputs: [], name: 'STACK_STILL_ACTIVE' },
+  { type: 'error', inputs: [], name: 'SUBMISSION_DEPOSIT_ALREADY_SET' },
+  { type: 'error', inputs: [], name: 'SUBMISSION_DEPOSIT_TRANSFER_INCOMPLETE' },
+  {
+    type: 'error',
+    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
+    name: 'SafeERC20FailedOperation',
+  },
+  { type: 'error', inputs: [], name: 'TERMINAL_RESOLUTION_FAILED' },
+  { type: 'error', inputs: [], name: 'UNDERWRITER_SLASHER_NOT_CONFIGURED' },
   {
     type: 'event',
     anonymous: false,
     inputs: [
       {
-        name: 'account',
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'allocationMechanism',
         internalType: 'address',
         type: 'address',
         indexed: true,
       },
       {
-        name: 'budget',
+        name: 'allocationMechanismArbitrator',
         internalType: 'address',
         type: 'address',
         indexed: true,
       },
       {
-        name: 'allocatedStake',
+        name: 'roundFactory',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetAllocationMechanismDeployed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'callTarget',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'selector',
+        internalType: 'bytes4',
+        type: 'bytes4',
+        indexed: true,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'BudgetCreditCapEnforcementFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+    ],
+    name: 'BudgetStackActivationQueued',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'childFlow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'strategy',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetStackDeployed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'childFlow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'removedFromParent',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+      {
+        name: 'terminallyResolved',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetStackRemovalHandled',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+    ],
+    name: 'BudgetStackRemovalQueued',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'terminallyResolved',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetStackTerminalizationRetried',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'childFlow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'removedFromParent',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+      {
+        name: 'goalSynced',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetTerminalRecipientPruned',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'selector',
+        internalType: 'bytes4',
+        type: 'bytes4',
+        indexed: true,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'BudgetTerminalizationStepFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      { name: 'success', internalType: 'bool', type: 'bool', indexed: false },
+    ],
+    name: 'BudgetTreasuryBatchSyncAttempted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'reason',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetTreasuryBatchSyncSkipped',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'selector',
+        internalType: 'bytes4',
+        type: 'bytes4',
+        indexed: true,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'BudgetTreasuryCallFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: '_arbitrator',
+        internalType: 'contract IArbitrator',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: '_disputeID',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: '_metaEvidenceID',
         internalType: 'uint256',
         type: 'uint256',
         indexed: false,
       },
       {
-        name: 'checkpointTime',
-        internalType: 'uint64',
-        type: 'uint64',
+        name: '_evidenceGroupID',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: '_itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
         indexed: false,
       },
     ],
-    name: 'AllocationCheckpointed',
+    name: 'Dispute',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
       {
-        name: 'recipientId',
-        internalType: 'bytes32',
-        type: 'bytes32',
+        name: '_arbitrator',
+        internalType: 'contract IArbitrator',
+        type: 'address',
         indexed: true,
       },
       {
-        name: 'budget',
+        name: '_evidenceGroupID',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: '_party',
         internalType: 'address',
         type: 'address',
         indexed: true,
       },
-    ],
-    name: 'BudgetRegistered',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
       {
-        name: 'recipientId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budget',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
+        name: '_evidence',
+        internalType: 'string',
+        type: 'string',
+        indexed: false,
       },
     ],
-    name: 'BudgetRemoved',
+    name: 'Evidence',
   },
   {
     type: 'event',
@@ -317,113 +929,221 @@ export const budgetStakeLedgerAbi = [
     ],
     name: 'Initialized',
   },
-  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
   {
-    type: 'error',
+    type: 'event',
+    anonymous: false,
     inputs: [
-      { name: 'account', internalType: 'address', type: 'address' },
-      { name: 'budget', internalType: 'address', type: 'address' },
-      { name: 'storedAllocated', internalType: 'uint256', type: 'uint256' },
-      { name: 'expectedAllocated', internalType: 'uint256', type: 'uint256' },
+      {
+        name: '_itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: '_requestIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: '_roundIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      { name: '_disputed', internalType: 'bool', type: 'bool', indexed: false },
+      { name: '_resolved', internalType: 'bool', type: 'bool', indexed: false },
+      {
+        name: '_itemStatus',
+        internalType: 'enum IGeneralizedTCR.Status',
+        type: 'uint8',
+        indexed: false,
+      },
     ],
-    name: 'ALLOCATION_DRIFT',
-  },
-  { type: 'error', inputs: [], name: 'BLOCK_NOT_YET_MINED' },
-  { type: 'error', inputs: [], name: 'BUDGET_ALREADY_REGISTERED' },
-  { type: 'error', inputs: [], name: 'CheckpointUnorderedInsertion' },
-  { type: 'error', inputs: [], name: 'GOAL_TERMINAL' },
-  {
-    type: 'error',
-    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
-    name: 'INVALID_BUDGET_ACTIVATED_AT',
+    name: 'ItemStatusChange',
   },
   {
-    type: 'error',
-    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
-    name: 'INVALID_BUDGET_EXECUTION_DURATION',
-  },
-  {
-    type: 'error',
+    type: 'event',
+    anonymous: false,
     inputs: [
-      { name: 'budget', internalType: 'address', type: 'address' },
-      { name: 'budgetFlow', internalType: 'address', type: 'address' },
+      {
+        name: '_itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: '_submitter',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: '_evidenceGroupID',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      { name: '_data', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'INVALID_BUDGET_FLOW',
+    name: 'ItemSubmitted',
   },
   {
-    type: 'error',
-    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
-    name: 'INVALID_BUDGET_FLOW_READ',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
-    name: 'INVALID_BUDGET_FUNDING_DEADLINE',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
-    name: 'INVALID_BUDGET_NOT_CONTRACT',
-  },
-  {
-    type: 'error',
+    type: 'event',
+    anonymous: false,
     inputs: [
-      { name: 'budgetFlow', internalType: 'address', type: 'address' },
-      { name: 'expectedParent', internalType: 'address', type: 'address' },
-      { name: 'actualParent', internalType: 'address', type: 'address' },
+      {
+        name: '_metaEvidenceID',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: '_evidence',
+        internalType: 'string',
+        type: 'string',
+        indexed: false,
+      },
     ],
-    name: 'INVALID_BUDGET_PARENT_MISMATCH',
+    name: 'MetaEvidence',
   },
   {
-    type: 'error',
-    inputs: [{ name: 'budgetFlow', internalType: 'address', type: 'address' }],
-    name: 'INVALID_BUDGET_PARENT_READ',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
-    name: 'INVALID_BUDGET_RESOLVED_AT',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'budget', internalType: 'address', type: 'address' }],
-    name: 'INVALID_BUDGET_STATE',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_CHECKPOINT_DATA' },
-  {
-    type: 'error',
-    inputs: [{ name: 'goalFlow', internalType: 'address', type: 'address' }],
-    name: 'INVALID_GOAL_FLOW',
-  },
-  { type: 'error', inputs: [], name: 'InvalidInitialization' },
-  { type: 'error', inputs: [], name: 'NotInitializing' },
-  { type: 'error', inputs: [], name: 'ONLY_BUDGET_REGISTRY_MANAGER' },
-  { type: 'error', inputs: [], name: 'ONLY_GOAL_FLOW_OR_PIPELINE' },
-  {
-    type: 'error',
+    type: 'event',
+    anonymous: false,
     inputs: [
-      { name: 'bits', internalType: 'uint8', type: 'uint8' },
-      { name: 'value', internalType: 'uint256', type: 'uint256' },
+      {
+        name: '_itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: '_requestIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: '_evidenceGroupID',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
     ],
-    name: 'SafeCastOverflowedUintDowncast',
+    name: 'RequestEvidenceGroupID',
   },
   {
-    type: 'error',
+    type: 'event',
+    anonymous: false,
     inputs: [
-      { name: 'budget', internalType: 'address', type: 'address' },
-      { name: 'totalAllocated', internalType: 'uint256', type: 'uint256' },
-      { name: 'attemptedDecrease', internalType: 'uint256', type: 'uint256' },
+      {
+        name: '_itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: '_requestIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: '_requestType',
+        internalType: 'enum IGeneralizedTCR.Status',
+        type: 'uint8',
+        indexed: true,
+      },
     ],
-    name: 'TOTAL_ALLOCATED_UNDERFLOW',
+    name: 'RequestSubmitted',
   },
-] as const
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// BudgetTCR
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const budgetTcrAbi = [
-  { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: '_arbitrator',
+        internalType: 'contract IArbitrator',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: '_disputeID',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: '_ruling',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'Ruling',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'payer',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'SubmissionDepositPaid',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'requestType',
+        internalType: 'enum IGeneralizedTCR.Status',
+        type: 'uint8',
+        indexed: false,
+      },
+      {
+        name: 'ruling',
+        internalType: 'enum IArbitrable.Party',
+        type: 'uint8',
+        indexed: false,
+      },
+    ],
+    name: 'SubmissionDepositTransferred',
+  },
   {
     type: 'function',
     inputs: [],
@@ -1173,706 +1893,22 @@ export const budgetTcrAbi = [
     outputs: [],
     stateMutability: 'nonpayable',
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'allocationMechanism',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'allocationMechanismArbitrator',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'roundFactory',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-    ],
-    name: 'BudgetAllocationMechanismDeployed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'callTarget',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'selector',
-        internalType: 'bytes4',
-        type: 'bytes4',
-        indexed: true,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'BudgetCreditCapEnforcementFailed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-    ],
-    name: 'BudgetStackActivationQueued',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'childFlow',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'strategy',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-    ],
-    name: 'BudgetStackDeployed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'childFlow',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'removedFromParent',
-        internalType: 'bool',
-        type: 'bool',
-        indexed: false,
-      },
-      {
-        name: 'terminallyResolved',
-        internalType: 'bool',
-        type: 'bool',
-        indexed: false,
-      },
-    ],
-    name: 'BudgetStackRemovalHandled',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-    ],
-    name: 'BudgetStackRemovalQueued',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'terminallyResolved',
-        internalType: 'bool',
-        type: 'bool',
-        indexed: false,
-      },
-    ],
-    name: 'BudgetStackTerminalizationRetried',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'childFlow',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'removedFromParent',
-        internalType: 'bool',
-        type: 'bool',
-        indexed: false,
-      },
-      {
-        name: 'goalSynced',
-        internalType: 'bool',
-        type: 'bool',
-        indexed: false,
-      },
-    ],
-    name: 'BudgetTerminalRecipientPruned',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'selector',
-        internalType: 'bytes4',
-        type: 'bytes4',
-        indexed: true,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'BudgetTerminalizationStepFailed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      { name: 'success', internalType: 'bool', type: 'bool', indexed: false },
-    ],
-    name: 'BudgetTreasuryBatchSyncAttempted',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'reason',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: false,
-      },
-    ],
-    name: 'BudgetTreasuryBatchSyncSkipped',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'selector',
-        internalType: 'bytes4',
-        type: 'bytes4',
-        indexed: true,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'BudgetTreasuryCallFailed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: '_arbitrator',
-        internalType: 'contract IArbitrator',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: '_disputeID',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: '_metaEvidenceID',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: '_evidenceGroupID',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: '_itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: false,
-      },
-    ],
-    name: 'Dispute',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: '_arbitrator',
-        internalType: 'contract IArbitrator',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: '_evidenceGroupID',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: '_party',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: '_evidence',
-        internalType: 'string',
-        type: 'string',
-        indexed: false,
-      },
-    ],
-    name: 'Evidence',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'version',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: false,
-      },
-    ],
-    name: 'Initialized',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: '_itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: '_requestIndex',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: '_roundIndex',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      { name: '_disputed', internalType: 'bool', type: 'bool', indexed: false },
-      { name: '_resolved', internalType: 'bool', type: 'bool', indexed: false },
-      {
-        name: '_itemStatus',
-        internalType: 'enum IGeneralizedTCR.Status',
-        type: 'uint8',
-        indexed: false,
-      },
-    ],
-    name: 'ItemStatusChange',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: '_itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: '_submitter',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: '_evidenceGroupID',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      { name: '_data', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'ItemSubmitted',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: '_metaEvidenceID',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: '_evidence',
-        internalType: 'string',
-        type: 'string',
-        indexed: false,
-      },
-    ],
-    name: 'MetaEvidence',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: '_itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: '_requestIndex',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: '_evidenceGroupID',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-    ],
-    name: 'RequestEvidenceGroupID',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: '_itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: '_requestIndex',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: '_requestType',
-        internalType: 'enum IGeneralizedTCR.Status',
-        type: 'uint8',
-        indexed: true,
-      },
-    ],
-    name: 'RequestSubmitted',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: '_arbitrator',
-        internalType: 'contract IArbitrator',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: '_disputeID',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: '_ruling',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'Ruling',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'payer',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'SubmissionDepositPaid',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'recipient',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'requestType',
-        internalType: 'enum IGeneralizedTCR.Status',
-        type: 'uint8',
-        indexed: false,
-      },
-      {
-        name: 'ruling',
-        internalType: 'enum IArbitrable.Party',
-        type: 'uint8',
-        indexed: false,
-      },
-    ],
-    name: 'SubmissionDepositTransferred',
-  },
-  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
-  { type: 'error', inputs: [], name: 'ARBITRATOR_ARBITRABLE_MISMATCH' },
-  { type: 'error', inputs: [], name: 'ARBITRATOR_TOKEN_MISMATCH' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'token', internalType: 'address', type: 'address' },
-      { name: 'account', internalType: 'address', type: 'address' },
-      { name: 'beforeBalance', internalType: 'uint256', type: 'uint256' },
-      { name: 'afterBalance', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'BALANCE_DECREASED_UNEXPECTEDLY',
-  },
-  { type: 'error', inputs: [], name: 'BUDGET_STAKE_LEDGER_NOT_CONFIGURED' },
-  { type: 'error', inputs: [], name: 'CHALLENGE_MUST_BE_WITHIN_TIME_LIMIT' },
-  { type: 'error', inputs: [], name: 'CHALLENGE_PERIOD_MUST_PASS' },
-  { type: 'error', inputs: [], name: 'DISPUTE_MUST_NOT_BE_RESOLVED' },
-  { type: 'error', inputs: [], name: 'DISPUTE_NOT_SOLVED' },
-  { type: 'error', inputs: [], name: 'DISPUTE_TIMEOUT_DISABLED' },
-  { type: 'error', inputs: [], name: 'DISPUTE_TIMEOUT_NOT_PASSED' },
-  { type: 'error', inputs: [], name: 'GOAL_TERMINAL' },
-  { type: 'error', inputs: [], name: 'INVALID_BOUNDS' },
-  { type: 'error', inputs: [], name: 'INVALID_DISPUTE_ID' },
-  { type: 'error', inputs: [], name: 'INVALID_ITEM_DATA' },
-  {
-    type: 'error',
-    inputs: [{ name: 'ppmValue', internalType: 'uint32', type: 'uint32' }],
-    name: 'INVALID_PPM',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'implementation', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_PREMIUM_ESCROW_IMPLEMENTATION',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_RULING_OPTION' },
-  { type: 'error', inputs: [], name: 'INVALID_SUBMISSION_DEPOSIT_ACTION' },
-  { type: 'error', inputs: [], name: 'INVALID_SUBMISSION_DEPOSIT_RECIPIENT' },
-  { type: 'error', inputs: [], name: 'INVALID_SUBMISSION_DEPOSIT_STRATEGY' },
-  { type: 'error', inputs: [], name: 'INVALID_VOTING_TOKEN_COMPATIBILITY' },
-  {
-    type: 'error',
-    inputs: [{ name: 'decimals', internalType: 'uint8', type: 'uint8' }],
-    name: 'INVALID_VOTING_TOKEN_DECIMALS',
-  },
-  { type: 'error', inputs: [], name: 'ITEM_MUST_HAVE_PENDING_REQUEST' },
-  { type: 'error', inputs: [], name: 'ITEM_NOT_DEPLOYED' },
-  { type: 'error', inputs: [], name: 'ITEM_NOT_REGISTERED' },
-  { type: 'error', inputs: [], name: 'ITEM_NOT_TERMINAL' },
-  { type: 'error', inputs: [], name: 'InvalidInitialization' },
-  {
-    type: 'error',
-    inputs: [],
-    name: 'MANAGER_REWARD_DISTRIBUTION_POOL_NOT_CONFIGURED',
-  },
-  { type: 'error', inputs: [], name: 'MUST_BE_ABSENT_TO_BE_ADDED' },
-  { type: 'error', inputs: [], name: 'MUST_BE_A_REQUEST' },
-  { type: 'error', inputs: [], name: 'MUST_BE_REGISTERED_TO_BE_REMOVED' },
-  { type: 'error', inputs: [], name: 'MUST_FULLY_FUND_YOUR_SIDE' },
-  {
-    type: 'error',
-    inputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'NO_REQUESTS_FOR_ITEM',
-  },
-  { type: 'error', inputs: [], name: 'NotInitializing' },
-  { type: 'error', inputs: [], name: 'ONLY_ARBITRATOR_CAN_RULE' },
-  { type: 'error', inputs: [], name: 'REGISTRATION_NOT_PENDING' },
-  { type: 'error', inputs: [], name: 'REMOVAL_FINALIZATION_PENDING' },
-  { type: 'error', inputs: [], name: 'REMOVAL_NOT_PENDING' },
-  { type: 'error', inputs: [], name: 'REQUEST_ALREADY_DISPUTED' },
-  { type: 'error', inputs: [], name: 'REQUEST_MUST_BE_DISPUTED' },
-  { type: 'error', inputs: [], name: 'REQUEST_MUST_BE_RESOLVED' },
-  { type: 'error', inputs: [], name: 'REQUEST_MUST_NOT_BE_DISPUTED' },
-  { type: 'error', inputs: [], name: 'REQUEST_MUST_NOT_BE_RESOLVED' },
-  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
-  { type: 'error', inputs: [], name: 'STACK_ALREADY_ACTIVE' },
-  { type: 'error', inputs: [], name: 'STACK_STILL_ACTIVE' },
-  { type: 'error', inputs: [], name: 'SUBMISSION_DEPOSIT_ALREADY_SET' },
-  { type: 'error', inputs: [], name: 'SUBMISSION_DEPOSIT_TRANSFER_INCOMPLETE' },
-  {
-    type: 'error',
-    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
-    name: 'SafeERC20FailedOperation',
-  },
-  { type: 'error', inputs: [], name: 'TERMINAL_RESOLUTION_FAILED' },
-  { type: 'error', inputs: [], name: 'UNDERWRITER_SLASHER_NOT_CONFIGURED' },
 ] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB7dE8c3D18DdaB6f39C30493b7F41138E1e5cbA0)
+ */
+export const budgetTcrAddress = {
+  8453: '0xB7dE8c3D18DdaB6f39C30493b7F41138E1e5cbA0',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB7dE8c3D18DdaB6f39C30493b7F41138E1e5cbA0)
+ */
+export const budgetTcrConfig = {
+  address: budgetTcrAddress,
+  abi: budgetTcrAbi,
+} as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BudgetTCRFactory
@@ -2303,8 +2339,445 @@ export const budgetTcrFactoryAbi = [
 // BudgetTreasury
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xa2d24065e93cefBC3D51eCeBDbE650Fa1bCd40F9)
+ */
 export const budgetTreasuryAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'treasuryBalance', internalType: 'uint256', type: 'uint256' },
+      { name: 'activationThreshold', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'ACTIVATION_THRESHOLD_NOT_REACHED',
+  },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  { type: 'error', inputs: [], name: 'BUDGET_DEADLINE_PASSED' },
+  { type: 'error', inputs: [], name: 'DEADLINE_NOT_REACHED' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'address', type: 'address' },
+      { name: 'flowOperator', internalType: 'address', type: 'address' },
+      { name: 'sweeper', internalType: 'address', type: 'address' },
+    ],
+    name: 'FLOW_AUTHORITY_MISMATCH',
+  },
+  { type: 'error', inputs: [], name: 'FUNDING_WINDOW_NOT_ENDED' },
+  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_CONFIG' },
+  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_ID' },
+  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_ID' },
+  { type: 'error', inputs: [], name: 'INVALID_DEADLINES' },
+  { type: 'error', inputs: [], name: 'INVALID_EXECUTION_DURATION' },
+  { type: 'error', inputs: [], name: 'INVALID_REASSERT_GRACE_DURATION' },
+  { type: 'error', inputs: [], name: 'INVALID_STATE' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'activationThreshold', internalType: 'uint256', type: 'uint256' },
+      { name: 'runwayCap', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'INVALID_THRESHOLDS',
+  },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'incomingRate', internalType: 'int96', type: 'int96' },
+      { name: 'spenddownRate', internalType: 'int96', type: 'int96' },
+    ],
+    name: 'NEGATIVE_FLOW_COMPONENT',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'NOT_A_CONTRACT',
+  },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  { type: 'error', inputs: [], name: 'ONLY_CONTROLLER' },
+  { type: 'error', inputs: [], name: 'ONLY_SELF' },
+  { type: 'error', inputs: [], name: 'ONLY_SUCCESS_RESOLVER' },
+  { type: 'error', inputs: [], name: 'PARENT_FLOW_NOT_CONFIGURED' },
+  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
+  {
+    type: 'error',
+    inputs: [{ name: 'assertionId', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'SUCCESS_ASSERTION_ALREADY_PENDING',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'assertionId', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'SUCCESS_ASSERTION_ALREADY_PENDING',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'actual', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'SUCCESS_ASSERTION_ID_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'actual', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'SUCCESS_ASSERTION_ID_MISMATCH',
+  },
+  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_PENDING' },
+  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_PENDING' },
+  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_VERIFIED' },
+  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_VERIFIED' },
+  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_PENDING' },
+  { type: 'error', inputs: [], name: 'SUCCESS_RESOLUTION_DISABLED' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'bits', internalType: 'uint8', type: 'uint8' },
+      { name: 'value', internalType: 'int256', type: 'int256' },
+    ],
+    name: 'SafeCastOverflowedIntDowncast',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'value', internalType: 'int256', type: 'int256' }],
+    name: 'SafeCastOverflowedIntToUint',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'bits', internalType: 'uint8', type: 'uint8' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'SafeCastOverflowedUintDowncast',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'value', internalType: 'uint256', type: 'uint256' }],
+    name: 'SafeCastOverflowedUintToInt',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
+    name: 'SafeERC20FailedOperation',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'controller',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'flow',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'fundingDeadline',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+      {
+        name: 'executionDuration',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+      {
+        name: 'activationThreshold',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'runwayCap',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetConfigured',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'finalState',
+        internalType: 'enum IBudgetTreasury.BudgetState',
+        type: 'uint8',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetFinalized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'donor',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sourceToken',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sourceAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'superTokenAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'DonationRecorded',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'selector',
+        internalType: 'bytes4',
+        type: 'bytes4',
+        indexed: true,
+      },
+      {
+        name: 'attemptedRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'FlowRateSyncCallFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'targetRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      {
+        name: 'fallbackRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      {
+        name: 'currentRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+    ],
+    name: 'FlowRateSyncManualInterventionRequired',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'targetRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      {
+        name: 'appliedRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      {
+        name: 'treasuryBalance',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'timeRemaining',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'FlowRateSynced',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'FlowRateZeroingFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'version',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'Initialized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'clearedAssertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'graceDeadline',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: true,
+      },
+    ],
+    name: 'ReassertGraceActivated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'destination',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'ResidualSettled',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'previousState',
+        internalType: 'enum IBudgetTreasury.BudgetState',
+        type: 'uint8',
+        indexed: false,
+      },
+      {
+        name: 'newState',
+        internalType: 'enum IBudgetTreasury.BudgetState',
+        type: 'uint8',
+        indexed: false,
+      },
+    ],
+    name: 'StateTransition',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+    ],
+    name: 'SuccessAssertionCleared',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'assertedAt',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: true,
+      },
+    ],
+    name: 'SuccessAssertionRegistered',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'reason',
+        internalType: 'enum TreasurySuccessAssertions.FailClosedReason',
+        type: 'uint8',
+        indexed: true,
+      },
+    ],
+    name: 'SuccessAssertionResolutionFailClosed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [],
+    name: 'SuccessResolutionDisabled',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'operation',
+        internalType: 'uint8',
+        type: 'uint8',
+        indexed: true,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'TerminalSideEffectFailed',
+  },
   {
     type: 'function',
     inputs: [],
@@ -2701,441 +3174,22 @@ export const budgetTreasuryAbi = [
     ],
     stateMutability: 'pure',
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'controller',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'flow',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'fundingDeadline',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: false,
-      },
-      {
-        name: 'executionDuration',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: false,
-      },
-      {
-        name: 'activationThreshold',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'runwayCap',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'BudgetConfigured',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'finalState',
-        internalType: 'enum IBudgetTreasury.BudgetState',
-        type: 'uint8',
-        indexed: false,
-      },
-    ],
-    name: 'BudgetFinalized',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'donor',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'sourceToken',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'sourceAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'superTokenAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'DonationRecorded',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'selector',
-        internalType: 'bytes4',
-        type: 'bytes4',
-        indexed: true,
-      },
-      {
-        name: 'attemptedRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'FlowRateSyncCallFailed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'targetRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      {
-        name: 'fallbackRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      {
-        name: 'currentRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-    ],
-    name: 'FlowRateSyncManualInterventionRequired',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'targetRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      {
-        name: 'appliedRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      {
-        name: 'treasuryBalance',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'timeRemaining',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'FlowRateSynced',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'FlowRateZeroingFailed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'version',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: false,
-      },
-    ],
-    name: 'Initialized',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'clearedAssertionId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'graceDeadline',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: true,
-      },
-    ],
-    name: 'ReassertGraceActivated',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'destination',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'ResidualSettled',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'previousState',
-        internalType: 'enum IBudgetTreasury.BudgetState',
-        type: 'uint8',
-        indexed: false,
-      },
-      {
-        name: 'newState',
-        internalType: 'enum IBudgetTreasury.BudgetState',
-        type: 'uint8',
-        indexed: false,
-      },
-    ],
-    name: 'StateTransition',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'assertionId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-    ],
-    name: 'SuccessAssertionCleared',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'assertionId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'assertedAt',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: true,
-      },
-    ],
-    name: 'SuccessAssertionRegistered',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'assertionId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'reason',
-        internalType: 'enum TreasurySuccessAssertions.FailClosedReason',
-        type: 'uint8',
-        indexed: true,
-      },
-    ],
-    name: 'SuccessAssertionResolutionFailClosed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [],
-    name: 'SuccessResolutionDisabled',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'operation',
-        internalType: 'uint8',
-        type: 'uint8',
-        indexed: true,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'TerminalSideEffectFailed',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'treasuryBalance', internalType: 'uint256', type: 'uint256' },
-      { name: 'activationThreshold', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'ACTIVATION_THRESHOLD_NOT_REACHED',
-  },
-  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
-  { type: 'error', inputs: [], name: 'BUDGET_DEADLINE_PASSED' },
-  { type: 'error', inputs: [], name: 'DEADLINE_NOT_REACHED' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'address', type: 'address' },
-      { name: 'flowOperator', internalType: 'address', type: 'address' },
-      { name: 'sweeper', internalType: 'address', type: 'address' },
-    ],
-    name: 'FLOW_AUTHORITY_MISMATCH',
-  },
-  { type: 'error', inputs: [], name: 'FUNDING_WINDOW_NOT_ENDED' },
-  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_CONFIG' },
-  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_ID' },
-  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_ID' },
-  { type: 'error', inputs: [], name: 'INVALID_DEADLINES' },
-  { type: 'error', inputs: [], name: 'INVALID_EXECUTION_DURATION' },
-  { type: 'error', inputs: [], name: 'INVALID_REASSERT_GRACE_DURATION' },
-  { type: 'error', inputs: [], name: 'INVALID_STATE' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'activationThreshold', internalType: 'uint256', type: 'uint256' },
-      { name: 'runwayCap', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'INVALID_THRESHOLDS',
-  },
-  { type: 'error', inputs: [], name: 'InvalidInitialization' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'incomingRate', internalType: 'int96', type: 'int96' },
-      { name: 'spenddownRate', internalType: 'int96', type: 'int96' },
-    ],
-    name: 'NEGATIVE_FLOW_COMPONENT',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'NOT_A_CONTRACT',
-  },
-  { type: 'error', inputs: [], name: 'NotInitializing' },
-  { type: 'error', inputs: [], name: 'ONLY_CONTROLLER' },
-  { type: 'error', inputs: [], name: 'ONLY_SELF' },
-  { type: 'error', inputs: [], name: 'ONLY_SUCCESS_RESOLVER' },
-  { type: 'error', inputs: [], name: 'PARENT_FLOW_NOT_CONFIGURED' },
-  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
-  {
-    type: 'error',
-    inputs: [{ name: 'assertionId', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'SUCCESS_ASSERTION_ALREADY_PENDING',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'assertionId', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'SUCCESS_ASSERTION_ALREADY_PENDING',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'actual', internalType: 'bytes32', type: 'bytes32' },
-    ],
-    name: 'SUCCESS_ASSERTION_ID_MISMATCH',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'actual', internalType: 'bytes32', type: 'bytes32' },
-    ],
-    name: 'SUCCESS_ASSERTION_ID_MISMATCH',
-  },
-  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_PENDING' },
-  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_PENDING' },
-  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_VERIFIED' },
-  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_VERIFIED' },
-  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_PENDING' },
-  { type: 'error', inputs: [], name: 'SUCCESS_RESOLUTION_DISABLED' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'bits', internalType: 'uint8', type: 'uint8' },
-      { name: 'value', internalType: 'int256', type: 'int256' },
-    ],
-    name: 'SafeCastOverflowedIntDowncast',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'value', internalType: 'int256', type: 'int256' }],
-    name: 'SafeCastOverflowedIntToUint',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'bits', internalType: 'uint8', type: 'uint8' },
-      { name: 'value', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'SafeCastOverflowedUintDowncast',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'value', internalType: 'uint256', type: 'uint256' }],
-    name: 'SafeCastOverflowedUintToInt',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
-    name: 'SafeERC20FailedOperation',
-  },
 ] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xa2d24065e93cefBC3D51eCeBDbE650Fa1bCd40F9)
+ */
+export const budgetTreasuryAddress = {
+  8453: '0xa2d24065e93cefBC3D51eCeBDbE650Fa1bCd40F9',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xa2d24065e93cefBC3D51eCeBDbE650Fa1bCd40F9)
+ */
+export const budgetTreasuryConfig = {
+  address: budgetTreasuryAddress,
+  abi: budgetTreasuryAbi,
+} as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CobuildSwapImpl
@@ -3155,8 +3209,513 @@ export const cobuildSwapImplConfig = {
 // Flow
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xC9Fe3F402E4E9Bf37f138D6fc2FF2F34EC9599cf)
+ */
 export const flowAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'strategyCount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'ALLOCATION_LEDGER_REQUIRES_SINGLE_STRATEGY',
+  },
+  { type: 'error', inputs: [], name: 'ALLOCATION_MUST_BE_POSITIVE' },
+  { type: 'error', inputs: [], name: 'ARRAY_LENGTH_MISMATCH' },
+  { type: 'error', inputs: [], name: 'FLOW_RATE_NEGATIVE' },
+  { type: 'error', inputs: [], name: 'FLOW_RATE_TOO_HIGH' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'strategyCount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'FLOW_REQUIRES_SINGLE_STRATEGY',
+  },
+  { type: 'error', inputs: [], name: 'FailedDeployment' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'allocationLedger', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_ALLOCATION_LEDGER',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expectedFlow', internalType: 'address', type: 'address' },
+      { name: 'configuredFlow', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_ALLOCATION_LEDGER_FLOW',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'allocationLedger', internalType: 'address', type: 'address' },
+      { name: 'goalTreasury', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_ALLOCATION_LEDGER_GOAL_TREASURY',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'goalTreasury', internalType: 'address', type: 'address' },
+      { name: 'stakeVault', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_ALLOCATION_LEDGER_STAKE_VAULT',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'allocationPipeline', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_ALLOCATION_PIPELINE',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_METADATA' },
+  { type: 'error', inputs: [], name: 'INVALID_PREV_ALLOCATION' },
+  { type: 'error', inputs: [], name: 'INVALID_RATE_PPM' },
+  { type: 'error', inputs: [], name: 'INVALID_RECIPIENT_ID' },
+  { type: 'error', inputs: [], name: 'INVALID_SCALED_SUM' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'balance', internalType: 'uint256', type: 'uint256' },
+      { name: 'needed', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'InsufficientBalance',
+  },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  {
+    type: 'error',
+    inputs: [],
+    name: 'MANAGER_REWARD_POOL_RECIPIENT_NOT_ALLOWED',
+  },
+  { type: 'error', inputs: [], name: 'NESTED_FLOW_RECIPIENTS_DISABLED' },
+  { type: 'error', inputs: [], name: 'NOT_ABLE_TO_ALLOCATE' },
+  { type: 'error', inputs: [], name: 'NOT_ALLOWED_TO_CONNECT_POOL' },
+  { type: 'error', inputs: [], name: 'NOT_APPROVED_RECIPIENT' },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'NOT_A_CONTRACT',
+  },
+  { type: 'error', inputs: [], name: 'NOT_FLOW_OPERATOR_OR_PARENT' },
+  { type: 'error', inputs: [], name: 'NOT_RECIPIENT_ADMIN' },
+  { type: 'error', inputs: [], name: 'NOT_SORTED_OR_DUPLICATE' },
+  { type: 'error', inputs: [], name: 'NOT_SWEEPER' },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  {
+    type: 'error',
+    inputs: [{ name: 'strategy', internalType: 'address', type: 'address' }],
+    name: 'ONLY_DEFAULT_STRATEGY_ALLOWED',
+  },
+  { type: 'error', inputs: [], name: 'ONLY_SELF_OUTFLOW_REFRESH' },
+  { type: 'error', inputs: [], name: 'OVERFLOW' },
+  { type: 'error', inputs: [], name: 'POOL_CONNECTION_FAILED' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'recipientsLength', internalType: 'uint256', type: 'uint256' },
+      { name: 'allocationsLength', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'RECIPIENTS_ALLOCATIONS_MISMATCH',
+  },
+  { type: 'error', inputs: [], name: 'RECIPIENT_ALREADY_EXISTS' },
+  { type: 'error', inputs: [], name: 'RECIPIENT_ALREADY_REMOVED' },
+  { type: 'error', inputs: [], name: 'RECIPIENT_NOT_FOUND' },
+  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
+  { type: 'error', inputs: [], name: 'SELF_RECIPIENT_NOT_ALLOWED' },
+  { type: 'error', inputs: [], name: 'STALE_CLEAR_NO_COMMITMENT' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'currentWeight', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'STALE_CLEAR_WEIGHT_NOT_ZERO',
+  },
+  { type: 'error', inputs: [], name: 'TOO_FEW_RECIPIENTS' },
+  { type: 'error', inputs: [], name: 'TRANSFER_FAILED' },
+  { type: 'error', inputs: [], name: 'UNITS_UPDATE_FAILED' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'strategy',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'allocationKey',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'commit',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: false,
+      },
+      {
+        name: 'weight',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'AllocationCommitted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'strategy',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'allocationKey',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'commit',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: false,
+      },
+      {
+        name: 'weight',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'snapshotVersion',
+        internalType: 'uint8',
+        type: 'uint8',
+        indexed: false,
+      },
+      {
+        name: 'packedSnapshot',
+        internalType: 'bytes',
+        type: 'bytes',
+        indexed: false,
+      },
+    ],
+    name: 'AllocationSnapshotUpdated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'recipientId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'strategy',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'recipientAdmin',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'flowOperator',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'sweeper',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'managerRewardPool',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'ChildFlowDeployed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'recipientAdmin',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'superToken',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'flowImplementation',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'flowOperator',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'sweeper',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'managerRewardPool',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'allocationPipeline',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'parent',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'distributionPool',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'managerRewardPoolFlowRatePpm',
+        internalType: 'uint32',
+        type: 'uint32',
+        indexed: false,
+      },
+      {
+        name: 'strategy',
+        internalType: 'contract IAllocationStrategy',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'FlowInitialized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'recipientId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'distributionPool',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'managerRewardPoolFlowRatePpm',
+        internalType: 'uint32',
+        type: 'uint32',
+        indexed: false,
+      },
+    ],
+    name: 'FlowRecipientCreated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'version',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'Initialized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'metadata',
+        internalType: 'struct FlowTypes.RecipientMetadata',
+        type: 'tuple',
+        components: [
+          { name: 'title', internalType: 'string', type: 'string' },
+          { name: 'description', internalType: 'string', type: 'string' },
+          { name: 'image', internalType: 'string', type: 'string' },
+          { name: 'tagline', internalType: 'string', type: 'string' },
+          { name: 'url', internalType: 'string', type: 'string' },
+        ],
+        indexed: false,
+      },
+    ],
+    name: 'MetadataSet',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'recipientId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'recipient',
+        internalType: 'struct FlowTypes.FlowRecipient',
+        type: 'tuple',
+        components: [
+          { name: 'recipient', internalType: 'address', type: 'address' },
+          {
+            name: 'recipientIndexPlusOne',
+            internalType: 'uint32',
+            type: 'uint32',
+          },
+          { name: 'isRemoved', internalType: 'bool', type: 'bool' },
+          {
+            name: 'recipientType',
+            internalType: 'enum FlowTypes.RecipientType',
+            type: 'uint8',
+          },
+          {
+            name: 'metadata',
+            internalType: 'struct FlowTypes.RecipientMetadata',
+            type: 'tuple',
+            components: [
+              { name: 'title', internalType: 'string', type: 'string' },
+              { name: 'description', internalType: 'string', type: 'string' },
+              { name: 'image', internalType: 'string', type: 'string' },
+              { name: 'tagline', internalType: 'string', type: 'string' },
+              { name: 'url', internalType: 'string', type: 'string' },
+            ],
+          },
+        ],
+        indexed: false,
+      },
+      {
+        name: 'approvedBy',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'RecipientCreated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'recipientId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+    ],
+    name: 'RecipientRemoved',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'caller',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      { name: 'to', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'SuperTokenSwept',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'caller',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      { name: 'oldRate', internalType: 'int96', type: 'int96', indexed: false },
+      { name: 'newRate', internalType: 'int96', type: 'int96', indexed: false },
+    ],
+    name: 'TargetOutflowRateUpdated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'targetOutflowRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'TargetOutflowRefreshFailed',
+  },
   {
     type: 'function',
     inputs: [
@@ -3665,509 +4224,19 @@ export const flowAbi = [
     outputs: [{ name: '', internalType: 'int96', type: 'int96' }],
     stateMutability: 'view',
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'strategy',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'allocationKey',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: 'commit',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: false,
-      },
-      {
-        name: 'weight',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'AllocationCommitted',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'strategy',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'allocationKey',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: 'commit',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: false,
-      },
-      {
-        name: 'weight',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'snapshotVersion',
-        internalType: 'uint8',
-        type: 'uint8',
-        indexed: false,
-      },
-      {
-        name: 'packedSnapshot',
-        internalType: 'bytes',
-        type: 'bytes',
-        indexed: false,
-      },
-    ],
-    name: 'AllocationSnapshotUpdated',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'recipientId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'recipient',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'strategy',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'recipientAdmin',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'flowOperator',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'sweeper',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'managerRewardPool',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-    ],
-    name: 'ChildFlowDeployed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'recipientAdmin',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'superToken',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'flowImplementation',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'flowOperator',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'sweeper',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'managerRewardPool',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'allocationPipeline',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'parent',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'distributionPool',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'managerRewardPoolFlowRatePpm',
-        internalType: 'uint32',
-        type: 'uint32',
-        indexed: false,
-      },
-      {
-        name: 'strategy',
-        internalType: 'contract IAllocationStrategy',
-        type: 'address',
-        indexed: false,
-      },
-    ],
-    name: 'FlowInitialized',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'recipientId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'recipient',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'distributionPool',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'managerRewardPoolFlowRatePpm',
-        internalType: 'uint32',
-        type: 'uint32',
-        indexed: false,
-      },
-    ],
-    name: 'FlowRecipientCreated',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'version',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: false,
-      },
-    ],
-    name: 'Initialized',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'metadata',
-        internalType: 'struct FlowTypes.RecipientMetadata',
-        type: 'tuple',
-        components: [
-          { name: 'title', internalType: 'string', type: 'string' },
-          { name: 'description', internalType: 'string', type: 'string' },
-          { name: 'image', internalType: 'string', type: 'string' },
-          { name: 'tagline', internalType: 'string', type: 'string' },
-          { name: 'url', internalType: 'string', type: 'string' },
-        ],
-        indexed: false,
-      },
-    ],
-    name: 'MetadataSet',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'recipientId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'recipient',
-        internalType: 'struct FlowTypes.FlowRecipient',
-        type: 'tuple',
-        components: [
-          { name: 'recipient', internalType: 'address', type: 'address' },
-          {
-            name: 'recipientIndexPlusOne',
-            internalType: 'uint32',
-            type: 'uint32',
-          },
-          { name: 'isRemoved', internalType: 'bool', type: 'bool' },
-          {
-            name: 'recipientType',
-            internalType: 'enum FlowTypes.RecipientType',
-            type: 'uint8',
-          },
-          {
-            name: 'metadata',
-            internalType: 'struct FlowTypes.RecipientMetadata',
-            type: 'tuple',
-            components: [
-              { name: 'title', internalType: 'string', type: 'string' },
-              { name: 'description', internalType: 'string', type: 'string' },
-              { name: 'image', internalType: 'string', type: 'string' },
-              { name: 'tagline', internalType: 'string', type: 'string' },
-              { name: 'url', internalType: 'string', type: 'string' },
-            ],
-          },
-        ],
-        indexed: false,
-      },
-      {
-        name: 'approvedBy',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-    ],
-    name: 'RecipientCreated',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'recipient',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'recipientId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-    ],
-    name: 'RecipientRemoved',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'caller',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      { name: 'to', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'SuperTokenSwept',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'caller',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      { name: 'oldRate', internalType: 'int96', type: 'int96', indexed: false },
-      { name: 'newRate', internalType: 'int96', type: 'int96', indexed: false },
-    ],
-    name: 'TargetOutflowRateUpdated',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'targetOutflowRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'TargetOutflowRefreshFailed',
-  },
-  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'strategyCount', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'ALLOCATION_LEDGER_REQUIRES_SINGLE_STRATEGY',
-  },
-  { type: 'error', inputs: [], name: 'ALLOCATION_MUST_BE_POSITIVE' },
-  { type: 'error', inputs: [], name: 'ARRAY_LENGTH_MISMATCH' },
-  { type: 'error', inputs: [], name: 'FLOW_RATE_NEGATIVE' },
-  { type: 'error', inputs: [], name: 'FLOW_RATE_TOO_HIGH' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'strategyCount', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'FLOW_REQUIRES_SINGLE_STRATEGY',
-  },
-  { type: 'error', inputs: [], name: 'FailedDeployment' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'allocationLedger', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_ALLOCATION_LEDGER',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expectedFlow', internalType: 'address', type: 'address' },
-      { name: 'configuredFlow', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_ALLOCATION_LEDGER_FLOW',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'allocationLedger', internalType: 'address', type: 'address' },
-      { name: 'goalTreasury', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_ALLOCATION_LEDGER_GOAL_TREASURY',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'goalTreasury', internalType: 'address', type: 'address' },
-      { name: 'stakeVault', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_ALLOCATION_LEDGER_STAKE_VAULT',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'allocationPipeline', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_ALLOCATION_PIPELINE',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_METADATA' },
-  { type: 'error', inputs: [], name: 'INVALID_PREV_ALLOCATION' },
-  { type: 'error', inputs: [], name: 'INVALID_RATE_PPM' },
-  { type: 'error', inputs: [], name: 'INVALID_RECIPIENT_ID' },
-  { type: 'error', inputs: [], name: 'INVALID_SCALED_SUM' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'balance', internalType: 'uint256', type: 'uint256' },
-      { name: 'needed', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'InsufficientBalance',
-  },
-  { type: 'error', inputs: [], name: 'InvalidInitialization' },
-  {
-    type: 'error',
-    inputs: [],
-    name: 'MANAGER_REWARD_POOL_RECIPIENT_NOT_ALLOWED',
-  },
-  { type: 'error', inputs: [], name: 'NESTED_FLOW_RECIPIENTS_DISABLED' },
-  { type: 'error', inputs: [], name: 'NOT_ABLE_TO_ALLOCATE' },
-  { type: 'error', inputs: [], name: 'NOT_ALLOWED_TO_CONNECT_POOL' },
-  { type: 'error', inputs: [], name: 'NOT_APPROVED_RECIPIENT' },
-  {
-    type: 'error',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'NOT_A_CONTRACT',
-  },
-  { type: 'error', inputs: [], name: 'NOT_FLOW_OPERATOR_OR_PARENT' },
-  { type: 'error', inputs: [], name: 'NOT_RECIPIENT_ADMIN' },
-  { type: 'error', inputs: [], name: 'NOT_SORTED_OR_DUPLICATE' },
-  { type: 'error', inputs: [], name: 'NOT_SWEEPER' },
-  { type: 'error', inputs: [], name: 'NotInitializing' },
-  {
-    type: 'error',
-    inputs: [{ name: 'strategy', internalType: 'address', type: 'address' }],
-    name: 'ONLY_DEFAULT_STRATEGY_ALLOWED',
-  },
-  { type: 'error', inputs: [], name: 'ONLY_SELF_OUTFLOW_REFRESH' },
-  { type: 'error', inputs: [], name: 'OVERFLOW' },
-  { type: 'error', inputs: [], name: 'POOL_CONNECTION_FAILED' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'recipientsLength', internalType: 'uint256', type: 'uint256' },
-      { name: 'allocationsLength', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'RECIPIENTS_ALLOCATIONS_MISMATCH',
-  },
-  { type: 'error', inputs: [], name: 'RECIPIENT_ALREADY_EXISTS' },
-  { type: 'error', inputs: [], name: 'RECIPIENT_ALREADY_REMOVED' },
-  { type: 'error', inputs: [], name: 'RECIPIENT_NOT_FOUND' },
-  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
-  { type: 'error', inputs: [], name: 'SELF_RECIPIENT_NOT_ALLOWED' },
-  { type: 'error', inputs: [], name: 'STALE_CLEAR_NO_COMMITMENT' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'currentWeight', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'STALE_CLEAR_WEIGHT_NOT_ZERO',
-  },
-  { type: 'error', inputs: [], name: 'TOO_FEW_RECIPIENTS' },
-  { type: 'error', inputs: [], name: 'TRANSFER_FAILED' },
-  { type: 'error', inputs: [], name: 'UNITS_UPDATE_FAILED' },
 ] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xC9Fe3F402E4E9Bf37f138D6fc2FF2F34EC9599cf)
+ */
+export const flowAddress = {
+  8453: '0xC9Fe3F402E4E9Bf37f138D6fc2FF2F34EC9599cf',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xC9Fe3F402E4E9Bf37f138D6fc2FF2F34EC9599cf)
+ */
+export const flowConfig = { address: flowAddress, abi: flowAbi } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GoalFactory
@@ -4771,6 +4840,9 @@ export const goalFactoryAbi = [
 // GoalFlowAllocationLedgerPipeline
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x61BfB8F7d4529Ba7AD97339399e8bcc7677a948D)
+ */
 export const goalFlowAllocationLedgerPipelineAbi = [
   {
     type: 'constructor',
@@ -4780,134 +4852,111 @@ export const goalFlowAllocationLedgerPipelineAbi = [
     stateMutability: 'nonpayable',
   },
   {
-    type: 'function',
-    inputs: [],
-    name: 'allocationLedger',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
+    type: 'error',
+    inputs: [
+      { name: 'account', internalType: 'address', type: 'address' },
+      { name: 'debtCount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'ACCOUNT_HAS_CHILD_SYNC_DEBT',
   },
   {
-    type: 'function',
+    type: 'error',
+    inputs: [
+      { name: 'strategyCount', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'ALLOCATION_LEDGER_REQUIRES_SINGLE_STRATEGY',
+  },
+  {
+    type: 'error',
     inputs: [
       { name: 'account', internalType: 'address', type: 'address' },
       { name: 'budgetTreasury', internalType: 'address', type: 'address' },
     ],
-    name: 'childSyncDebt',
-    outputs: [
-      {
-        name: 'debt',
-        internalType:
-          'struct GoalFlowAllocationLedgerPipeline.ChildSyncDebtView',
-        type: 'tuple',
-        components: [
-          { name: 'exists', internalType: 'bool', type: 'bool' },
-          { name: 'childFlow', internalType: 'address', type: 'address' },
-          { name: 'childStrategy', internalType: 'address', type: 'address' },
-          { name: 'allocationKey', internalType: 'uint256', type: 'uint256' },
-          { name: 'reason', internalType: 'bytes32', type: 'bytes32' },
-        ],
-      },
-    ],
-    stateMutability: 'view',
+    name: 'CHILD_SYNC_DEBT_NOT_FOUND',
   },
   {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'childSyncDebtCount',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'allocationLedger_', internalType: 'address', type: 'address' },
-    ],
-    name: 'initialize',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'strategy', internalType: 'address', type: 'address' },
-      { name: 'allocationKey', internalType: 'uint256', type: 'uint256' },
-      { name: 'prevWeight', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'prevRecipientIds',
-        internalType: 'bytes32[]',
-        type: 'bytes32[]',
-      },
-      {
-        name: 'prevAllocationsPpm',
-        internalType: 'uint32[]',
-        type: 'uint32[]',
-      },
-      { name: 'newWeight', internalType: 'uint256', type: 'uint256' },
-      { name: 'newRecipientIds', internalType: 'bytes32[]', type: 'bytes32[]' },
-      { name: 'newAllocationsPpm', internalType: 'uint32[]', type: 'uint32[]' },
-      {
-        name: 'commitKind',
-        internalType: 'enum IAllocationPipeline.CommitKind',
-        type: 'uint8',
-      },
-    ],
-    name: 'onAllocationCommitted',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'strategy', internalType: 'address', type: 'address' },
-      { name: 'allocationKey', internalType: 'uint256', type: 'uint256' },
-      { name: 'prevWeight', internalType: 'uint256', type: 'uint256' },
-      {
-        name: 'prevRecipientIds',
-        internalType: 'bytes32[]',
-        type: 'bytes32[]',
-      },
-      {
-        name: 'prevAllocationsPpm',
-        internalType: 'uint32[]',
-        type: 'uint32[]',
-      },
-      { name: 'newRecipientIds', internalType: 'bytes32[]', type: 'bytes32[]' },
-      { name: 'newAllocationsPpm', internalType: 'uint32[]', type: 'uint32[]' },
-    ],
-    name: 'previewChildSyncRequirements',
-    outputs: [
-      {
-        name: 'reqs',
-        internalType: 'struct ICustomFlow.ChildSyncRequirement[]',
-        type: 'tuple[]',
-        components: [
-          { name: 'budgetTreasury', internalType: 'address', type: 'address' },
-          { name: 'childFlow', internalType: 'address', type: 'address' },
-          { name: 'childStrategy', internalType: 'address', type: 'address' },
-          { name: 'allocationKey', internalType: 'uint256', type: 'uint256' },
-          { name: 'expectedCommit', internalType: 'bytes32', type: 'bytes32' },
-        ],
-      },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
+    type: 'error',
     inputs: [
       { name: 'account', internalType: 'address', type: 'address' },
       { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+      { name: 'reason', internalType: 'bytes', type: 'bytes' },
     ],
-    name: 'repairChildSyncDebt',
-    outputs: [{ name: 'cleared', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'nonpayable',
+    name: 'CHILD_SYNC_DEBT_REPAIR_FAILED',
   },
   {
-    type: 'function',
-    inputs: [{ name: 'flow', internalType: 'address', type: 'address' }],
-    name: 'validateForFlow',
-    outputs: [],
-    stateMutability: 'view',
+    type: 'error',
+    inputs: [
+      { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+    ],
+    name: 'CHILD_SYNC_TARGET_UNAVAILABLE',
   },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'allocationLedger', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_ALLOCATION_LEDGER',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'strategy', internalType: 'address', type: 'address' }],
+    name: 'INVALID_ALLOCATION_LEDGER_ACCOUNT_RESOLVER',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expectedFlow', internalType: 'address', type: 'address' },
+      { name: 'configuredFlow', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_ALLOCATION_LEDGER_FLOW',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'allocationLedger', internalType: 'address', type: 'address' },
+      { name: 'goalTreasury', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_ALLOCATION_LEDGER_GOAL_TREASURY',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'goalTreasury', internalType: 'address', type: 'address' },
+      { name: 'stakeVault', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_ALLOCATION_LEDGER_STAKE_VAULT',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'strategy', internalType: 'address', type: 'address' },
+      { name: 'expectedStakeVault', internalType: 'address', type: 'address' },
+      {
+        name: 'configuredStakeVault',
+        internalType: 'address',
+        type: 'address',
+      },
+    ],
+    name: 'INVALID_ALLOCATION_LEDGER_STRATEGY',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'strategy', internalType: 'address', type: 'address' },
+      { name: 'allocationKey', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'INVALID_ALLOCATION_PIPELINE_KEY_ACCOUNT',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+      { name: 'premiumEscrow', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_BUDGET_PREMIUM_ESCROW',
+  },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
   {
     type: 'event',
     anonymous: false,
@@ -5139,119 +5188,317 @@ export const goalFlowAllocationLedgerPipelineAbi = [
     name: 'Initialized',
   },
   {
-    type: 'error',
-    inputs: [
-      { name: 'account', internalType: 'address', type: 'address' },
-      { name: 'debtCount', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'ACCOUNT_HAS_CHILD_SYNC_DEBT',
+    type: 'function',
+    inputs: [],
+    name: 'allocationLedger',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
   },
   {
-    type: 'error',
-    inputs: [
-      { name: 'strategyCount', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'ALLOCATION_LEDGER_REQUIRES_SINGLE_STRATEGY',
-  },
-  {
-    type: 'error',
+    type: 'function',
     inputs: [
       { name: 'account', internalType: 'address', type: 'address' },
       { name: 'budgetTreasury', internalType: 'address', type: 'address' },
     ],
-    name: 'CHILD_SYNC_DEBT_NOT_FOUND',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'account', internalType: 'address', type: 'address' },
-      { name: 'budgetTreasury', internalType: 'address', type: 'address' },
-      { name: 'reason', internalType: 'bytes', type: 'bytes' },
-    ],
-    name: 'CHILD_SYNC_DEBT_REPAIR_FAILED',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'budgetTreasury', internalType: 'address', type: 'address' },
-    ],
-    name: 'CHILD_SYNC_TARGET_UNAVAILABLE',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'allocationLedger', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_ALLOCATION_LEDGER',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'strategy', internalType: 'address', type: 'address' }],
-    name: 'INVALID_ALLOCATION_LEDGER_ACCOUNT_RESOLVER',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expectedFlow', internalType: 'address', type: 'address' },
-      { name: 'configuredFlow', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_ALLOCATION_LEDGER_FLOW',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'allocationLedger', internalType: 'address', type: 'address' },
-      { name: 'goalTreasury', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_ALLOCATION_LEDGER_GOAL_TREASURY',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'goalTreasury', internalType: 'address', type: 'address' },
-      { name: 'stakeVault', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_ALLOCATION_LEDGER_STAKE_VAULT',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'strategy', internalType: 'address', type: 'address' },
-      { name: 'expectedStakeVault', internalType: 'address', type: 'address' },
+    name: 'childSyncDebt',
+    outputs: [
       {
-        name: 'configuredStakeVault',
-        internalType: 'address',
-        type: 'address',
+        name: 'debt',
+        internalType:
+          'struct GoalFlowAllocationLedgerPipeline.ChildSyncDebtView',
+        type: 'tuple',
+        components: [
+          { name: 'exists', internalType: 'bool', type: 'bool' },
+          { name: 'childFlow', internalType: 'address', type: 'address' },
+          { name: 'childStrategy', internalType: 'address', type: 'address' },
+          { name: 'allocationKey', internalType: 'uint256', type: 'uint256' },
+          { name: 'reason', internalType: 'bytes32', type: 'bytes32' },
+        ],
       },
     ],
-    name: 'INVALID_ALLOCATION_LEDGER_STRATEGY',
+    stateMutability: 'view',
   },
   {
-    type: 'error',
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'childSyncDebtCount',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'allocationLedger_', internalType: 'address', type: 'address' },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
     inputs: [
       { name: 'strategy', internalType: 'address', type: 'address' },
       { name: 'allocationKey', internalType: 'uint256', type: 'uint256' },
+      { name: 'prevWeight', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'prevRecipientIds',
+        internalType: 'bytes32[]',
+        type: 'bytes32[]',
+      },
+      {
+        name: 'prevAllocationsPpm',
+        internalType: 'uint32[]',
+        type: 'uint32[]',
+      },
+      { name: 'newWeight', internalType: 'uint256', type: 'uint256' },
+      { name: 'newRecipientIds', internalType: 'bytes32[]', type: 'bytes32[]' },
+      { name: 'newAllocationsPpm', internalType: 'uint32[]', type: 'uint32[]' },
+      {
+        name: 'commitKind',
+        internalType: 'enum IAllocationPipeline.CommitKind',
+        type: 'uint8',
+      },
     ],
-    name: 'INVALID_ALLOCATION_PIPELINE_KEY_ACCOUNT',
+    name: 'onAllocationCommitted',
+    outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    type: 'error',
+    type: 'function',
     inputs: [
-      { name: 'budgetTreasury', internalType: 'address', type: 'address' },
-      { name: 'premiumEscrow', internalType: 'address', type: 'address' },
+      { name: 'strategy', internalType: 'address', type: 'address' },
+      { name: 'allocationKey', internalType: 'uint256', type: 'uint256' },
+      { name: 'prevWeight', internalType: 'uint256', type: 'uint256' },
+      {
+        name: 'prevRecipientIds',
+        internalType: 'bytes32[]',
+        type: 'bytes32[]',
+      },
+      {
+        name: 'prevAllocationsPpm',
+        internalType: 'uint32[]',
+        type: 'uint32[]',
+      },
+      { name: 'newRecipientIds', internalType: 'bytes32[]', type: 'bytes32[]' },
+      { name: 'newAllocationsPpm', internalType: 'uint32[]', type: 'uint32[]' },
     ],
-    name: 'INVALID_BUDGET_PREMIUM_ESCROW',
+    name: 'previewChildSyncRequirements',
+    outputs: [
+      {
+        name: 'reqs',
+        internalType: 'struct ICustomFlow.ChildSyncRequirement[]',
+        type: 'tuple[]',
+        components: [
+          { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+          { name: 'childFlow', internalType: 'address', type: 'address' },
+          { name: 'childStrategy', internalType: 'address', type: 'address' },
+          { name: 'allocationKey', internalType: 'uint256', type: 'uint256' },
+          { name: 'expectedCommit', internalType: 'bytes32', type: 'bytes32' },
+        ],
+      },
+    ],
+    stateMutability: 'view',
   },
-  { type: 'error', inputs: [], name: 'InvalidInitialization' },
-  { type: 'error', inputs: [], name: 'NotInitializing' },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'account', internalType: 'address', type: 'address' },
+      { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+    ],
+    name: 'repairChildSyncDebt',
+    outputs: [{ name: 'cleared', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'flow', internalType: 'address', type: 'address' }],
+    name: 'validateForFlow',
+    outputs: [],
+    stateMutability: 'view',
+  },
 ] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x61BfB8F7d4529Ba7AD97339399e8bcc7677a948D)
+ */
+export const goalFlowAllocationLedgerPipelineAddress = {
+  8453: '0x61BfB8F7d4529Ba7AD97339399e8bcc7677a948D',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x61BfB8F7d4529Ba7AD97339399e8bcc7677a948D)
+ */
+export const goalFlowAllocationLedgerPipelineConfig = {
+  address: goalFlowAllocationLedgerPipelineAddress,
+  abi: goalFlowAllocationLedgerPipelineAbi,
+} as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GoalRevnetSplitHook
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB159346eC8695CeaC5639beBbf389d04a740396B)
+ */
 export const goalRevnetSplitHookAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'token', internalType: 'address', type: 'address' },
+      { name: 'account', internalType: 'address', type: 'address' },
+      { name: 'beforeBalance', internalType: 'uint256', type: 'uint256' },
+      { name: 'afterBalance', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'BALANCE_DECREASED_UNEXPECTEDLY',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'token', internalType: 'address', type: 'address' },
+      { name: 'expected', internalType: 'uint256', type: 'uint256' },
+      { name: 'available', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'INSUFFICIENT_HOOK_BALANCE',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_GOAL_REVNET_ID' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expectedProjectId', internalType: 'uint256', type: 'uint256' },
+      { name: 'actualProjectId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'INVALID_PROJECT',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expectedToken', internalType: 'address', type: 'address' },
+      { name: 'actualToken', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_SOURCE_TOKEN',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expectedGroupId', internalType: 'uint256', type: 'uint256' },
+      { name: 'actualGroupId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'INVALID_SPLIT_GROUP',
+  },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'uint256', type: 'uint256' },
+      { name: 'actual', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'NATIVE_VALUE_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'NOT_A_CONTRACT',
+  },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'uint256', type: 'uint256' },
+      { name: 'actual', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'SOURCE_TOKEN_AMOUNT_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
+    name: 'SafeERC20FailedOperation',
+  },
+  { type: 'error', inputs: [], name: 'UNAUTHORIZED_CALLER' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'projectId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'sourceToken',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sourceAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'superTokenAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      { name: 'accepted', internalType: 'bool', type: 'bool', indexed: false },
+      {
+        name: 'action',
+        internalType: 'enum IGoalTreasury.HookSplitAction',
+        type: 'uint8',
+        indexed: false,
+      },
+    ],
+    name: 'GoalFundingProcessed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'projectId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: true,
+      },
+      {
+        name: 'sourceToken',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sourceAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'burnAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'GoalSuccessSettlementProcessed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'version',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'Initialized',
+  },
   {
     type: 'function',
     inputs: [],
@@ -5372,169 +5619,30 @@ export const goalRevnetSplitHookAbi = [
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'projectId',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: 'sourceToken',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'sourceAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'superTokenAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      { name: 'accepted', internalType: 'bool', type: 'bool', indexed: false },
-      {
-        name: 'action',
-        internalType: 'enum IGoalTreasury.HookSplitAction',
-        type: 'uint8',
-        indexed: false,
-      },
-    ],
-    name: 'GoalFundingProcessed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'projectId',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: true,
-      },
-      {
-        name: 'sourceToken',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'sourceAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'burnAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'GoalSuccessSettlementProcessed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'version',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: false,
-      },
-    ],
-    name: 'Initialized',
-  },
-  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'token', internalType: 'address', type: 'address' },
-      { name: 'account', internalType: 'address', type: 'address' },
-      { name: 'beforeBalance', internalType: 'uint256', type: 'uint256' },
-      { name: 'afterBalance', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'BALANCE_DECREASED_UNEXPECTEDLY',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'token', internalType: 'address', type: 'address' },
-      { name: 'expected', internalType: 'uint256', type: 'uint256' },
-      { name: 'available', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'INSUFFICIENT_HOOK_BALANCE',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_GOAL_REVNET_ID' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expectedProjectId', internalType: 'uint256', type: 'uint256' },
-      { name: 'actualProjectId', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'INVALID_PROJECT',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expectedToken', internalType: 'address', type: 'address' },
-      { name: 'actualToken', internalType: 'address', type: 'address' },
-    ],
-    name: 'INVALID_SOURCE_TOKEN',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expectedGroupId', internalType: 'uint256', type: 'uint256' },
-      { name: 'actualGroupId', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'INVALID_SPLIT_GROUP',
-  },
-  { type: 'error', inputs: [], name: 'InvalidInitialization' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'uint256', type: 'uint256' },
-      { name: 'actual', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'NATIVE_VALUE_MISMATCH',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'NOT_A_CONTRACT',
-  },
-  { type: 'error', inputs: [], name: 'NotInitializing' },
-  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'uint256', type: 'uint256' },
-      { name: 'actual', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'SOURCE_TOKEN_AMOUNT_MISMATCH',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
-    name: 'SafeERC20FailedOperation',
-  },
-  { type: 'error', inputs: [], name: 'UNAUTHORIZED_CALLER' },
 ] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB159346eC8695CeaC5639beBbf389d04a740396B)
+ */
+export const goalRevnetSplitHookAddress = {
+  8453: '0xB159346eC8695CeaC5639beBbf389d04a740396B',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB159346eC8695CeaC5639beBbf389d04a740396B)
+ */
+export const goalRevnetSplitHookConfig = {
+  address: goalRevnetSplitHookAddress,
+  abi: goalRevnetSplitHookAbi,
+} as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GoalStakeVault
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x64A61c57A1b10ac4bF68A5776Be6F17d2c89AB44)
+ */
 export const goalStakeVaultAbi = [
   {
     type: 'constructor',
@@ -5555,6 +5663,461 @@ export const goalStakeVaultAbi = [
       { name: 'paymentTokenDecimals_', internalType: 'uint8', type: 'uint8' },
     ],
     stateMutability: 'nonpayable',
+  },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'token', internalType: 'address', type: 'address' },
+      { name: 'account', internalType: 'address', type: 'address' },
+      { name: 'beforeBalance', internalType: 'uint256', type: 'uint256' },
+      { name: 'afterBalance', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'BALANCE_DECREASED_UNEXPECTEDLY',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'token', internalType: 'address', type: 'address' },
+      { name: 'account', internalType: 'address', type: 'address' },
+      { name: 'beforeBalance', internalType: 'uint256', type: 'uint256' },
+      { name: 'afterBalance', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'BALANCE_INCREASED_UNEXPECTEDLY',
+  },
+  { type: 'error', inputs: [], name: 'BLOCK_NOT_YET_MINED' },
+  { type: 'error', inputs: [], name: 'CheckpointUnorderedInsertion' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'goalDecimals', internalType: 'uint8', type: 'uint8' },
+      { name: 'cobuildDecimals', internalType: 'uint8', type: 'uint8' },
+    ],
+    name: 'DECIMALS_MISMATCH',
+  },
+  { type: 'error', inputs: [], name: 'EXIT_NOT_READY' },
+  { type: 'error', inputs: [], name: 'GOAL_ALREADY_RESOLVED' },
+  { type: 'error', inputs: [], name: 'GOAL_NOT_RESOLVED' },
+  { type: 'error', inputs: [], name: 'GOAL_STAKING_CLOSED' },
+  {
+    type: 'error',
+    inputs: [{ name: 'goalToken', internalType: 'address', type: 'address' }],
+    name: 'GOAL_TOKEN_REVNET_ID_NOT_DERIVABLE',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'goalToken', internalType: 'address', type: 'address' },
+      { name: 'expectedRevnetId', internalType: 'uint256', type: 'uint256' },
+      { name: 'actualRevnetId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'GOAL_TOKEN_REVNET_MISMATCH',
+  },
+  { type: 'error', inputs: [], name: 'INSUFFICIENT_STAKED_BALANCE' },
+  {
+    type: 'error',
+    inputs: [{ name: 'key', internalType: 'uint256', type: 'uint256' }],
+    name: 'INVALID_ALLOCATION_KEY',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_AMOUNT' },
+  { type: 'error', inputs: [], name: 'INVALID_JUROR_LOCK' },
+  { type: 'error', inputs: [], name: 'INVALID_JUROR_SLASHER' },
+  {
+    type: 'error',
+    inputs: [{ name: 'decimals', internalType: 'uint8', type: 'uint8' }],
+    name: 'INVALID_PAYMENT_TOKEN_DECIMALS',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'controller', internalType: 'address', type: 'address' }],
+    name: 'INVALID_REVNET_CONTROLLER',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_UNDERWRITER_SLASHER' },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  { type: 'error', inputs: [], name: 'JUROR_SLASHER_ALREADY_SET' },
+  { type: 'error', inputs: [], name: 'JUROR_WITHDRAWAL_LOCKED' },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'NOT_A_CONTRACT',
+  },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  { type: 'error', inputs: [], name: 'ONLY_JUROR_SLASHER' },
+  { type: 'error', inputs: [], name: 'ONLY_UNDERWRITER_SLASHER' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'tokenDecimals', internalType: 'uint8', type: 'uint8' },
+      { name: 'paymentTokenDecimals', internalType: 'uint8', type: 'uint8' },
+    ],
+    name: 'PAYMENT_TOKEN_DECIMALS_MISMATCH',
+  },
+  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'bits', internalType: 'uint8', type: 'uint8' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'SafeCastOverflowedUintDowncast',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
+    name: 'SafeERC20FailedOperation',
+  },
+  { type: 'error', inputs: [], name: 'TRANSFER_AMOUNT_MISMATCH' },
+  { type: 'error', inputs: [], name: 'UNAUTHORIZED' },
+  { type: 'error', inputs: [], name: 'UNDERWRITER_SLASHER_ALREADY_SET' },
+  { type: 'error', inputs: [], name: 'UNDERWRITER_WITHDRAWAL_NOT_PREPARED' },
+  { type: 'error', inputs: [], name: 'ZERO_WEIGHT_DELTA' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'account',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'target',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'selector',
+        internalType: 'bytes4',
+        type: 'bytes4',
+        indexed: true,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'AllocationSyncFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'weightDelta',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'CobuildStaked',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address', indexed: true },
+      { name: 'to', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'CobuildWithdrawn',
+  },
+  { type: 'event', anonymous: false, inputs: [], name: 'GoalResolved' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'weightDelta',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'GoalStaked',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'user', internalType: 'address', type: 'address', indexed: true },
+      { name: 'to', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'GoalWithdrawn',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'version',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'Initialized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'juror',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'delegate',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'JurorDelegateSet',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'juror',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'goalAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'weightDelta',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'JurorExitFinalized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'juror',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'goalAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'requestedAt',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+      {
+        name: 'availableAt',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'JurorExitRequested',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'juror',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'goalAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'weightDelta',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'delegate',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'JurorOptedIn',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'juror',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'requestedWeight',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'appliedWeight',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'goalAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'JurorSlashed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'slasher',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'JurorSlasherSet',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'underwriter',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'requestedWeight',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'appliedWeight',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'goalAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'cobuildAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'UnderwriterSlashed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'slasher',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'UnderwriterSlasherSet',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'underwriter',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'nextBudgetIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'budgetCount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      { name: 'complete', internalType: 'bool', type: 'bool', indexed: false },
+    ],
+    name: 'UnderwriterWithdrawalPrepared',
   },
   {
     type: 'function',
@@ -5980,37 +6543,501 @@ export const goalStakeVaultAbi = [
     outputs: [],
     stateMutability: 'nonpayable',
   },
+] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x64A61c57A1b10ac4bF68A5776Be6F17d2c89AB44)
+ */
+export const goalStakeVaultAddress = {
+  8453: '0x64A61c57A1b10ac4bF68A5776Be6F17d2c89AB44',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x64A61c57A1b10ac4bF68A5776Be6F17d2c89AB44)
+ */
+export const goalStakeVaultConfig = {
+  address: goalStakeVaultAddress,
+  abi: goalStakeVaultAbi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GoalTreasury
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x24DE03d744E6ee30420E9c2fe2DFe8711b524090)
+ */
+export const goalTreasuryAbi = [
+  { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'address', type: 'address' },
+      { name: 'actual', internalType: 'address', type: 'address' },
+    ],
+    name: 'BUDGET_STAKE_LEDGER_GOAL_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'cobuildToken', internalType: 'address', type: 'address' },
+    ],
+    name: 'COBUILD_REVNET_ID_NOT_DERIVABLE',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'cobuildToken', internalType: 'address', type: 'address' },
+      { name: 'reason', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'COBUILD_REVNET_ID_NOT_DERIVABLE_WITH_REASON',
+  },
+  { type: 'error', inputs: [], name: 'DEADLINE_NOT_DERIVABLE' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'address', type: 'address' },
+      { name: 'flowOperator', internalType: 'address', type: 'address' },
+      { name: 'sweeper', internalType: 'address', type: 'address' },
+    ],
+    name: 'FLOW_AUTHORITY_MISMATCH',
+  },
+  { type: 'error', inputs: [], name: 'GOAL_DEADLINE_PASSED' },
+  {
+    type: 'error',
+    inputs: [{ name: 'goalToken', internalType: 'address', type: 'address' }],
+    name: 'GOAL_TOKEN_REVNET_ID_NOT_DERIVABLE',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'goalToken', internalType: 'address', type: 'address' },
+      { name: 'reason', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'GOAL_TOKEN_REVNET_ID_NOT_DERIVABLE_WITH_REASON',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'goalToken', internalType: 'address', type: 'address' },
+      { name: 'expectedRevnetId', internalType: 'uint256', type: 'uint256' },
+      { name: 'actualRevnetId', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'GOAL_TOKEN_REVNET_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'address', type: 'address' },
+      { name: 'actual', internalType: 'address', type: 'address' },
+    ],
+    name: 'GOAL_TOKEN_SUPER_TOKEN_UNDERLYING_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'uint256', type: 'uint256' },
+      { name: 'actual', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'HOOK_SUPER_TOKEN_AMOUNT_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'token', internalType: 'address', type: 'address' },
+      { name: 'needed', internalType: 'uint256', type: 'uint256' },
+      { name: 'have', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'INSUFFICIENT_TREASURY_BALANCE',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_CONFIG' },
+  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_ID' },
+  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_ID' },
+  {
+    type: 'error',
+    inputs: [{ name: 'ppm', internalType: 'uint256', type: 'uint256' }],
+    name: 'INVALID_BUDGET_PREMIUM_PPM',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'ppm', internalType: 'uint256', type: 'uint256' }],
+    name: 'INVALID_BUDGET_SLASH_PPM',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_DEADLINES' },
+  {
+    type: 'error',
+    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
+    name: 'INVALID_HOOK_SOURCE_TOKEN',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_REASSERT_GRACE_DURATION' },
+  {
+    type: 'error',
+    inputs: [{ name: 'controller', internalType: 'address', type: 'address' }],
+    name: 'INVALID_REVNET_CONTROLLER',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_STATE' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'budgetPremiumPpm', internalType: 'uint32', type: 'uint32' },
+      { name: 'budgetSlashPpm', internalType: 'uint32', type: 'uint32' },
+      { name: 'coverageLambda', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'INVALID_UNDERWRITING_SLASH_CONFIG',
+  },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'raised', internalType: 'uint256', type: 'uint256' },
+      { name: 'minRaise', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'MIN_RAISE_NOT_REACHED',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'NOT_A_CONTRACT',
+  },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  { type: 'error', inputs: [], name: 'ONLY_HOOK' },
+  { type: 'error', inputs: [], name: 'ONLY_SELF' },
+  { type: 'error', inputs: [], name: 'ONLY_SUCCESS_RESOLVER' },
+  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'address', type: 'address' },
+      { name: 'actual', internalType: 'address', type: 'address' },
+    ],
+    name: 'STAKE_VAULT_GOAL_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'assertionId', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'SUCCESS_ASSERTION_ALREADY_PENDING',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'assertionId', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'SUCCESS_ASSERTION_ALREADY_PENDING',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'actual', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'SUCCESS_ASSERTION_ID_MISMATCH',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'actual', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'SUCCESS_ASSERTION_ID_MISMATCH',
+  },
+  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_PENDING' },
+  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_PENDING' },
+  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_VERIFIED' },
+  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_VERIFIED' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'bits', internalType: 'uint8', type: 'uint8' },
+      { name: 'value', internalType: 'int256', type: 'int256' },
+    ],
+    name: 'SafeCastOverflowedIntDowncast',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'value', internalType: 'int256', type: 'int256' }],
+    name: 'SafeCastOverflowedIntToUint',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'bits', internalType: 'uint8', type: 'uint8' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'SafeCastOverflowedUintDowncast',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'value', internalType: 'uint256', type: 'uint256' }],
+    name: 'SafeCastOverflowedUintToInt',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
+    name: 'SafeERC20FailedOperation',
+  },
   {
     type: 'event',
     anonymous: false,
     inputs: [
       {
-        name: 'account',
+        name: 'donor',
         internalType: 'address',
         type: 'address',
         indexed: true,
       },
       {
-        name: 'target',
+        name: 'sourceToken',
         internalType: 'address',
         type: 'address',
         indexed: true,
       },
+      {
+        name: 'sourceAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'superTokenAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'totalRaised',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'DonationRecorded',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
       {
         name: 'selector',
         internalType: 'bytes4',
         type: 'bytes4',
         indexed: true,
       },
+      {
+        name: 'attemptedRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
       { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'AllocationSyncFailed',
+    name: 'FlowRateSyncCallFailed',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
-      { name: 'user', internalType: 'address', type: 'address', indexed: true },
+      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
+      {
+        name: 'targetRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      {
+        name: 'fallbackRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      {
+        name: 'currentRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+    ],
+    name: 'FlowRateSyncManualInterventionRequired',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'targetRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      {
+        name: 'appliedRate',
+        internalType: 'int96',
+        type: 'int96',
+        indexed: false,
+      },
+      {
+        name: 'treasuryBalance',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'timeRemaining',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'FlowRateSynced',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'FlowRateZeroingFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'owner',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'flow',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'stakeVault',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'budgetStakeLedger',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'hook',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'goalRulesets',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'goalRevnetId',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'minRaiseDeadline',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+      {
+        name: 'deadline',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+      {
+        name: 'minRaise',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'GoalConfigured',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'finalState',
+        internalType: 'enum IGoalTreasury.GoalState',
+        type: 'uint8',
+        indexed: false,
+      },
+    ],
+    name: 'GoalFinalized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'finalState',
+        internalType: 'enum IGoalTreasury.GoalState',
+        type: 'uint8',
+        indexed: true,
+      },
+      {
+        name: 'superTokenAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'controllerBurnAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'HookDeferredFundingSettled',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'sourceToken',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'sourceAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'superTokenAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'totalDeferredSuperTokenAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'HookFundingDeferred',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
       {
         name: 'amount',
         internalType: 'uint256',
@@ -6018,64 +7045,13 @@ export const goalStakeVaultAbi = [
         indexed: false,
       },
       {
-        name: 'weightDelta',
+        name: 'totalRaised',
         internalType: 'uint256',
         type: 'uint256',
         indexed: false,
       },
     ],
-    name: 'CobuildStaked',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'user', internalType: 'address', type: 'address', indexed: true },
-      { name: 'to', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'CobuildWithdrawn',
-  },
-  { type: 'event', anonymous: false, inputs: [], name: 'GoalResolved' },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'user', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'weightDelta',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'GoalStaked',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'user', internalType: 'address', type: 'address', indexed: true },
-      { name: 'to', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'GoalWithdrawn',
+    name: 'HookFundingRecorded',
   },
   {
     type: 'event',
@@ -6095,354 +7071,129 @@ export const goalStakeVaultAbi = [
     anonymous: false,
     inputs: [
       {
-        name: 'juror',
-        internalType: 'address',
-        type: 'address',
+        name: 'clearedAssertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
         indexed: true,
       },
       {
-        name: 'delegate',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-    ],
-    name: 'JurorDelegateSet',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'juror',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'goalAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'weightDelta',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'JurorExitFinalized',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'juror',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'goalAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'requestedAt',
+        name: 'graceDeadline',
         internalType: 'uint64',
         type: 'uint64',
+        indexed: true,
+      },
+    ],
+    name: 'ReassertGraceActivated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'finalState',
+        internalType: 'enum IGoalTreasury.GoalState',
+        type: 'uint8',
+        indexed: true,
+      },
+      {
+        name: 'totalSettled',
+        internalType: 'uint256',
+        type: 'uint256',
         indexed: false,
       },
       {
-        name: 'availableAt',
+        name: 'controllerBurnAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'ResidualSettled',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'previousState',
+        internalType: 'enum IGoalTreasury.GoalState',
+        type: 'uint8',
+        indexed: false,
+      },
+      {
+        name: 'newState',
+        internalType: 'enum IGoalTreasury.GoalState',
+        type: 'uint8',
+        indexed: false,
+      },
+    ],
+    name: 'StateTransition',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+    ],
+    name: 'SuccessAssertionCleared',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'assertedAt',
         internalType: 'uint64',
         type: 'uint64',
-        indexed: false,
+        indexed: true,
       },
     ],
-    name: 'JurorExitRequested',
+    name: 'SuccessAssertionRegistered',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
       {
-        name: 'juror',
-        internalType: 'address',
-        type: 'address',
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
         indexed: true,
       },
       {
-        name: 'goalAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'weightDelta',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'delegate',
-        internalType: 'address',
-        type: 'address',
+        name: 'reason',
+        internalType: 'enum TreasurySuccessAssertions.FailClosedReason',
+        type: 'uint8',
         indexed: true,
       },
     ],
-    name: 'JurorOptedIn',
+    name: 'SuccessAssertionResolutionFailClosed',
   },
   {
     type: 'event',
     anonymous: false,
     inputs: [
       {
-        name: 'juror',
-        internalType: 'address',
-        type: 'address',
+        name: 'operation',
+        internalType: 'uint8',
+        type: 'uint8',
         indexed: true,
       },
-      {
-        name: 'requestedWeight',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'appliedWeight',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'goalAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'recipient',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'JurorSlashed',
+    name: 'TerminalSideEffectFailed',
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'slasher',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-    ],
-    name: 'JurorSlasherSet',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'underwriter',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'requestedWeight',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'appliedWeight',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'goalAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'cobuildAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'recipient',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-    ],
-    name: 'UnderwriterSlashed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'slasher',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-    ],
-    name: 'UnderwriterSlasherSet',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'underwriter',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'nextBudgetIndex',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'budgetCount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      { name: 'complete', internalType: 'bool', type: 'bool', indexed: false },
-    ],
-    name: 'UnderwriterWithdrawalPrepared',
-  },
-  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'token', internalType: 'address', type: 'address' },
-      { name: 'account', internalType: 'address', type: 'address' },
-      { name: 'beforeBalance', internalType: 'uint256', type: 'uint256' },
-      { name: 'afterBalance', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'BALANCE_DECREASED_UNEXPECTEDLY',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'token', internalType: 'address', type: 'address' },
-      { name: 'account', internalType: 'address', type: 'address' },
-      { name: 'beforeBalance', internalType: 'uint256', type: 'uint256' },
-      { name: 'afterBalance', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'BALANCE_INCREASED_UNEXPECTEDLY',
-  },
-  { type: 'error', inputs: [], name: 'BLOCK_NOT_YET_MINED' },
-  { type: 'error', inputs: [], name: 'CheckpointUnorderedInsertion' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'goalDecimals', internalType: 'uint8', type: 'uint8' },
-      { name: 'cobuildDecimals', internalType: 'uint8', type: 'uint8' },
-    ],
-    name: 'DECIMALS_MISMATCH',
-  },
-  { type: 'error', inputs: [], name: 'EXIT_NOT_READY' },
-  { type: 'error', inputs: [], name: 'GOAL_ALREADY_RESOLVED' },
-  { type: 'error', inputs: [], name: 'GOAL_NOT_RESOLVED' },
-  { type: 'error', inputs: [], name: 'GOAL_STAKING_CLOSED' },
-  {
-    type: 'error',
-    inputs: [{ name: 'goalToken', internalType: 'address', type: 'address' }],
-    name: 'GOAL_TOKEN_REVNET_ID_NOT_DERIVABLE',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'goalToken', internalType: 'address', type: 'address' },
-      { name: 'expectedRevnetId', internalType: 'uint256', type: 'uint256' },
-      { name: 'actualRevnetId', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'GOAL_TOKEN_REVNET_MISMATCH',
-  },
-  { type: 'error', inputs: [], name: 'INSUFFICIENT_STAKED_BALANCE' },
-  {
-    type: 'error',
-    inputs: [{ name: 'key', internalType: 'uint256', type: 'uint256' }],
-    name: 'INVALID_ALLOCATION_KEY',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_AMOUNT' },
-  { type: 'error', inputs: [], name: 'INVALID_JUROR_LOCK' },
-  { type: 'error', inputs: [], name: 'INVALID_JUROR_SLASHER' },
-  {
-    type: 'error',
-    inputs: [{ name: 'decimals', internalType: 'uint8', type: 'uint8' }],
-    name: 'INVALID_PAYMENT_TOKEN_DECIMALS',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'controller', internalType: 'address', type: 'address' }],
-    name: 'INVALID_REVNET_CONTROLLER',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_UNDERWRITER_SLASHER' },
-  { type: 'error', inputs: [], name: 'InvalidInitialization' },
-  { type: 'error', inputs: [], name: 'JUROR_SLASHER_ALREADY_SET' },
-  { type: 'error', inputs: [], name: 'JUROR_WITHDRAWAL_LOCKED' },
-  {
-    type: 'error',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'NOT_A_CONTRACT',
-  },
-  { type: 'error', inputs: [], name: 'NotInitializing' },
-  { type: 'error', inputs: [], name: 'ONLY_JUROR_SLASHER' },
-  { type: 'error', inputs: [], name: 'ONLY_UNDERWRITER_SLASHER' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'tokenDecimals', internalType: 'uint8', type: 'uint8' },
-      { name: 'paymentTokenDecimals', internalType: 'uint8', type: 'uint8' },
-    ],
-    name: 'PAYMENT_TOKEN_DECIMALS_MISMATCH',
-  },
-  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'bits', internalType: 'uint8', type: 'uint8' },
-      { name: 'value', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'SafeCastOverflowedUintDowncast',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
-    name: 'SafeERC20FailedOperation',
-  },
-  { type: 'error', inputs: [], name: 'TRANSFER_AMOUNT_MISMATCH' },
-  { type: 'error', inputs: [], name: 'UNAUTHORIZED' },
-  { type: 'error', inputs: [], name: 'UNDERWRITER_SLASHER_ALREADY_SET' },
-  { type: 'error', inputs: [], name: 'UNDERWRITER_WITHDRAWAL_NOT_PREPARED' },
-  { type: 'error', inputs: [], name: 'ZERO_WEIGHT_DELTA' },
-] as const
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// GoalTreasury
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const goalTreasuryAbi = [
-  { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
   {
     type: 'function',
     inputs: [],
@@ -6913,906 +7664,139 @@ export const goalTreasuryAbi = [
     ],
     stateMutability: 'pure',
   },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'donor',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'sourceToken',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'sourceAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'superTokenAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'totalRaised',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'DonationRecorded',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'selector',
-        internalType: 'bytes4',
-        type: 'bytes4',
-        indexed: true,
-      },
-      {
-        name: 'attemptedRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'FlowRateSyncCallFailed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
-      {
-        name: 'targetRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      {
-        name: 'fallbackRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      {
-        name: 'currentRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-    ],
-    name: 'FlowRateSyncManualInterventionRequired',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'targetRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      {
-        name: 'appliedRate',
-        internalType: 'int96',
-        type: 'int96',
-        indexed: false,
-      },
-      {
-        name: 'treasuryBalance',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'timeRemaining',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'FlowRateSynced',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'flow', internalType: 'address', type: 'address', indexed: true },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'FlowRateZeroingFailed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'owner',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'flow',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'stakeVault',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'budgetStakeLedger',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'hook',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'goalRulesets',
-        internalType: 'address',
-        type: 'address',
-        indexed: false,
-      },
-      {
-        name: 'goalRevnetId',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'minRaiseDeadline',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: false,
-      },
-      {
-        name: 'deadline',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: false,
-      },
-      {
-        name: 'minRaise',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'GoalConfigured',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'finalState',
-        internalType: 'enum IGoalTreasury.GoalState',
-        type: 'uint8',
-        indexed: false,
-      },
-    ],
-    name: 'GoalFinalized',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'finalState',
-        internalType: 'enum IGoalTreasury.GoalState',
-        type: 'uint8',
-        indexed: true,
-      },
-      {
-        name: 'superTokenAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'controllerBurnAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'HookDeferredFundingSettled',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'sourceToken',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'sourceAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'superTokenAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'totalDeferredSuperTokenAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'HookFundingDeferred',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'amount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'totalRaised',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'HookFundingRecorded',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'version',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: false,
-      },
-    ],
-    name: 'Initialized',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'clearedAssertionId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'graceDeadline',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: true,
-      },
-    ],
-    name: 'ReassertGraceActivated',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'finalState',
-        internalType: 'enum IGoalTreasury.GoalState',
-        type: 'uint8',
-        indexed: true,
-      },
-      {
-        name: 'totalSettled',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-      {
-        name: 'controllerBurnAmount',
-        internalType: 'uint256',
-        type: 'uint256',
-        indexed: false,
-      },
-    ],
-    name: 'ResidualSettled',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'previousState',
-        internalType: 'enum IGoalTreasury.GoalState',
-        type: 'uint8',
-        indexed: false,
-      },
-      {
-        name: 'newState',
-        internalType: 'enum IGoalTreasury.GoalState',
-        type: 'uint8',
-        indexed: false,
-      },
-    ],
-    name: 'StateTransition',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'assertionId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-    ],
-    name: 'SuccessAssertionCleared',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'assertionId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'assertedAt',
-        internalType: 'uint64',
-        type: 'uint64',
-        indexed: true,
-      },
-    ],
-    name: 'SuccessAssertionRegistered',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'assertionId',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'reason',
-        internalType: 'enum TreasurySuccessAssertions.FailClosedReason',
-        type: 'uint8',
-        indexed: true,
-      },
-    ],
-    name: 'SuccessAssertionResolutionFailClosed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'operation',
-        internalType: 'uint8',
-        type: 'uint8',
-        indexed: true,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'TerminalSideEffectFailed',
-  },
+] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x24DE03d744E6ee30420E9c2fe2DFe8711b524090)
+ */
+export const goalTreasuryAddress = {
+  8453: '0x24DE03d744E6ee30420E9c2fe2DFe8711b524090',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x24DE03d744E6ee30420E9c2fe2DFe8711b524090)
+ */
+export const goalTreasuryConfig = {
+  address: goalTreasuryAddress,
+  abi: goalTreasuryAbi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PremiumEscrow
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4514B464aE4f525309B790D320ad08D757C0729f)
+ */
+export const premiumEscrowAbi = [
+  { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
   { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  { type: 'error', inputs: [], name: 'ALREADY_CLOSED' },
   {
     type: 'error',
     inputs: [
-      { name: 'expected', internalType: 'address', type: 'address' },
-      { name: 'actual', internalType: 'address', type: 'address' },
+      {
+        name: 'state',
+        internalType: 'enum IBudgetTreasury.BudgetState',
+        type: 'uint8',
+      },
     ],
-    name: 'BUDGET_STAKE_LEDGER_GOAL_MISMATCH',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'cobuildToken', internalType: 'address', type: 'address' },
-    ],
-    name: 'COBUILD_REVNET_ID_NOT_DERIVABLE',
+    name: 'BUDGET_NOT_SUCCEEDED',
   },
   {
     type: 'error',
     inputs: [
-      { name: 'cobuildToken', internalType: 'address', type: 'address' },
-      { name: 'reason', internalType: 'bytes', type: 'bytes' },
+      {
+        name: 'state',
+        internalType: 'enum IGoalTreasury.GoalState',
+        type: 'uint8',
+      },
     ],
-    name: 'COBUILD_REVNET_ID_NOT_DERIVABLE_WITH_REASON',
-  },
-  { type: 'error', inputs: [], name: 'DEADLINE_NOT_DERIVABLE' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'address', type: 'address' },
-      { name: 'flowOperator', internalType: 'address', type: 'address' },
-      { name: 'sweeper', internalType: 'address', type: 'address' },
-    ],
-    name: 'FLOW_AUTHORITY_MISMATCH',
-  },
-  { type: 'error', inputs: [], name: 'GOAL_DEADLINE_PASSED' },
-  {
-    type: 'error',
-    inputs: [{ name: 'goalToken', internalType: 'address', type: 'address' }],
-    name: 'GOAL_TOKEN_REVNET_ID_NOT_DERIVABLE',
+    name: 'GOAL_NOT_EXPIRED',
   },
   {
     type: 'error',
     inputs: [
-      { name: 'goalToken', internalType: 'address', type: 'address' },
-      { name: 'reason', internalType: 'bytes', type: 'bytes' },
+      {
+        name: 'state',
+        internalType: 'enum IGoalTreasury.GoalState',
+        type: 'uint8',
+      },
     ],
-    name: 'GOAL_TOKEN_REVNET_ID_NOT_DERIVABLE_WITH_REASON',
+    name: 'GOAL_NOT_SUCCEEDED',
+  },
+  { type: 'error', inputs: [], name: 'GOAL_TREASURY_UNAVAILABLE' },
+  {
+    type: 'error',
+    inputs: [
+      {
+        name: 'state',
+        internalType: 'enum IBudgetTreasury.BudgetState',
+        type: 'uint8',
+      },
+    ],
+    name: 'INVALID_CLOSE_STATE',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'closedAt', internalType: 'uint64', type: 'uint64' }],
+    name: 'INVALID_CLOSE_TIMESTAMP',
   },
   {
     type: 'error',
     inputs: [
-      { name: 'goalToken', internalType: 'address', type: 'address' },
-      { name: 'expectedRevnetId', internalType: 'uint256', type: 'uint256' },
-      { name: 'actualRevnetId', internalType: 'uint256', type: 'uint256' },
+      { name: 'activatedAt', internalType: 'uint64', type: 'uint64' },
+      { name: 'closedAt', internalType: 'uint64', type: 'uint64' },
     ],
-    name: 'GOAL_TOKEN_REVNET_MISMATCH',
+    name: 'INVALID_CLOSE_WINDOW',
   },
   {
     type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'address', type: 'address' },
-      { name: 'actual', internalType: 'address', type: 'address' },
-    ],
-    name: 'GOAL_TOKEN_SUPER_TOKEN_UNDERLYING_MISMATCH',
+    inputs: [{ name: 'pool', internalType: 'address', type: 'address' }],
+    name: 'INVALID_MANAGER_REWARD_POOL',
   },
   {
     type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'uint256', type: 'uint256' },
-      { name: 'actual', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'HOOK_SUPER_TOKEN_AMOUNT_MISMATCH',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'token', internalType: 'address', type: 'address' },
-      { name: 'needed', internalType: 'uint256', type: 'uint256' },
-      { name: 'have', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'INSUFFICIENT_TREASURY_BALANCE',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_CONFIG' },
-  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_ID' },
-  { type: 'error', inputs: [], name: 'INVALID_ASSERTION_ID' },
-  {
-    type: 'error',
-    inputs: [{ name: 'ppm', internalType: 'uint256', type: 'uint256' }],
-    name: 'INVALID_BUDGET_PREMIUM_PPM',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'ppm', internalType: 'uint256', type: 'uint256' }],
-    name: 'INVALID_BUDGET_SLASH_PPM',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_DEADLINES' },
-  {
-    type: 'error',
-    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
-    name: 'INVALID_HOOK_SOURCE_TOKEN',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_REASSERT_GRACE_DURATION' },
-  {
-    type: 'error',
-    inputs: [{ name: 'controller', internalType: 'address', type: 'address' }],
-    name: 'INVALID_REVNET_CONTROLLER',
-  },
-  { type: 'error', inputs: [], name: 'INVALID_STATE' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'budgetPremiumPpm', internalType: 'uint32', type: 'uint32' },
-      { name: 'budgetSlashPpm', internalType: 'uint32', type: 'uint32' },
-      { name: 'coverageLambda', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'INVALID_UNDERWRITING_SLASH_CONFIG',
+    inputs: [{ name: 'value', internalType: 'uint32', type: 'uint32' }],
+    name: 'INVALID_SLASH_PPM',
   },
   { type: 'error', inputs: [], name: 'InvalidInitialization' },
   {
     type: 'error',
-    inputs: [
-      { name: 'raised', internalType: 'uint256', type: 'uint256' },
-      { name: 'minRaise', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'MIN_RAISE_NOT_REACHED',
+    inputs: [{ name: 'currentPool', internalType: 'address', type: 'address' }],
+    name: 'MANAGER_REWARD_POOL_ALREADY_SET',
   },
-  {
-    type: 'error',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'NOT_A_CONTRACT',
-  },
+  { type: 'error', inputs: [], name: 'MANAGER_REWARD_POOL_NOT_CONNECTED' },
+  { type: 'error', inputs: [], name: 'NOT_CLOSED' },
+  { type: 'error', inputs: [], name: 'NOT_SLASHABLE' },
   { type: 'error', inputs: [], name: 'NotInitializing' },
-  { type: 'error', inputs: [], name: 'ONLY_HOOK' },
-  { type: 'error', inputs: [], name: 'ONLY_SELF' },
-  { type: 'error', inputs: [], name: 'ONLY_SUCCESS_RESOLVER' },
+  { type: 'error', inputs: [], name: 'ONLY_BUDGET_CONTROL' },
+  { type: 'error', inputs: [], name: 'ONLY_BUDGET_TREASURY' },
+  { type: 'error', inputs: [], name: 'POOL_CONNECT_FAILED' },
   { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
   {
     type: 'error',
     inputs: [
-      { name: 'expected', internalType: 'address', type: 'address' },
-      { name: 'actual', internalType: 'address', type: 'address' },
+      { name: 'goalFlowSuperToken', internalType: 'address', type: 'address' },
+      {
+        name: 'budgetTreasurySuperToken',
+        internalType: 'address',
+        type: 'address',
+      },
     ],
-    name: 'STAKE_VAULT_GOAL_MISMATCH',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'assertionId', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'SUCCESS_ASSERTION_ALREADY_PENDING',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'assertionId', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'SUCCESS_ASSERTION_ALREADY_PENDING',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'actual', internalType: 'bytes32', type: 'bytes32' },
-    ],
-    name: 'SUCCESS_ASSERTION_ID_MISMATCH',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'expected', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'actual', internalType: 'bytes32', type: 'bytes32' },
-    ],
-    name: 'SUCCESS_ASSERTION_ID_MISMATCH',
-  },
-  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_PENDING' },
-  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_PENDING' },
-  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_VERIFIED' },
-  { type: 'error', inputs: [], name: 'SUCCESS_ASSERTION_NOT_VERIFIED' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'bits', internalType: 'uint8', type: 'uint8' },
-      { name: 'value', internalType: 'int256', type: 'int256' },
-    ],
-    name: 'SafeCastOverflowedIntDowncast',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'value', internalType: 'int256', type: 'int256' }],
-    name: 'SafeCastOverflowedIntToUint',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'bits', internalType: 'uint8', type: 'uint8' },
-      { name: 'value', internalType: 'uint256', type: 'uint256' },
-    ],
-    name: 'SafeCastOverflowedUintDowncast',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'value', internalType: 'uint256', type: 'uint256' }],
-    name: 'SafeCastOverflowedUintToInt',
+    name: 'SUPER_TOKEN_MISMATCH',
   },
   {
     type: 'error',
     inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
     name: 'SafeERC20FailedOperation',
   },
-] as const
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// PremiumEscrow
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-export const premiumEscrowAbi = [
-  { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
   {
-    type: 'function',
-    inputs: [],
-    name: 'accountedGoalReceived',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'accountedManagerRewardReceived',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'activatedAt',
-    outputs: [{ name: '', internalType: 'uint64', type: 'uint64' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'budgetFlow',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'budgetSlashPpm',
-    outputs: [{ name: '', internalType: 'uint32', type: 'uint32' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'budgetStakeLedger',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'budgetTreasury',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'burnOnGoalFailure',
-    outputs: [{ name: 'amount', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'checkpoint',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'to', internalType: 'address', type: 'address' }],
-    name: 'claim',
-    outputs: [{ name: 'amount', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'claimable',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
+    type: 'error',
     inputs: [
-      {
-        name: 'state_',
-        internalType: 'enum IBudgetTreasury.BudgetState',
-        type: 'uint8',
-      },
-      { name: 'activatedAt_', internalType: 'uint64', type: 'uint64' },
-      { name: 'closedAt_', internalType: 'uint64', type: 'uint64' },
+      { name: 'coverageLambda', internalType: 'uint256', type: 'uint256' },
     ],
-    name: 'close',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'closed',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'closedAt',
-    outputs: [{ name: '', internalType: 'uint64', type: 'uint64' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'managerRewardPool_', internalType: 'address', type: 'address' },
-    ],
-    name: 'connectManagerRewardPool',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'creditDrawn',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'creditIndex',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'exposureIntegral',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'finalState',
-    outputs: [
-      {
-        name: '',
-        internalType: 'enum IBudgetTreasury.BudgetState',
-        type: 'uint8',
-      },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'goalFlow',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'budgetTreasury_', internalType: 'address', type: 'address' },
-      { name: 'budgetStakeLedger_', internalType: 'address', type: 'address' },
-      { name: 'goalFlow_', internalType: 'address', type: 'address' },
-      {
-        name: 'underwriterSlasherRouter_',
-        internalType: 'address',
-        type: 'address',
-      },
-      { name: 'budgetSlashPpm_', internalType: 'uint32', type: 'uint32' },
-    ],
-    name: 'initialize',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'isSlashable',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'lastExposureTs',
-    outputs: [{ name: '', internalType: 'uint64', type: 'uint64' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'managerRewardPool',
-    outputs: [
-      { name: '', internalType: 'contract ISuperfluidPool', type: 'address' },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'peakCov',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'premiumEarned',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'premiumIndex',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'premiumToken',
-    outputs: [{ name: '', internalType: 'contract IERC20', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'underwriter', internalType: 'address', type: 'address' }],
-    name: 'slash',
-    outputs: [
-      { name: 'slashWeight', internalType: 'uint256', type: 'uint256' },
-    ],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'slashed',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'totalCoverage',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'underwriterSlasherRouter',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'userCov',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'userIndex',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    stateMutability: 'view',
+    name: 'UNRESOLVED_CREDIT_SLASH_PARAMS',
   },
   {
     type: 'event',
@@ -8135,112 +8119,287 @@ export const premiumEscrowAbi = [
     ],
     name: 'UnderwriterSlashed',
   },
-  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
-  { type: 'error', inputs: [], name: 'ALREADY_CLOSED' },
   {
-    type: 'error',
+    type: 'function',
+    inputs: [],
+    name: 'accountedGoalReceived',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'accountedManagerRewardReceived',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'activatedAt',
+    outputs: [{ name: '', internalType: 'uint64', type: 'uint64' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'budgetFlow',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'budgetSlashPpm',
+    outputs: [{ name: '', internalType: 'uint32', type: 'uint32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'budgetStakeLedger',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'budgetTreasury',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'burnOnGoalFailure',
+    outputs: [{ name: 'amount', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'checkpoint',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'to', internalType: 'address', type: 'address' }],
+    name: 'claim',
+    outputs: [{ name: 'amount', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'claimable',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     inputs: [
       {
-        name: 'state',
+        name: 'state_',
+        internalType: 'enum IBudgetTreasury.BudgetState',
+        type: 'uint8',
+      },
+      { name: 'activatedAt_', internalType: 'uint64', type: 'uint64' },
+      { name: 'closedAt_', internalType: 'uint64', type: 'uint64' },
+    ],
+    name: 'close',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'closed',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'closedAt',
+    outputs: [{ name: '', internalType: 'uint64', type: 'uint64' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'managerRewardPool_', internalType: 'address', type: 'address' },
+    ],
+    name: 'connectManagerRewardPool',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'creditDrawn',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'creditIndex',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'exposureIntegral',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'finalState',
+    outputs: [
+      {
+        name: '',
         internalType: 'enum IBudgetTreasury.BudgetState',
         type: 'uint8',
       },
     ],
-    name: 'BUDGET_NOT_SUCCEEDED',
+    stateMutability: 'view',
   },
   {
-    type: 'error',
+    type: 'function',
+    inputs: [],
+    name: 'goalFlow',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     inputs: [
+      { name: 'budgetTreasury_', internalType: 'address', type: 'address' },
+      { name: 'budgetStakeLedger_', internalType: 'address', type: 'address' },
+      { name: 'goalFlow_', internalType: 'address', type: 'address' },
       {
-        name: 'state',
-        internalType: 'enum IGoalTreasury.GoalState',
-        type: 'uint8',
-      },
-    ],
-    name: 'GOAL_NOT_EXPIRED',
-  },
-  {
-    type: 'error',
-    inputs: [
-      {
-        name: 'state',
-        internalType: 'enum IGoalTreasury.GoalState',
-        type: 'uint8',
-      },
-    ],
-    name: 'GOAL_NOT_SUCCEEDED',
-  },
-  { type: 'error', inputs: [], name: 'GOAL_TREASURY_UNAVAILABLE' },
-  {
-    type: 'error',
-    inputs: [
-      {
-        name: 'state',
-        internalType: 'enum IBudgetTreasury.BudgetState',
-        type: 'uint8',
-      },
-    ],
-    name: 'INVALID_CLOSE_STATE',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'closedAt', internalType: 'uint64', type: 'uint64' }],
-    name: 'INVALID_CLOSE_TIMESTAMP',
-  },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'activatedAt', internalType: 'uint64', type: 'uint64' },
-      { name: 'closedAt', internalType: 'uint64', type: 'uint64' },
-    ],
-    name: 'INVALID_CLOSE_WINDOW',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'pool', internalType: 'address', type: 'address' }],
-    name: 'INVALID_MANAGER_REWARD_POOL',
-  },
-  {
-    type: 'error',
-    inputs: [{ name: 'value', internalType: 'uint32', type: 'uint32' }],
-    name: 'INVALID_SLASH_PPM',
-  },
-  { type: 'error', inputs: [], name: 'InvalidInitialization' },
-  {
-    type: 'error',
-    inputs: [{ name: 'currentPool', internalType: 'address', type: 'address' }],
-    name: 'MANAGER_REWARD_POOL_ALREADY_SET',
-  },
-  { type: 'error', inputs: [], name: 'MANAGER_REWARD_POOL_NOT_CONNECTED' },
-  { type: 'error', inputs: [], name: 'NOT_CLOSED' },
-  { type: 'error', inputs: [], name: 'NOT_SLASHABLE' },
-  { type: 'error', inputs: [], name: 'NotInitializing' },
-  { type: 'error', inputs: [], name: 'ONLY_BUDGET_CONTROL' },
-  { type: 'error', inputs: [], name: 'ONLY_BUDGET_TREASURY' },
-  { type: 'error', inputs: [], name: 'POOL_CONNECT_FAILED' },
-  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'goalFlowSuperToken', internalType: 'address', type: 'address' },
-      {
-        name: 'budgetTreasurySuperToken',
+        name: 'underwriterSlasherRouter_',
         internalType: 'address',
         type: 'address',
       },
+      { name: 'budgetSlashPpm_', internalType: 'uint32', type: 'uint32' },
     ],
-    name: 'SUPER_TOKEN_MISMATCH',
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
   },
   {
-    type: 'error',
-    inputs: [{ name: 'token', internalType: 'address', type: 'address' }],
-    name: 'SafeERC20FailedOperation',
+    type: 'function',
+    inputs: [],
+    name: 'isSlashable',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
   },
   {
-    type: 'error',
-    inputs: [
-      { name: 'coverageLambda', internalType: 'uint256', type: 'uint256' },
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'lastExposureTs',
+    outputs: [{ name: '', internalType: 'uint64', type: 'uint64' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'managerRewardPool',
+    outputs: [
+      { name: '', internalType: 'contract ISuperfluidPool', type: 'address' },
     ],
-    name: 'UNRESOLVED_CREDIT_SLASH_PARAMS',
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'peakCov',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'premiumEarned',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'premiumIndex',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'premiumToken',
+    outputs: [{ name: '', internalType: 'contract IERC20', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'underwriter', internalType: 'address', type: 'address' }],
+    name: 'slash',
+    outputs: [
+      { name: 'slashWeight', internalType: 'uint256', type: 'uint256' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'slashed',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'totalCoverage',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'underwriterSlasherRouter',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'userCov',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'userIndex',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
   },
 ] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4514B464aE4f525309B790D320ad08D757C0729f)
+ */
+export const premiumEscrowAddress = {
+  8453: '0x4514B464aE4f525309B790D320ad08D757C0729f',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4514B464aE4f525309B790D320ad08D757C0729f)
+ */
+export const premiumEscrowConfig = {
+  address: premiumEscrowAddress,
+  abi: premiumEscrowAbi,
+} as const
