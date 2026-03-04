@@ -42,6 +42,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Closed the active coordination-ledger entry for GoalFactory/GoalTreasury ABI expansion after cross-repo sync completion.
 - Added router + UMA resolver event-only ABI exports and extended GoalFactory/GoalTreasury event payload ABI fields for indexer discovery wiring.
 - ABI source-of-truth now relies on generated-only wagmi ABI exports (manual fallback parsing removed).
 - Updated active coordination ledger for GoalTreasury `GoalConfigured` ABI payload sync (added slasher/token event fields).
