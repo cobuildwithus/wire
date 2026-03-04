@@ -5,6 +5,9 @@
 - JWT claim key mapping (`agent_key` <-> `agentKey`)
 - Idempotency header and UUID schema
 - x402 payload schema and invariants
+- Protocol address exports and aliases:
+  - canonical Base deployment sets (`baseEntrypoints`, `baseImplementations`, `baseDefaults`, `baseConfig`)
+  - convenience aliases for token/revnet fields in both existing and consumer-compat snake_case forms (`cobuildTokenAddress`, `cobuild_token`, `cobuild_revnet_id`)
 - Farcaster signup wire contracts:
   - canonical contract addresses and ABIs (IdGateway, KeyGateway, IdRegistry)
   - SignedKeyRequest typed-data domain/types/message builders

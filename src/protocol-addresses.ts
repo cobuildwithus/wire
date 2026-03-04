@@ -60,3 +60,5 @@ export const baseAddresses = {
 export const goalFactoryAddress = baseEntrypoints.goalFactory;
 export const budgetTcrFactoryAddress = baseEntrypoints.budgetTcrFactory;
 export const cobuildTokenAddress = baseEntrypoints.cobuildToken;
+export const cobuild_token = baseEntrypoints.cobuildToken;
+export const cobuild_revnet_id = baseConfig.cobuildRevnetId;
