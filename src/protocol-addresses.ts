@@ -9,6 +9,7 @@ export const baseEntrypoints = {
   goalFactory: "0x5E06B4AC7DC15e86791AE0fb580d538492659Dec",
   budgetTcrFactory: "0x4db0895547AE87a6B0f72F0F4D6D362F917d24bc",
   cobuildToken: "0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD",
+  cobuildSwap: "0x5d09ddd53feffc52f5139a59246ced560d8c45df",
   revDeployer: "0x2cA27BDe7e7D33E353b44c27aCfCf6c78ddE251d",
   superfluidHost: "0x4C073B3baB6d8826b8C5b229f3cfdC1eC6E47E74",
 } as const;
@@ -33,6 +34,7 @@ export const baseImplementations = {
   roundFactoryImpl: "0x6a2CB48d9Cab0029CB9B2447a6aAA0D22aD62623",
   allocationMechanismTcrImpl: "0xcD6F85362A3eE220Cd6Bce74e0C077B4820f357f",
   budgetFlowRouterStrategyImpl: "0x361B8A96fA380eA94A1E3c585027F76207c6DA3e",
+  cobuildSwapImpl: "0x21a580054e7a5e833f38033f2d958e00e4c50f0f",
 } as const;
 
 export const baseDefaults = {
@@ -60,7 +62,12 @@ export const baseAddresses = {
 export const goalFactoryAddress = baseEntrypoints.goalFactory;
 export const budgetTcrFactoryAddress = baseEntrypoints.budgetTcrFactory;
 export const cobuildTokenAddress = baseEntrypoints.cobuildToken;
+export const cobuildSwapAddress = baseEntrypoints.cobuildSwap;
 export const cobuild_token = baseEntrypoints.cobuildToken;
 export const cobuild_revnet_id = baseConfig.cobuildRevnetId;
+export const cobuild_swap = baseEntrypoints.cobuildSwap;
+export const cobuild_swap_impl = baseImplementations.cobuildSwapImpl;
 export const COBUILD_TOKEN = baseEntrypoints.cobuildToken;
 export const COBUILD_REVNET_ID = baseConfig.cobuildRevnetId;
+export const COBUILD_SWAP = baseEntrypoints.cobuildSwap;
+export const COBUILD_SWAP_IMPL = baseImplementations.cobuildSwapImpl;

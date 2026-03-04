@@ -6,6 +6,8 @@ import * as protocolAbis from "../src/protocol-abis.js";
 describe("protocol ABI exports", () => {
   it("re-exports wagmi-generated ABIs", () => {
     expect(protocolAbis.cobuildSwapImplAbi).toBe(generated.cobuildSwapImplAbi);
+    expect(protocolAbis.cobuildSwapImplAddress).toBe(generated.cobuildSwapImplAddress);
+    expect(protocolAbis.cobuildSwapImplAddress).toBe("0x21a580054e7a5e833f38033f2d958e00e4c50f0f");
     expect(protocolAbis.goalFactoryAbi).toBe(generated.goalFactoryAbi);
     expect(protocolAbis.flowAbi).toBe(generated.flowAbi);
     expect(protocolAbis.goalTreasuryAbi).toBe(generated.goalTreasuryAbi);

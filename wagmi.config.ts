@@ -4,7 +4,7 @@ import path from "node:path";
 import { defineConfig, loadEnv } from "@wagmi/cli";
 import { etherscan } from "@wagmi/cli/plugins";
 
-const COBUILD_SWAP_IMPL = "0xe5e248e5877cc4d71986ec6fc2b4cc321c80a23e" as const;
+const COBUILD_SWAP_IMPL = "0x21a580054e7a5e833f38033f2d958e00e4c50f0f" as const;
 const V1_CORE_OUT_DIR = path.resolve(process.cwd(), "../v1-core/out");
 
 const LOCAL_ABI_ARTIFACT_CONTRACTS = [

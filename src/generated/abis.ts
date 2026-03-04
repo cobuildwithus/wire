@@ -3198,7 +3198,7 @@ export const budgetTreasuryConfig = {
 export const cobuildSwapImplAbi = [] as const
 
 export const cobuildSwapImplAddress =
-  '0xe5e248E5877cc4D71986Ec6FC2B4cc321c80a23e' as const
+  '0x21a580054e7a5e833f38033f2d958e00e4c50f0f' as const
 
 export const cobuildSwapImplConfig = {
   address: cobuildSwapImplAddress,

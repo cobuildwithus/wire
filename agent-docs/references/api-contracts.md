@@ -7,7 +7,7 @@
 - x402 payload schema and invariants
 - Protocol address exports and aliases:
   - canonical Base deployment sets (`baseEntrypoints`, `baseImplementations`, `baseDefaults`, `baseConfig`)
-  - convenience aliases for token/revnet fields in camelCase, snake_case, and constant-case forms (`cobuildTokenAddress`, `cobuild_token`, `cobuild_revnet_id`, `COBUILD_TOKEN`, `COBUILD_REVNET_ID`)
+  - convenience aliases for token/revnet/swap fields in camelCase, snake_case, and constant-case forms (`cobuildTokenAddress`, `cobuildSwapAddress`, `cobuild_token`, `cobuild_revnet_id`, `cobuild_swap`, `cobuild_swap_impl`, `COBUILD_TOKEN`, `COBUILD_REVNET_ID`, `COBUILD_SWAP`, `COBUILD_SWAP_IMPL`)
 - Farcaster signup wire contracts:
   - canonical contract addresses and ABIs (IdGateway, KeyGateway, IdRegistry)
   - SignedKeyRequest typed-data domain/types/message builders

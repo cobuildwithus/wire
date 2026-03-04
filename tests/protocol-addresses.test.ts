@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   COBUILD_REVNET_ID,
+  COBUILD_SWAP,
+  COBUILD_SWAP_IMPL,
   COBUILD_TOKEN,
   baseAddresses,
   baseConfig,
@@ -11,7 +13,10 @@ import {
   baseImplementations,
   budgetTcrFactoryAddress,
   cobuild_revnet_id,
+  cobuild_swap,
+  cobuild_swap_impl,
   cobuild_token,
+  cobuildSwapAddress,
   cobuildTokenAddress,
   goalFactoryAddress,
 } from "../src/protocol-addresses.js";
@@ -23,6 +28,10 @@ describe("protocol address exports", () => {
     expect(cobuild_revnet_id).toBe(138);
     expect(COBUILD_TOKEN).toBe("0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD");
     expect(COBUILD_REVNET_ID).toBe(138);
+    expect(cobuildSwapAddress).toBe("0x5d09ddd53feffc52f5139a59246ced560d8c45df");
+    expect(COBUILD_SWAP).toBe("0x5d09ddd53feffc52f5139a59246ced560d8c45df");
+    expect(cobuild_swap_impl).toBe("0x21a580054e7a5e833f38033f2d958e00e4c50f0f");
+    expect(COBUILD_SWAP_IMPL).toBe("0x21a580054e7a5e833f38033f2d958e00e4c50f0f");
   });
 
   it("exports convenience entrypoint/config aliases", () => {
@@ -31,8 +40,13 @@ describe("protocol address exports", () => {
     expect(cobuildTokenAddress).toBe(baseEntrypoints.cobuildToken);
     expect(cobuild_token).toBe(baseEntrypoints.cobuildToken);
     expect(cobuild_revnet_id).toBe(baseConfig.cobuildRevnetId);
+    expect(cobuildSwapAddress).toBe(baseEntrypoints.cobuildSwap);
+    expect(cobuild_swap).toBe(baseEntrypoints.cobuildSwap);
+    expect(cobuild_swap_impl).toBe(baseImplementations.cobuildSwapImpl);
     expect(COBUILD_TOKEN).toBe(baseEntrypoints.cobuildToken);
     expect(COBUILD_REVNET_ID).toBe(baseConfig.cobuildRevnetId);
+    expect(COBUILD_SWAP).toBe(baseEntrypoints.cobuildSwap);
+    expect(COBUILD_SWAP_IMPL).toBe(baseImplementations.cobuildSwapImpl);
   });
 
   it("uses valid EVM addresses for entrypoints, implementations, and defaults", () => {
