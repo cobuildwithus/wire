@@ -19,11 +19,22 @@ describe("protocol ABI exports", () => {
     expect(protocolAbis.goalStakeVaultAbi).toBe(generated.goalStakeVaultAbi);
     expect(protocolAbis.budgetStakeLedgerAbi).toBe(generated.budgetStakeLedgerAbi);
     expect(protocolAbis.budgetTcrAbi).toBe(generated.budgetTcrAbi);
+    expect(protocolAbis.budgetTcrDeployerAbi).toBe(generated.budgetTcrDeployerAbi);
     expect(protocolAbis.budgetTcrFactoryAbi).toBe(generated.budgetTcrFactoryAbi);
     expect(protocolAbis.goalFlowAllocationLedgerPipelineAbi).toBe(
       generated.goalFlowAllocationLedgerPipelineAbi
     );
     expect(protocolAbis.goalRevnetSplitHookAbi).toBe(generated.goalRevnetSplitHookAbi);
+    expect(protocolAbis.erc20VotesArbitratorAbi).toBe(generated.erc20VotesArbitratorAbi);
+    expect(protocolAbis.roundSubmissionTcrAbi).toBe(generated.roundSubmissionTcrAbi);
+    expect(protocolAbis.roundPrizeVaultAbi).toBe(generated.roundPrizeVaultAbi);
+    expect(protocolAbis.roundFactoryAbi).toBe(generated.roundFactoryAbi);
+    expect(protocolAbis.prizePoolSubmissionDepositStrategyAbi).toBe(
+      generated.prizePoolSubmissionDepositStrategyAbi
+    );
+    expect(protocolAbis.allocationMechanismTcrAbi).toBe(generated.allocationMechanismTcrAbi);
+    expect(protocolAbis.budgetFlowRouterStrategyAbi).toBe(generated.budgetFlowRouterStrategyAbi);
+    expect(protocolAbis.cobuildTerminalAbi).toBe(generated.cobuildTerminalAbi);
     expect(protocolAbis.umaTreasurySuccessResolverAbi).toBe(
       generated.umaTreasurySuccessResolverAbi
     );

@@ -1,42 +1,141 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-import { defineConfig, loadEnv } from "@wagmi/cli";
-import { etherscan } from "@wagmi/cli/plugins";
+import { defineConfig } from "@wagmi/cli";
 
-const COBUILD_SWAP_IMPL = "0x21a580054e7a5e833f38033f2d958e00e4c50f0f" as const;
+import { baseConfig, baseEntrypoints, baseImplementations } from "./src/protocol-addresses.js";
+
+const BASE_CHAIN_ID = 8453 as const;
 const V1_CORE_OUT_DIR = path.resolve(process.cwd(), "../v1-core/out");
 
-const LOCAL_ABI_ARTIFACT_CONTRACTS = [
-  { name: "GoalFactory", artifact: "GoalFactory.sol/GoalFactory.json" },
-  { name: "BudgetTCRFactory", artifact: "BudgetTCRFactory.sol/BudgetTCRFactory.json" },
-] as const;
+type ContractArtifactConfig = {
+  name: string;
+  artifact: string;
+  address: `0x${string}`;
+};
 
-const ETHERSCAN_CONTRACT_ADDRESS_ENV = [
-  { name: "Flow", env: "CORE_GOAL_FLOW_ADDRESS" },
-  { name: "GoalTreasury", env: "CORE_GOAL_TREASURY_ADDRESS" },
-  { name: "BudgetTreasury", env: "CORE_BUDGET_TREASURY_ADDRESS" },
-  { name: "PremiumEscrow", env: "CORE_PREMIUM_ESCROW_ADDRESS" },
-  { name: "GoalStakeVault", env: "CORE_GOAL_STAKE_VAULT_ADDRESS" },
-  { name: "BudgetStakeLedger", env: "CORE_BUDGET_STAKE_LEDGER_ADDRESS" },
-  { name: "BudgetTCR", env: "CORE_BUDGET_TCR_ADDRESS" },
+const PROTOCOL_CONTRACTS: readonly ContractArtifactConfig[] = [
+  {
+    name: "GoalFactory",
+    artifact: "GoalFactory.sol/GoalFactory.json",
+    address: baseEntrypoints.goalFactory,
+  },
+  {
+    name: "BudgetTCRFactory",
+    artifact: "BudgetTCRFactory.sol/BudgetTCRFactory.json",
+    address: baseEntrypoints.budgetTcrFactory,
+  },
+  {
+    name: "Flow",
+    artifact: "Flow.sol/Flow.json",
+    address: baseImplementations.customFlowImpl,
+  },
+  {
+    name: "GoalTreasury",
+    artifact: "GoalTreasury.sol/GoalTreasury.json",
+    address: baseImplementations.goalTreasuryImpl,
+  },
+  {
+    name: "BudgetTreasury",
+    artifact: "BudgetTreasury.sol/BudgetTreasury.json",
+    address: baseImplementations.budgetTreasuryImpl,
+  },
+  {
+    name: "PremiumEscrow",
+    artifact: "PremiumEscrow.sol/PremiumEscrow.json",
+    address: baseImplementations.premiumEscrowImpl,
+  },
+  {
+    name: "GoalStakeVault",
+    artifact: "StakeVault.sol/StakeVault.json",
+    address: baseImplementations.goalStakeVaultImpl,
+  },
+  {
+    name: "BudgetStakeLedger",
+    artifact: "BudgetStakeLedger.sol/BudgetStakeLedger.json",
+    address: baseImplementations.budgetStakeLedgerImpl,
+  },
+  {
+    name: "BudgetTCR",
+    artifact: "BudgetTCR.sol/BudgetTCR.json",
+    address: baseImplementations.budgetTcrImpl,
+  },
   {
     name: "GoalFlowAllocationLedgerPipeline",
-    env: "CORE_GOAL_FLOW_ALLOCATION_LEDGER_PIPELINE_ADDRESS",
+    artifact: "GoalFlowAllocationLedgerPipeline.sol/GoalFlowAllocationLedgerPipeline.json",
+    address: baseImplementations.goalFlowAllocationLedgerPipelineImpl,
   },
-  { name: "GoalRevnetSplitHook", env: "CORE_GOAL_REVNET_SPLIT_HOOK_ADDRESS" },
+  {
+    name: "GoalRevnetSplitHook",
+    artifact: "GoalRevnetSplitHook.sol/GoalRevnetSplitHook.json",
+    address: baseImplementations.goalRevnetSplitHookImpl,
+  },
+  {
+    name: "UMATreasurySuccessResolver",
+    artifact: "UMATreasurySuccessResolver.sol/UMATreasurySuccessResolver.json",
+    address: baseConfig.fakeUmaTreasurySuccessResolver,
+  },
+  {
+    name: "UnderwriterSlasherRouter",
+    artifact: "UnderwriterSlasherRouter.sol/UnderwriterSlasherRouter.json",
+    address: baseImplementations.underwriterSlasherRouterImpl,
+  },
+  {
+    name: "JurorSlasherRouter",
+    artifact: "JurorSlasherRouter.sol/JurorSlasherRouter.json",
+    address: baseImplementations.jurorSlasherRouterImpl,
+  },
+  {
+    name: "ERC20VotesArbitrator",
+    artifact: "ERC20VotesArbitrator.sol/ERC20VotesArbitrator.json",
+    address: baseImplementations.erc20VotesArbitratorImpl,
+  },
+  {
+    name: "BudgetTCRDeployer",
+    artifact: "BudgetTCRDeployer.sol/BudgetTCRDeployer.json",
+    address: baseImplementations.budgetTcrDeployerImpl,
+  },
+  {
+    name: "RoundSubmissionTCR",
+    artifact: "RoundSubmissionTCR.sol/RoundSubmissionTCR.json",
+    address: baseImplementations.roundSubmissionTcrImpl,
+  },
+  {
+    name: "RoundPrizeVault",
+    artifact: "RoundPrizeVault.sol/RoundPrizeVault.json",
+    address: baseImplementations.roundPrizeVaultImpl,
+  },
+  {
+    name: "PrizePoolSubmissionDepositStrategy",
+    artifact: "PrizePoolSubmissionDepositStrategy.sol/PrizePoolSubmissionDepositStrategy.json",
+    address: baseImplementations.prizePoolSubmissionDepositStrategyImpl,
+  },
+  {
+    name: "RoundFactory",
+    artifact: "RoundFactory.sol/RoundFactory.json",
+    address: baseImplementations.roundFactoryImpl,
+  },
+  {
+    name: "AllocationMechanismTCR",
+    artifact: "AllocationMechanismTCR.sol/AllocationMechanismTCR.json",
+    address: baseImplementations.allocationMechanismTcrImpl,
+  },
+  {
+    name: "BudgetFlowRouterStrategy",
+    artifact: "BudgetFlowRouterStrategy.sol/BudgetFlowRouterStrategy.json",
+    address: baseImplementations.budgetFlowRouterStrategyImpl,
+  },
+  {
+    name: "CobuildSwapImpl",
+    artifact: "CobuildSwap.sol/CobuildSwap.json",
+    address: baseImplementations.cobuildSwapImpl,
+  },
+  {
+    name: "CobuildTerminal",
+    artifact: "CobuildTerminal.sol/CobuildTerminal.json",
+    address: baseEntrypoints.cobuildTerminal,
+  },
 ] as const;
-
-const ETHERSCAN_STATIC_CONTRACTS = [{ name: "CobuildSwapImpl", address: COBUILD_SWAP_IMPL }] as const;
-
-const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
-
-function asAddress(value: string | undefined): `0x${string}` | null {
-  if (!value) return null;
-  const trimmed = value.trim();
-  if (!ADDRESS_REGEX.test(trimmed)) return null;
-  return trimmed as `0x${string}`;
-}
 
 function loadArtifactAbi(artifact: string): readonly unknown[] {
   const artifactPath = path.join(V1_CORE_OUT_DIR, artifact);
@@ -49,48 +148,17 @@ function loadArtifactAbi(artifact: string): readonly unknown[] {
   return artifactJson.abi;
 }
 
-export default defineConfig(() => {
-  const env = { ...loadEnv({ mode: process.env.NODE_ENV, envDir: process.cwd() }), ...process.env };
-  const basescanApiKey = env.BASESCAN_API_KEY ?? env.ETHERSCAN_API_KEY;
-
-  if (!basescanApiKey) {
-    throw new Error("BASESCAN_API_KEY or ETHERSCAN_API_KEY is required to generate ABIs.");
-  }
-
-  const missingProtocolEnvKeys: string[] = [];
-  const etherscanContracts = ETHERSCAN_CONTRACT_ADDRESS_ENV.map((entry) => {
-    const address = asAddress(env[entry.env]);
-    if (!address) {
-      missingProtocolEnvKeys.push(entry.env);
-      return null;
-    }
-
-    return { name: entry.name, address };
-  });
-
-  if (missingProtocolEnvKeys.length > 0) {
-    throw new Error(
-      `Missing or invalid required protocol address env vars: ${missingProtocolEnvKeys.join(", ")}`
-    );
-  }
-
+function baseAddress(address: `0x${string}`): Record<number, `0x${string}`> {
   return {
-    out: "src/generated/abis.ts",
-    contracts: [
-      ...LOCAL_ABI_ARTIFACT_CONTRACTS.map((entry) => ({
-        name: entry.name,
-        abi: loadArtifactAbi(entry.artifact),
-      })),
-    ],
-    plugins: [
-      etherscan({
-        apiKey: basescanApiKey,
-        chainId: 8453,
-        contracts: [...(etherscanContracts as {
-          name: string;
-          address: `0x${string}`;
-        }[]), ...ETHERSCAN_STATIC_CONTRACTS],
-      }),
-    ],
+    [BASE_CHAIN_ID]: address,
   };
-});
+}
+
+export default defineConfig(() => ({
+  out: "src/generated/abis.ts",
+  contracts: PROTOCOL_CONTRACTS.map((entry) => ({
+    name: entry.name,
+    abi: loadArtifactAbi(entry.artifact),
+    address: baseAddress(entry.address),
+  })),
+}));
