@@ -34,6 +34,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/README.md` | Active execution plan conventions. |
 | `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` | Cross-agent ownership ledger. |
 | `agent-docs/exec-plans/active/2026-03-03-farcaster-wire-contract.md` | Active execution plan for Farcaster wire contract additions. |
+| `agent-docs/exec-plans/active/2026-03-03-release-docs-drift-fix.md` | Active execution plan to restore docs drift gate compliance for release patch verification. |
 | `agent-docs/exec-plans/completed/README.md` | Completed plan archive conventions. |
 | `agent-docs/exec-plans/completed/2026-03-03-abi-source-of-truth-centralization.md` | Completed execution record for ABI source-of-truth centralization in wire. |
 | `agent-docs/exec-plans/completed/2026-03-03-base-address-exports.md` | Completed execution record for Base canonical protocol address exports. |
@@ -43,3 +44,4 @@ Canonical map for docs used by agents working in this repository.
 
 - ABI source-of-truth now relies on generated-only wagmi ABI exports (manual fallback parsing removed).
 - Added canonical Base V1 core address exports (`protocol-addresses`) for entrypoints and implementation addresses.
+- Added an active execution plan to track docs drift-gate remediation for release patch verification.
