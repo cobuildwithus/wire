@@ -42,6 +42,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Added router + UMA resolver event-only ABI exports and extended GoalFactory/GoalTreasury event payload ABI fields for indexer discovery wiring.
 - ABI source-of-truth now relies on generated-only wagmi ABI exports (manual fallback parsing removed).
 - Updated active coordination ledger for GoalTreasury `GoalConfigured` ABI payload sync (added slasher/token event fields).
 - `CobuildSwapImpl` ABI generation now fetches verified ABI from Basescan at `0x21a580054e7a5e833f38033f2d958e00e4c50f0f` (no empty placeholder ABI export).
