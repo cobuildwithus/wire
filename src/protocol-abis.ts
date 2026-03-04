@@ -12,5 +12,8 @@ export {
   goalRevnetSplitHookAbi,
   goalStakeVaultAbi,
   goalTreasuryAbi,
+  jurorSlasherRouterAbi,
   premiumEscrowAbi,
+  umaTreasurySuccessResolverAbi,
+  underwriterSlasherRouterAbi,
 } from "./generated/abis.js";

@@ -5388,6 +5388,17 @@ export const goalFactoryAbi = [
             type: 'address',
           },
           { name: 'splitHook', internalType: 'address', type: 'address' },
+          {
+            name: 'jurorSlasherRouter',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'underwriterSlasherRouter',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'successResolver', internalType: 'address', type: 'address' },
           { name: 'budgetTCR', internalType: 'address', type: 'address' },
           { name: 'arbitrator', internalType: 'address', type: 'address' },
         ],
@@ -5428,6 +5439,17 @@ export const goalFactoryAbi = [
             type: 'address',
           },
           { name: 'splitHook', internalType: 'address', type: 'address' },
+          {
+            name: 'jurorSlasherRouter',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'underwriterSlasherRouter',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'successResolver', internalType: 'address', type: 'address' },
           { name: 'budgetTCR', internalType: 'address', type: 'address' },
           { name: 'arbitrator', internalType: 'address', type: 'address' },
         ],
@@ -7626,6 +7648,12 @@ export const goalTreasuryAbi = [
         indexed: false,
       },
       {
+        name: 'successResolver',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
         name: 'goalToken',
         internalType: 'address',
         type: 'address',
@@ -9078,3 +9106,359 @@ export const premiumEscrowConfig = {
   address: premiumEscrowAddress,
   abi: premiumEscrowAbi,
 } as const
+
+/**
+ * Event-only ABI surface for UMATreasurySuccessResolver.
+ * Exported manually until wagmi generation is extended for this contract.
+ */
+export const umaTreasurySuccessResolverAbi = [
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'treasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'asserter',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'kind',
+        internalType: 'enum ISuccessAssertionTreasury.TreasuryKind',
+        type: 'uint8',
+        indexed: false,
+      },
+      {
+        name: 'liveness',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+      {
+        name: 'bond',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'evidence',
+        internalType: 'string',
+        type: 'string',
+        indexed: false,
+      },
+    ],
+    name: 'SuccessAssertionRequested',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'treasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'SuccessAssertionDisputed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'treasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'truthful',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+    ],
+    name: 'SuccessAssertionResolved',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'assertionId',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'treasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'truthful',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+      {
+        name: 'applied',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+    ],
+    name: 'SuccessAssertionFinalized',
+  },
+] as const
+
+/**
+ * Event-only ABI surface for UnderwriterSlasherRouter.
+ * Exported manually until wagmi generation is extended for this contract.
+ */
+export const underwriterSlasherRouterAbi = [
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'premiumEscrow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'authorized',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+    ],
+    name: 'PremiumEscrowAuthorizationSet',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'premiumEscrow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'underwriter',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'cobuildAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'reason',
+        internalType: 'bytes',
+        type: 'bytes',
+        indexed: false,
+      },
+    ],
+    name: 'CobuildConversionFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'premiumEscrow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'underwriter',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'requestedWeight',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'goalSlashedAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'cobuildSlashedAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'convertedGoalAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'forwardedSuperTokenAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'UnderwriterSlashRouted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'premiumEscrow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'underwriter',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'goalAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'reason',
+        internalType: 'bytes',
+        type: 'bytes',
+        indexed: false,
+      },
+    ],
+    name: 'GoalSuperTokenUpgradeFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'premiumEscrow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'underwriter',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'superTokenAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'reason',
+        internalType: 'bytes',
+        type: 'bytes',
+        indexed: false,
+      },
+    ],
+    name: 'GoalSuperTokenForwardingFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'caller',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'goalBalanceBefore',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'superTokenBalanceBefore',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: 'forwardedSuperTokenAmount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'GoalSuperTokenForwardingRetried',
+  },
+] as const
+
+/**
+ * Event-only ABI surface for JurorSlasherRouter.
+ * Exported manually until wagmi generation is extended for this contract.
+ */
+export const jurorSlasherRouterAbi = [
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'slasher',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'authorized',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+    ],
+    name: 'SlasherAuthorizationSet',
+  },
+] as const

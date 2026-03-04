@@ -24,6 +24,13 @@ describe("protocol ABI exports", () => {
       generated.goalFlowAllocationLedgerPipelineAbi
     );
     expect(protocolAbis.goalRevnetSplitHookAbi).toBe(generated.goalRevnetSplitHookAbi);
+    expect(protocolAbis.umaTreasurySuccessResolverAbi).toBe(
+      generated.umaTreasurySuccessResolverAbi
+    );
+    expect(protocolAbis.underwriterSlasherRouterAbi).toBe(
+      generated.underwriterSlasherRouterAbi
+    );
+    expect(protocolAbis.jurorSlasherRouterAbi).toBe(generated.jurorSlasherRouterAbi);
   });
 
   it("does not expose fallback resolver API", () => {
