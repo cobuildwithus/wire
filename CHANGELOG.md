@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2026-03-04
+
+### Added
+- expand goalconfigured event args
+- add cobuild swap contract and impl addresses
+- add uppercase cobuild protocol aliases
+- export cobuild token and revnet aliases
+- refresh base impl addresses and regenerate protocol abis
+- sync base impl addresses and regenerate protocol abis
+- centralize wire ensure-published bin
+
+### Changed
+- Update index.md
+- tmp
+- repull cobuild swap impl ABI from basescan
+- remove snake-case cobuild exports
+- add active plan to satisfy release drift gate
+- more cutover
+- remove manual ABI fallbacks from protocol ABI exports
+- Update AGENTS.md
+- centralize protocol ABIs in wire with wagmi generation
+
 ## [0.1.2] - 2026-03-03
 
 ### Added
