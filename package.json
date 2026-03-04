@@ -42,6 +42,7 @@
     "docs:drift": "bash scripts/check-agent-docs-drift.sh",
     "docs:gardening": "bash scripts/doc-gardening.sh --fail-on-issues",
     "review:gpt": "scripts/chatgpt-oracle-review.sh",
+    "review-gpt:ensure-published": "bash scripts/review-gpt-ensure-published.sh",
     "zip:src": "bash scripts/package-audit-context.sh --zip",
     "verify": "pnpm typecheck && pnpm test:coverage",
     "changelog:update": "bash scripts/update-changelog.sh",
@@ -53,10 +54,10 @@
     "release:major": "bash scripts/release.sh major"
   },
   "devDependencies": {
-    "@wagmi/cli": "^2.8.0",
-    "@cobuild/review-gpt": "^0.2.7",
+    "@cobuild/review-gpt": "^0.2.8",
     "@types/node": "^25.2.3",
     "@vitest/coverage-v8": "^4.0.18",
+    "@wagmi/cli": "^2.8.0",
     "husky": "^9.1.7",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
