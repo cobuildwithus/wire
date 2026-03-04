@@ -43,6 +43,7 @@ Canonical map for docs used by agents working in this repository.
 ## Recent Updates
 
 - ABI source-of-truth now relies on generated-only wagmi ABI exports (manual fallback parsing removed).
+- `CobuildSwapImpl` ABI generation now fetches verified ABI from Basescan at `0x21a580054e7a5e833f38033f2d958e00e4c50f0f` (no empty placeholder ABI export).
 - Added canonical Base V1 core address exports (`protocol-addresses`) for entrypoints and implementation addresses.
 - Added compatibility aliases for protocol token/revnet/swap exports in constant-case: `COBUILD_TOKEN`, `COBUILD_REVNET_ID`, `COBUILD_SWAP`, and `COBUILD_SWAP_IMPL`.
 - Added an active execution plan to track docs drift-gate remediation for release patch verification.

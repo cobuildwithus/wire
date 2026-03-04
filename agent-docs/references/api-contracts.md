@@ -8,6 +8,8 @@
 - Protocol address exports and aliases:
   - canonical Base deployment sets (`baseEntrypoints`, `baseImplementations`, `baseDefaults`, `baseConfig`)
   - convenience aliases for token/revnet/swap fields in camelCase and constant-case forms (`cobuildTokenAddress`, `cobuildSwapAddress`, `COBUILD_TOKEN`, `COBUILD_REVNET_ID`, `COBUILD_SWAP`, `COBUILD_SWAP_IMPL`)
+- Protocol ABI exports:
+  - `CobuildSwapImpl` ABI is sourced from Basescan (not an empty placeholder ABI), and `cobuildSwapImplAddress` is pinned to `0x21a580054e7a5e833f38033f2d958e00e4c50f0f`
 - Farcaster signup wire contracts:
   - canonical contract addresses and ABIs (IdGateway, KeyGateway, IdRegistry)
   - SignedKeyRequest typed-data domain/types/message builders

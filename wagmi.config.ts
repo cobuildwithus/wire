@@ -27,6 +27,8 @@ const ETHERSCAN_CONTRACT_ADDRESS_ENV = [
   { name: "GoalRevnetSplitHook", env: "CORE_GOAL_REVNET_SPLIT_HOOK_ADDRESS" },
 ] as const;
 
+const ETHERSCAN_STATIC_CONTRACTS = [{ name: "CobuildSwapImpl", address: COBUILD_SWAP_IMPL }] as const;
+
 const ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
 
 function asAddress(value: string | undefined): `0x${string}` | null {
@@ -75,7 +77,6 @@ export default defineConfig(() => {
   return {
     out: "src/generated/abis.ts",
     contracts: [
-      { name: "CobuildSwapImpl", address: COBUILD_SWAP_IMPL, abi: [] as const },
       ...LOCAL_ABI_ARTIFACT_CONTRACTS.map((entry) => ({
         name: entry.name,
         abi: loadArtifactAbi(entry.artifact),
@@ -88,7 +89,7 @@ export default defineConfig(() => {
         contracts: [...(etherscanContracts as {
           name: string;
           address: `0x${string}`;
-        }[])],
+        }[]), ...ETHERSCAN_STATIC_CONTRACTS],
       }),
     ],
   };
