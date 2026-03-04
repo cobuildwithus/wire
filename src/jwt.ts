@@ -28,15 +28,15 @@ export type CliJwtPayloadClaims = {
 export type CliAccessTokenClaims = CliJwtClaims;
 export type VerifiedCliAccessTokenClaims = CliJwtVerifiedClaims;
 
-export const DEFAULT_DEV_BUILD_BOT_JWT_PUBLIC_KEY = [
+export const DEFAULT_DEV_CLI_JWT_PUBLIC_KEY = [
   "-----BEGIN PUBLIC KEY-----",
   "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEJez1f0LBeC5VJfNUE7v3bEwk79JO",
   "itJMKsbBgPEGjEsgKKnjHceciarnRNwVlwSj7Xx7j8gIUKdB+grhzp5jNQ==",
   "-----END PUBLIC KEY-----",
 ].join("\n");
 
-export const DEFAULT_BUILD_BOT_JWT_ISSUER = "cobuild-chat-api";
-export const DEFAULT_BUILD_BOT_JWT_AUDIENCE = "buildbot";
+export const DEFAULT_CLI_JWT_ISSUER = "cobuild-chat-api";
+export const DEFAULT_CLI_JWT_AUDIENCE = "cli";
 
 export type CliScopeCapabilities = {
   hasToolsWrite: boolean;

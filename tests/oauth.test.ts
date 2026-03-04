@@ -55,7 +55,7 @@ describe("oauth contract", () => {
   it("validates authorize request", () => {
     const parsed = validateCliOAuthAuthorizeRequest({
       responseType: "code",
-      clientId: "buildbot_cli",
+      clientId: "cli",
       redirectUri: "http://127.0.0.1:43111/auth/callback",
       scope: "tools:read wallet:read offline_access",
       codeChallenge: "a".repeat(43),
@@ -74,7 +74,7 @@ describe("oauth contract", () => {
     expect(() =>
       validateCliOAuthAuthorizeRequest({
         responseType: "code",
-        clientId: "buildbot_cli",
+        clientId: "cli",
         redirectUri: "http://127.0.0.1:43111/auth/callback",
         scope: "tools:read wallet:read offline_access",
         codeChallenge: "a".repeat(43),
@@ -87,7 +87,7 @@ describe("oauth contract", () => {
     expect(() =>
       validateCliOAuthAuthorizeRequest({
         responseType: "code",
-        clientId: "buildbot_cli",
+        clientId: "cli",
         redirectUri: "http://127.0.0.1:43111/auth/callback",
         scope: "tools:read wallet:read offline_access",
         codeChallenge: "a".repeat(43),
@@ -102,7 +102,7 @@ describe("oauth contract", () => {
   it("parses authorize query", () => {
     const search = new URLSearchParams({
       response_type: "code",
-      client_id: "buildbot_cli",
+      client_id: "cli",
       redirect_uri: "http://127.0.0.1:43111/auth/callback",
       scope: "tools:read wallet:read offline_access",
       code_challenge: "a".repeat(43),
@@ -126,7 +126,7 @@ describe("oauth contract", () => {
     const invalid = parseCliOAuthAuthorizeQuery(
       new URLSearchParams({
         response_type: "code",
-        client_id: "buildbot_cli",
+        client_id: "cli",
         redirect_uri: "http://127.0.0.1:43111/auth/callback",
         scope: "tools:read wallet:read offline_access",
         code_challenge: "a".repeat(43),

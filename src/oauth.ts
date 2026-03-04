@@ -5,7 +5,7 @@ const PKCE_CHALLENGE_PATTERN = /^[A-Za-z0-9_-]{43}$/;
 const STATE_PATTERN = /^[A-Za-z0-9._~-]{8,512}$/;
 const LABEL_PATTERN = /^[A-Za-z0-9 ._()-]{1,128}$/;
 
-export const CLI_OAUTH_PUBLIC_CLIENT_ID = "buildbot_cli";
+export const CLI_OAUTH_PUBLIC_CLIENT_ID = "cli";
 export const CLI_OAUTH_RESPONSE_TYPE = "code";
 export const CLI_OAUTH_REDIRECT_PATH = "/auth/callback";
 

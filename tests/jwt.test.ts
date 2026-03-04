@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  DEFAULT_BUILD_BOT_JWT_AUDIENCE,
-  DEFAULT_BUILD_BOT_JWT_ISSUER,
-  DEFAULT_DEV_BUILD_BOT_JWT_PUBLIC_KEY,
+  DEFAULT_CLI_JWT_AUDIENCE,
+  DEFAULT_CLI_JWT_ISSUER,
+  DEFAULT_DEV_CLI_JWT_PUBLIC_KEY,
   deriveCliScopeCapabilities,
   parseCliJwtClaims,
   parseCliJwtVerifiedClaims,
@@ -81,10 +81,10 @@ describe("jwt claim helpers", () => {
     })).toBeNull();
   });
 
-  it("exports canonical default build-bot JWT values", () => {
-    expect(DEFAULT_DEV_BUILD_BOT_JWT_PUBLIC_KEY).toContain("BEGIN PUBLIC KEY");
-    expect(DEFAULT_BUILD_BOT_JWT_ISSUER).toBe("cobuild-chat-api");
-    expect(DEFAULT_BUILD_BOT_JWT_AUDIENCE).toBe("buildbot");
+  it("exports canonical default CLI JWT values", () => {
+    expect(DEFAULT_DEV_CLI_JWT_PUBLIC_KEY).toContain("BEGIN PUBLIC KEY");
+    expect(DEFAULT_CLI_JWT_ISSUER).toBe("cobuild-chat-api");
+    expect(DEFAULT_CLI_JWT_AUDIENCE).toBe("cli");
   });
 
   it("derives write capabilities from scope", () => {

@@ -4,6 +4,9 @@ import {
   normalizeHexByteString,
   normalizeUnsignedDecimal,
 } from "./evm.js";
+import { BASE_CHAIN_ID } from "./chains.js";
+
+export { BASE_CHAIN_ID } from "./chains.js";
 
 export type HexString = `0x${string}`;
 
@@ -18,7 +21,6 @@ export const X402_VALUE_USDC_DISPLAY = "0.001";
 export const X402_AUTH_VALID_AFTER = "0";
 export const X402_AUTH_TTL_SECONDS = 300;
 
-export const BASE_CHAIN_ID = 8453;
 export const USDC_EIP712_DOMAIN_NAME = "USD Coin";
 export const USDC_EIP712_DOMAIN_VERSION = "2";
 export const X402_TRANSFER_PRIMARY_TYPE = "TransferWithAuthorization";
