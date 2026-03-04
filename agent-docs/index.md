@@ -44,6 +44,6 @@ Canonical map for docs used by agents working in this repository.
 
 - ABI source-of-truth now relies on generated-only wagmi ABI exports (manual fallback parsing removed).
 - Added canonical Base V1 core address exports (`protocol-addresses`) for entrypoints and implementation addresses.
-- Added snake_case compatibility aliases for protocol exports: `cobuild_token` and `cobuild_revnet_id`.
+- Added compatibility aliases for protocol token/revnet exports in snake_case and constant-case: `cobuild_token`, `cobuild_revnet_id`, `COBUILD_TOKEN`, and `COBUILD_REVNET_ID`.
 - Added an active execution plan to track docs drift-gate remediation for release patch verification.
 - Synced Base `8453` implementation/default/config addresses to latest `DeployGoalFactoryImplementations.8453.txt` and updated wagmi ABI generation to fetch verified impl ABIs from Basescan with local factory ABI fallback.
