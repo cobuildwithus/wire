@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e
 
-bash scripts/review-gpt-ensure-published.sh
 bash scripts/doc-gardening.sh
 git add package.json pnpm-lock.yaml agent-docs/generated/doc-inventory.md agent-docs/generated/doc-gardening-report.md

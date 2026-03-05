@@ -23,7 +23,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/references/data-infra-map.md` | Data/infra touchpoint map for contract owners. |
 | `agent-docs/references/runtime-ai-flow.md` | Runtime flow notes. |
 | `agent-docs/references/tool-catalog.md` | Tooling references used during development. |
-| `agent-docs/references/testing-ci-map.md` | Verification, CI, release publish workflow, and release helper command map. |
+| `agent-docs/references/testing-ci-map.md` | Verification, CI, review command, release publish workflow, and release helper command map. |
 | `agent-docs/prompts/simplify.md` | Simplification audit prompt. |
 | `agent-docs/prompts/test-coverage-audit.md` | Coverage audit prompt. |
 | `agent-docs/prompts/task-finish-review.md` | Completion review prompt. |
@@ -45,6 +45,7 @@ Canonical map for docs used by agents working in this repository.
 ## Recent Updates
 
 - Updated the active Base address-sync execution plan scope to include GoalFactory/BudgetTCRFactory entrypoint refresh from `DeployGoalFactory.8453.txt`.
+- Recorded the direct `pnpm review:gpt` package entrypoint in the testing/CI map.
 - Added an active execution plan for Base implementation-address + ABI regeneration sync (`2026-03-05-base-implementation-address-sync`).
 - Recorded active docs remediation plan for commit `ff248bd` (`feat(abi): fetch protocol ABIs via wagmi etherscan plugin`).
 - Switched ABI generation to Wagmi `etherscan` plugin fetches for Base (`chainId=8453`) and documented required `BASESCAN_API_KEY` (fallback `ETHERSCAN_API_KEY`) for `pnpm wagmi` / `pnpm generate`.
