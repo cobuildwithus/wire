@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-05
+Last verified: 2026-03-05 (docs-drift simplification)
 
 ## Purpose
 
