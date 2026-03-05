@@ -42,6 +42,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Refreshed `protocol-addresses` constants to the newest Base deployment set in `v1-core/deploys/LATEST_IMPLEMENTATIONS.8453.{txt,toml}` (token, terminal, implementation, defaults, fake UMA resolver).
 - Synced canonical Base deployment addresses to `v1-core/deploys/LATEST_IMPLEMENTATIONS.8453.{txt,toml}` and added entrypoint aliases for terminal + buyback hook addresses.
 - Switched protocol ABI generation to local `v1-core/out` artifacts and regenerated the full contract ABI surface (no manual resolver/router ABI appendages).
 - Closed the active coordination-ledger entry for GoalFactory/GoalTreasury ABI expansion after cross-repo sync completion.

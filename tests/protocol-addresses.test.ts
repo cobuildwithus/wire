@@ -26,15 +26,15 @@ import {
 describe("protocol address exports", () => {
   it("exports canonical Base chain constants", () => {
     expect(baseAddresses.chainId).toBe(8453);
-    expect(cobuildTokenAddress).toBe("0x62f05B1aD94c5d7B9f989A294d2A0f36a1AE10Fb");
-    expect(COBUILD_TOKEN).toBe("0x62f05B1aD94c5d7B9f989A294d2A0f36a1AE10Fb");
+    expect(cobuildTokenAddress).toBe("0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD");
+    expect(COBUILD_TOKEN).toBe("0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD");
     expect(COBUILD_REVNET_ID).toBe(138);
     expect(cobuildSwapAddress).toBe("0x5d09ddd53feffc52f5139a59246ced560d8c45df");
-    expect(cobuildTerminalAddress).toBe("0xA0BF03DE899D98411cC38Eb140Be8Ee225F62D40");
+    expect(cobuildTerminalAddress).toBe("0xf70c200Ab4F06d781aAC8333582E63CdBedAe0DE");
     expect(buybackHookDataHookAddress).toBe("0xB6133A222315f8E9d25E7C77BAC5DdEB3451D088");
     expect(buybackHookAddress).toBe("0xB6133A222315f8E9d25E7C77BAC5DdEB3451D088");
     expect(COBUILD_SWAP).toBe("0x5d09ddd53feffc52f5139a59246ced560d8c45df");
-    expect(COBUILD_TERMINAL).toBe("0xA0BF03DE899D98411cC38Eb140Be8Ee225F62D40");
+    expect(COBUILD_TERMINAL).toBe("0xf70c200Ab4F06d781aAC8333582E63CdBedAe0DE");
     expect(BUYBACK_HOOK_DATA_HOOK).toBe("0xB6133A222315f8E9d25E7C77BAC5DdEB3451D088");
     expect(BUYBACK_HOOK).toBe("0xB6133A222315f8E9d25E7C77BAC5DdEB3451D088");
     expect(COBUILD_SWAP_IMPL).toBe("0x21a580054e7a5e833f38033f2d958e00e4c50f0f");
