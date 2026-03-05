@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] - 2026-03-05
+
+### Added
+- add Base builder code helpers
+- sync v1-core impl addresses and regenerate wire abis
+
+### Changed
+- sync new base goal factory addresses
+- sync latest base deployment addresses
+- prefer local cli and enforce published dep
+- run husky hooks before commit-tree writes
+- close abi expansion ledger entry
+
 ## [0.1.3] - 2026-03-04
 
 ### Added
