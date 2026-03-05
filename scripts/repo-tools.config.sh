@@ -43,10 +43,15 @@ required_files=(
   "agent-docs/exec-plans/tech-debt-tracker.md"
 )
 repo_tools_join_lines COBUILD_DRIFT_REQUIRED_FILES "${required_files[@]}"
-export COBUILD_DRIFT_CODE_CHANGE_PATTERN='^(src/|scripts/|package\\.json$|README\\.md$|ARCHITECTURE\\.md$|AGENTS\\.md$)'
+export COBUILD_DRIFT_CODE_CHANGE_PATTERN='^(src/|scripts/|package\.json$|README\.md$|ARCHITECTURE\.md$|AGENTS\.md$)'
 export COBUILD_DRIFT_CODE_CHANGE_LABEL='Architecture-sensitive code/process'
 export COBUILD_DRIFT_LARGE_CHANGE_THRESHOLD='10'
-export COBUILD_DRIFT_CHANGED_COUNT_EXCLUDE_PATTERN='^agent-docs/generated/|^agent-docs/exec-plans/(active|completed)/|^pnpm-lock\\.yaml$'
+export COBUILD_DRIFT_CHANGED_COUNT_EXCLUDE_PATTERN='^agent-docs/generated/|^agent-docs/exec-plans/(active|completed)/|^pnpm-lock\.yaml$'
 export COBUILD_DRIFT_ALLOW_RELEASE_ARTIFACTS_ONLY='1'
 export COBUILD_COMMITTER_EXAMPLE='fix(wire): align export surface'
 export COBUILD_DOC_GARDENING_EXTRA_TRACKED_PATHS=ARCHITECTURE.md$'\n'
+export COBUILD_RELEASE_PACKAGE_NAME='@cobuild/wire'
+export COBUILD_RELEASE_REPOSITORY_URL='https://github.com/cobuildwithus/wire'
+export COBUILD_RELEASE_NOTES_ENABLED='1'
+export COBUILD_RELEASE_COMMIT_TEMPLATE='chore(release): v%s'
+export COBUILD_RELEASE_TAG_MESSAGE_TEMPLATE='chore(release): v%s'
