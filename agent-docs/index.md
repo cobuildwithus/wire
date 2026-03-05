@@ -36,6 +36,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/2026-03-03-farcaster-wire-contract.md` | Active execution plan for Farcaster wire contract additions. |
 | `agent-docs/exec-plans/active/2026-03-03-release-docs-drift-fix.md` | Active execution plan to restore docs drift gate compliance for release patch verification. |
 | `agent-docs/exec-plans/active/2026-03-04-abi-etherscan-docs-drift-fix.md` | Active execution plan to restore docs drift compliance after migrating ABI generation to Wagmi Etherscan plugin fetches. |
+| `agent-docs/exec-plans/active/2026-03-05-base-implementation-address-sync.md` | Active execution plan for syncing Base implementation addresses and regenerated ABI outputs to latest v1-core deployments. |
 | `agent-docs/exec-plans/completed/README.md` | Completed plan archive conventions. |
 | `agent-docs/exec-plans/completed/2026-03-03-abi-source-of-truth-centralization.md` | Completed execution record for ABI source-of-truth centralization in wire. |
 | `agent-docs/exec-plans/completed/2026-03-03-base-address-exports.md` | Completed execution record for Base canonical protocol address exports. |
@@ -43,6 +44,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Added an active execution plan for Base implementation-address + ABI regeneration sync (`2026-03-05-base-implementation-address-sync`).
 - Recorded active docs remediation plan for commit `ff248bd` (`feat(abi): fetch protocol ABIs via wagmi etherscan plugin`).
 - Switched ABI generation to Wagmi `etherscan` plugin fetches for Base (`chainId=8453`) and documented required `BASESCAN_API_KEY` (fallback `ETHERSCAN_API_KEY`) for `pnpm wagmi` / `pnpm generate`.
 - Added shared Base builder-code utilities (`builder-codes`) and exported them from the wire public surface.
