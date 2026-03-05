@@ -26,8 +26,8 @@ import {
 describe("protocol address exports", () => {
   it("exports canonical Base chain constants", () => {
     expect(baseAddresses.chainId).toBe(8453);
-    expect(goalFactoryAddress).toBe("0xe769c0b48D65f04ec9A5a5E0e7a602D76bB4d0f7");
-    expect(budgetTcrFactoryAddress).toBe("0x9c8683E7ac02443fC1E49dC9EA5011A39eCca8d8");
+    expect(goalFactoryAddress).toBe("0x47e83655026b6cAAD68D32919f165CE9C3Bd8a8F");
+    expect(budgetTcrFactoryAddress).toBe("0x6FDbE9f8330CA9B22d74E21a1e5aA29c7AE4E4fD");
     expect(cobuildTokenAddress).toBe("0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD");
     expect(COBUILD_TOKEN).toBe("0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD");
     expect(COBUILD_REVNET_ID).toBe(138);

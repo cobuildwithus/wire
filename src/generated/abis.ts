@@ -3818,7 +3818,7 @@ export const budgetTcrDeployerConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9c8683E7ac02443fC1E49dC9EA5011A39eCca8d8)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6FDbE9f8330CA9B22d74E21a1e5aA29c7AE4E4fD)
  */
 export const budgetTcrFactoryAbi = [
   {
@@ -3908,6 +3908,11 @@ export const budgetTcrFactoryAbi = [
   },
   {
     type: 'error',
+    inputs: [{ name: 'caller', internalType: 'address', type: 'address' }],
+    name: 'UNAUTHORIZED_STACK_DEPLOYER',
+  },
+  {
+    type: 'error',
     inputs: [
       { name: 'expected', internalType: 'address', type: 'address' },
       { name: 'actual', internalType: 'address', type: 'address' },
@@ -3928,6 +3933,86 @@ export const budgetTcrFactoryAbi = [
       { name: 'configuredSlasher', internalType: 'address', type: 'address' },
     ],
     name: 'UNSUPPORTED_UNDERWRITER_SLASHER',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'budgetTCR',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'allocationMechanism',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'allocationMechanismArbitrator',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'roundFactory',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetAllocationMechanismDeployed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'budgetTCR',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'childFlow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'premiumEscrow',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'strategy',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetStackDeployed',
   },
   {
     type: 'event',
@@ -3984,6 +4069,15 @@ export const budgetTcrFactoryAbi = [
     inputs: [],
     name: 'authorizedCaller',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'stackDeployer', internalType: 'address', type: 'address' },
+    ],
+    name: 'budgetTCRByStackDeployer',
+    outputs: [{ name: 'budgetTCR', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -4222,6 +4316,35 @@ export const budgetTcrFactoryAbi = [
   {
     type: 'function',
     inputs: [
+      { name: 'itemID', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'allocationMechanism', internalType: 'address', type: 'address' },
+      {
+        name: 'allocationMechanismArbitrator',
+        internalType: 'address',
+        type: 'address',
+      },
+      { name: 'roundFactory', internalType: 'address', type: 'address' },
+    ],
+    name: 'onBudgetAllocationMechanismDeployed',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'itemID', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'childFlow', internalType: 'address', type: 'address' },
+      { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+      { name: 'premiumEscrow', internalType: 'address', type: 'address' },
+      { name: 'strategy', internalType: 'address', type: 'address' },
+    ],
+    name: 'onBudgetStackDeployed',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
       { name: 'sender', internalType: 'address', type: 'address' },
       { name: 'goalFlow', internalType: 'address', type: 'address' },
       { name: 'goalTreasury', internalType: 'address', type: 'address' },
@@ -4234,6 +4357,15 @@ export const budgetTcrFactoryAbi = [
   },
   {
     type: 'function',
+    inputs: [{ name: 'budgetTCR', internalType: 'address', type: 'address' }],
+    name: 'stackDeployerByBudgetTCR',
+    outputs: [
+      { name: 'stackDeployer', internalType: 'address', type: 'address' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     inputs: [],
     name: 'stackDeployerImplementation',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
@@ -4242,14 +4374,14 @@ export const budgetTcrFactoryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9c8683E7ac02443fC1E49dC9EA5011A39eCca8d8)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6FDbE9f8330CA9B22d74E21a1e5aA29c7AE4E4fD)
  */
 export const budgetTcrFactoryAddress = {
-  8453: '0x9c8683E7ac02443fC1E49dC9EA5011A39eCca8d8',
+  8453: '0x6FDbE9f8330CA9B22d74E21a1e5aA29c7AE4E4fD',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9c8683E7ac02443fC1E49dC9EA5011A39eCca8d8)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6FDbE9f8330CA9B22d74E21a1e5aA29c7AE4E4fD)
  */
 export const budgetTcrFactoryConfig = {
   address: budgetTcrFactoryAddress,
@@ -8276,7 +8408,7 @@ export const flowConfig = { address: flowAddress, abi: flowAbi } as const
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xe769c0b48D65f04ec9A5a5E0e7a602D76bB4d0f7)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x47e83655026b6cAAD68D32919f165CE9C3Bd8a8F)
  */
 export const goalFactoryAbi = [
   {
@@ -8459,6 +8591,11 @@ export const goalFactoryAbi = [
           { name: 'goalSuperToken', internalType: 'address', type: 'address' },
           { name: 'goalTreasury', internalType: 'address', type: 'address' },
           { name: 'goalFlow', internalType: 'address', type: 'address' },
+          {
+            name: 'goalFlowAllocationLedgerPipeline',
+            internalType: 'address',
+            type: 'address',
+          },
           { name: 'stakeVault', internalType: 'address', type: 'address' },
           {
             name: 'budgetStakeLedger',
@@ -8936,6 +9073,11 @@ export const goalFactoryAbi = [
           { name: 'goalSuperToken', internalType: 'address', type: 'address' },
           { name: 'goalTreasury', internalType: 'address', type: 'address' },
           { name: 'goalFlow', internalType: 'address', type: 'address' },
+          {
+            name: 'goalFlowAllocationLedgerPipeline',
+            internalType: 'address',
+            type: 'address',
+          },
           { name: 'stakeVault', internalType: 'address', type: 'address' },
           {
             name: 'budgetStakeLedger',
@@ -8964,14 +9106,14 @@ export const goalFactoryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xe769c0b48D65f04ec9A5a5E0e7a602D76bB4d0f7)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x47e83655026b6cAAD68D32919f165CE9C3Bd8a8F)
  */
 export const goalFactoryAddress = {
-  8453: '0xe769c0b48D65f04ec9A5a5E0e7a602D76bB4d0f7',
+  8453: '0x47e83655026b6cAAD68D32919f165CE9C3Bd8a8F',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xe769c0b48D65f04ec9A5a5E0e7a602D76bB4d0f7)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x47e83655026b6cAAD68D32919f165CE9C3Bd8a8F)
  */
 export const goalFactoryConfig = {
   address: goalFactoryAddress,
