@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.5] - 2026-03-05
+
+### Added
+- fetch protocol ABIs via wagmi etherscan plugin
+
+### Changed
+- fix drift gate for abi etherscan migration
+
 ## [0.1.4] - 2026-03-05
 
 ### Added
