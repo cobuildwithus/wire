@@ -7,8 +7,8 @@ import { BASE_CHAIN_ID } from "./chains.js";
  * - v1-core/deploys/LATEST_IMPLEMENTATIONS.8453.toml
  */
 export const baseEntrypoints = {
-  goalFactory: "0x5E06B4AC7DC15e86791AE0fb580d538492659Dec",
-  budgetTcrFactory: "0x4db0895547AE87a6B0f72F0F4D6D362F917d24bc",
+  goalFactory: "0xe769c0b48D65f04ec9A5a5E0e7a602D76bB4d0f7",
+  budgetTcrFactory: "0x9c8683E7ac02443fC1E49dC9EA5011A39eCca8d8",
   cobuildToken: "0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD",
   cobuildSwap: "0x5d09ddd53feffc52f5139a59246ced560d8c45df",
   cobuildTerminal: "0xf70c200Ab4F06d781aAC8333582E63CdBedAe0DE",
