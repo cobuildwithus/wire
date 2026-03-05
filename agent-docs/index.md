@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-04
+Last verified: 2026-03-05
 
 ## Purpose
 
@@ -42,6 +42,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Added shared Base builder-code utilities (`builder-codes`) and exported them from the wire public surface.
 - Synced Base `GoalFactory` and `BudgetTCRFactory` entrypoint addresses to latest `v1-core/deploys/DeployGoalFactory.8453.txt`.
 - Refreshed `protocol-addresses` constants to the newest Base deployment set in `v1-core/deploys/LATEST_IMPLEMENTATIONS.8453.{txt,toml}` (token, terminal, implementation, defaults, fake UMA resolver).
 - Synced canonical Base deployment addresses to `v1-core/deploys/LATEST_IMPLEMENTATIONS.8453.{txt,toml}` and added entrypoint aliases for terminal + buyback hook addresses.
