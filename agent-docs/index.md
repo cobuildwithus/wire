@@ -31,12 +31,14 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/generated/README.md` | Generated-doc artifact guide. |
 | `agent-docs/generated/doc-inventory.md` | Generated inventory artifact. |
 | `agent-docs/generated/doc-gardening-report.md` | Generated doc-gardening report. |
+| `agent-docs/exec-plans/active/` | Active execution plan workspace. |
 | `agent-docs/exec-plans/active/README.md` | Active execution plan conventions. |
 | `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` | Cross-agent ownership ledger. |
 | `agent-docs/exec-plans/active/2026-03-03-farcaster-wire-contract.md` | Active execution plan for Farcaster wire contract additions. |
 | `agent-docs/exec-plans/active/2026-03-03-release-docs-drift-fix.md` | Active execution plan to restore docs drift gate compliance for release patch verification. |
 | `agent-docs/exec-plans/active/2026-03-04-abi-etherscan-docs-drift-fix.md` | Active execution plan to restore docs drift compliance after migrating ABI generation to Wagmi Etherscan plugin fetches. |
 | `agent-docs/exec-plans/active/2026-03-05-base-implementation-address-sync.md` | Active execution plan for syncing Base implementation + factory entrypoint addresses and regenerated ABI outputs to latest v1-core deployments. |
+| `agent-docs/exec-plans/completed/` | Completed execution plan archive. |
 | `agent-docs/exec-plans/completed/2026-03-05-repo-tools-release-consolidation.md` | Completed execution record for consolidating package release tooling onto shared repo-tools wrappers. |
 | `agent-docs/exec-plans/completed/2026-03-05-repo-tools-extraction.md` | Completed execution record for extracting shared repo-operation tooling into `@cobuild/repo-tools`. |
 | `agent-docs/exec-plans/completed/README.md` | Completed plan archive conventions. |
