@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+COBUILD_REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 repo_tools_join_lines() {
   local out_var="$1"
   shift
@@ -11,6 +13,24 @@ repo_tools_join_lines() {
   done
   printf -v "$out_var" '%s' "$joined"
   export "$out_var"
+}
+
+cobuild_repo_tool_bin() {
+  local bin_name="$1"
+  local local_bin="$COBUILD_REPO_ROOT/node_modules/.bin/$bin_name"
+
+  if [ -x "$local_bin" ]; then
+    printf '%s\n' "$local_bin"
+    return 0
+  fi
+
+  if command -v "$bin_name" >/dev/null 2>&1; then
+    command -v "$bin_name"
+    return 0
+  fi
+
+  echo "Error: missing repo-tools executable '$bin_name'. Install dependencies first." >&2
+  return 1
 }
 
 required_files=(
@@ -50,6 +70,30 @@ export COBUILD_DRIFT_CHANGED_COUNT_EXCLUDE_PATTERN='^agent-docs/generated/|^agen
 export COBUILD_DRIFT_ALLOW_RELEASE_ARTIFACTS_ONLY='1'
 export COBUILD_COMMITTER_EXAMPLE='fix(wire): align export surface'
 export COBUILD_DOC_GARDENING_EXTRA_TRACKED_PATHS=ARCHITECTURE.md$'\n'
+export COBUILD_AUDIT_CONTEXT_PREFIX='cobuild-chat-api-audit'
+export COBUILD_AUDIT_CONTEXT_TITLE='Cobuild Chat API Audit Bundle'
+export COBUILD_AUDIT_CONTEXT_REPO_LABEL='wire'
+repo_tools_join_lines COBUILD_AUDIT_CONTEXT_ALWAYS_PATHS \
+  "AGENTS.md" \
+  "ARCHITECTURE.md" \
+  "README.md" \
+  "package.json" \
+  "pnpm-lock.yaml" \
+  "tsconfig.json" \
+  "tsconfig.build.json" \
+  "vitest.config.ts"
+repo_tools_join_lines COBUILD_AUDIT_CONTEXT_SCAN_SPECS \
+  "src" \
+  "scripts" \
+  "migrations" \
+  "docs"
+repo_tools_join_lines COBUILD_AUDIT_CONTEXT_TEST_SCAN_SPECS \
+  "tests" \
+  "test"
+repo_tools_join_lines COBUILD_AUDIT_CONTEXT_DOC_SCAN_SPECS \
+  "agent-docs:*.md"
+repo_tools_join_lines COBUILD_AUDIT_CONTEXT_CI_SCAN_SPECS \
+  ".github/workflows"
 export COBUILD_RELEASE_PACKAGE_NAME='@cobuild/wire'
 export COBUILD_RELEASE_REPOSITORY_URL='https://github.com/cobuildwithus/wire'
 export COBUILD_RELEASE_NOTES_ENABLED='1'
