@@ -39,6 +39,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/2026-03-04-abi-etherscan-docs-drift-fix.md` | Active execution plan to restore docs drift compliance after migrating ABI generation to Wagmi Etherscan plugin fetches. |
 | `agent-docs/exec-plans/active/2026-03-05-base-implementation-address-sync.md` | Active execution plan for syncing Base implementation + factory entrypoint addresses and regenerated ABI outputs to latest v1-core deployments. |
 | `agent-docs/exec-plans/completed/` | Completed execution plan archive. |
+| `agent-docs/exec-plans/completed/2026-03-07-installed-package-wrapper-cleanup.md` | Completed execution record for moving direct repo-tools wrappers and release-note generation onto installed published packages. |
 | `agent-docs/exec-plans/completed/2026-03-05-repo-tools-release-consolidation.md` | Completed execution record for consolidating package release tooling onto shared repo-tools wrappers. |
 | `agent-docs/exec-plans/completed/2026-03-05-repo-tools-extraction.md` | Completed execution record for extracting shared repo-operation tooling into `@cobuild/repo-tools`. |
 | `agent-docs/exec-plans/completed/README.md` | Completed plan archive conventions. |
@@ -49,6 +50,7 @@ Canonical map for docs used by agents working in this repository.
 ## Recent Updates
 
 - Updated the active Base address-sync execution plan scope to include GoalFactory/BudgetTCRFactory entrypoint refresh from `DeployGoalFactory.8453.txt`.
+- Completed the installed-package wrapper cleanup across release and repo-tools shell entrypoints.
 - Recorded the direct `pnpm review:gpt` package entrypoint in the testing/CI map.
 - Added an active execution plan for Base implementation-address + ABI regeneration sync (`2026-03-05-base-implementation-address-sync`).
 - Recorded active docs remediation plan for commit `ff248bd` (`feat(abi): fetch protocol ABIs via wagmi etherscan plugin`).
