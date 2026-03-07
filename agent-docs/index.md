@@ -39,6 +39,9 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/2026-03-04-abi-etherscan-docs-drift-fix.md` | Active execution plan to restore docs drift compliance after migrating ABI generation to Wagmi Etherscan plugin fetches. |
 | `agent-docs/exec-plans/active/2026-03-05-base-implementation-address-sync.md` | Active execution plan for syncing Base implementation + factory entrypoint addresses and regenerated ABI outputs to latest v1-core deployments. |
 | `agent-docs/exec-plans/completed/` | Completed execution plan archive. |
+| `agent-docs/exec-plans/completed/2026-03-07-shared-sync-helper-cleanup.md` | Completed execution record for routing wire sibling-sync automation through the shared repo-tools helper. |
+| `agent-docs/exec-plans/completed/2026-03-07-wire-post-publish-sync.md` | Completed execution record for adding post-publish sibling consumer sync automation to wire releases. |
+| `agent-docs/exec-plans/completed/2026-03-07-published-consumer-rollout-guidance.md` | Completed execution record for documenting published-package expectations and downstream consumer bump guidance. |
 | `agent-docs/exec-plans/completed/2026-03-07-installed-package-wrapper-cleanup.md` | Completed execution record for moving direct repo-tools wrappers and release-note generation onto installed published packages. |
 | `agent-docs/exec-plans/completed/2026-03-05-repo-tools-release-consolidation.md` | Completed execution record for consolidating package release tooling onto shared repo-tools wrappers. |
 | `agent-docs/exec-plans/completed/2026-03-05-repo-tools-extraction.md` | Completed execution record for extracting shared repo-operation tooling into `@cobuild/repo-tools`. |
@@ -49,6 +52,9 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Routed `wire` sibling sync through the shared repo-tools helper while preserving the current direct-consumer set and local sibling fallback before the next repo-tools publish.
+- Added a manual and release-hooked `sync:repos` flow for bumping direct `@cobuild/wire` workspace consumers after publish.
+- Documented the published-package expectation for direct `@cobuild/wire` consumers and the required downstream bump decision after release.
 - Updated the active Base address-sync execution plan scope to include GoalFactory/BudgetTCRFactory entrypoint refresh from `DeployGoalFactory.8453.txt`.
 - Completed the installed-package wrapper cleanup across release and repo-tools shell entrypoints.
 - Recorded the direct `pnpm review:gpt` package entrypoint in the testing/CI map.

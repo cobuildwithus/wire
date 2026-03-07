@@ -18,9 +18,16 @@ repo_tools_join_lines() {
 cobuild_repo_tool_bin() {
   local bin_name="$1"
   local local_bin="$COBUILD_REPO_ROOT/node_modules/.bin/$bin_name"
+  local sibling_bin="$COBUILD_REPO_ROOT/../repo-tools/bin/$bin_name"
 
   if [ -x "$local_bin" ]; then
     printf '%s\n' "$local_bin"
+    return 0
+  fi
+
+  # Allow local workspace testing of unreleased repo-tools bins before the next package publish.
+  if [ -x "$sibling_bin" ]; then
+    printf '%s\n' "$sibling_bin"
     return 0
   fi
 
@@ -99,3 +106,5 @@ export COBUILD_RELEASE_REPOSITORY_URL='https://github.com/cobuildwithus/wire'
 export COBUILD_RELEASE_NOTES_ENABLED='1'
 export COBUILD_RELEASE_COMMIT_TEMPLATE='chore(release): v%s'
 export COBUILD_RELEASE_TAG_MESSAGE_TEMPLATE='chore(release): v%s'
+export COBUILD_RELEASE_POST_PUSH_CMD='bash ./scripts/sync-dependent-repos.sh --version "$COBUILD_RELEASE_VERSION" --wait-for-publish'
+export COBUILD_RELEASE_POST_PUSH_SKIP_ENV='WIRE_SKIP_UPSTREAM_SYNC'

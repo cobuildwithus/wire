@@ -40,6 +40,9 @@ If instructions still conflict after applying this order, ask the user before ac
 - Continue working in the current tree even when unrelated external dirty changes appear.
 - Never revert, delete, or rewrite existing edits you did not make unless the user explicitly asks.
 - If architecture-significant behavior changes, update matching docs in `agent-docs/`.
+- Treat the published `@cobuild/wire` package as the committed source of truth for sibling repos. Local `wire:use-local` link/file specs are temporary integration helpers only and must be normalized back to a published semver before commit.
+- `wire` releases may sync direct workspace consumers automatically after push by waiting for npm publish visibility and then running `scripts/sync-dependent-repos.sh`. Use `--no-sync-upstreams` or `WIRE_SKIP_UPSTREAM_SYNC=1` when that follow-up should be skipped intentionally.
+- When a `wire` release changes consumed addresses, ABIs, helpers, or runtime contracts, update the affected sibling repos after publish or record why a downstream bump is intentionally deferred.
 - For multi-file or high-risk work, add an execution plan in `agent-docs/exec-plans/active/`.
 
 ## Required Checks
