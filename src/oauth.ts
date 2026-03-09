@@ -23,13 +23,27 @@ export const CLI_OAUTH_REQUIRED_SCOPES = ["offline_access"] as const;
 export type CliOAuthScope = (typeof CLI_OAUTH_SUPPORTED_SCOPES)[number];
 
 export const CLI_OAUTH_DEFAULT_SCOPES = [
-  "notifications:read",
   "offline_access",
   "tools:read",
   "wallet:read",
 ] as const satisfies readonly CliOAuthScope[];
 
 export const CLI_OAUTH_WRITE_SCOPES = [
+  "offline_access",
+  "tools:read",
+  "tools:write",
+  "wallet:execute",
+  "wallet:read",
+] as const satisfies readonly CliOAuthScope[];
+
+export const CLI_OAUTH_NOTIFICATIONS_READ_SCOPES = [
+  "notifications:read",
+  "offline_access",
+  "tools:read",
+  "wallet:read",
+] as const satisfies readonly CliOAuthScope[];
+
+export const CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPES = [
   "notifications:read",
   "offline_access",
   "tools:read",
@@ -42,11 +56,15 @@ export const CLI_SETUP_PAYER_MODES = ["hosted", "local-generate", "local-key", "
 
 export const CLI_OAUTH_DEFAULT_SCOPE = CLI_OAUTH_DEFAULT_SCOPES.join(" ");
 export const CLI_OAUTH_WRITE_SCOPE = CLI_OAUTH_WRITE_SCOPES.join(" ");
+export const CLI_OAUTH_NOTIFICATIONS_READ_SCOPE = CLI_OAUTH_NOTIFICATIONS_READ_SCOPES.join(" ");
+export const CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPE = CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPES.join(" ");
 
 const supportedScopeSet = new Set<string>(CLI_OAUTH_SUPPORTED_SCOPES);
 const allowedScopeBundles = new Set<string>([
   normalizeScope(CLI_OAUTH_DEFAULT_SCOPE),
   normalizeScope(CLI_OAUTH_WRITE_SCOPE),
+  normalizeScope(CLI_OAUTH_NOTIFICATIONS_READ_SCOPE),
+  normalizeScope(CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPE),
 ]);
 export type CliSetupPayerModeHint = (typeof CLI_SETUP_PAYER_MODES)[number];
 
@@ -101,7 +119,9 @@ export function validateScope(scope: string): string {
 
   const normalized = parsed.sort().join(" ");
   if (!allowedScopeBundles.has(normalized)) {
-    throw new Error("scope must match either the default read bundle or the full write bundle");
+    throw new Error(
+      "scope must match one of the supported read/write bundles, with or without notifications:read"
+    );
   }
 
   return normalized;

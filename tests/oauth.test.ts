@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   CLI_OAUTH_DEFAULT_SCOPE,
+  CLI_OAUTH_NOTIFICATIONS_READ_SCOPE,
+  CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPE,
   CLI_OAUTH_WRITE_SCOPE,
   createPkcePair,
   defaultCliScope,
@@ -27,28 +29,27 @@ describe("oauth contract", () => {
       "notifications:read offline_access tools:read wallet:read"
     );
     expect(splitScope(" tools:read   wallet:read ")).toEqual(["tools:read", "wallet:read"]);
+    expect(validateScope("wallet:read tools:read offline_access")).toBe(
+      "offline_access tools:read wallet:read"
+    );
     expect(validateScope("wallet:read notifications:read tools:read offline_access")).toBe(
       "notifications:read offline_access tools:read wallet:read"
     );
     expect(validateScope(CLI_OAUTH_WRITE_SCOPE)).toBe(CLI_OAUTH_WRITE_SCOPE);
+    expect(validateScope(CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPE)).toBe(CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPE);
     expect(defaultCliScope()).toBe(CLI_OAUTH_DEFAULT_SCOPE);
     expect(hasScope(CLI_OAUTH_WRITE_SCOPE, "wallet:execute")).toBe(true);
-    expect(hasScope(CLI_OAUTH_WRITE_SCOPE, "notifications:read")).toBe(true);
+    expect(hasScope(CLI_OAUTH_WRITE_SCOPE, "notifications:read")).toBe(false);
+    expect(hasScope(CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPE, "notifications:read")).toBe(true);
     expect(hasToolsWrite(CLI_OAUTH_WRITE_SCOPE)).toBe(true);
     expect(hasWalletExecute(CLI_OAUTH_WRITE_SCOPE)).toBe(true);
     expect(hasWriteToolCapability(CLI_OAUTH_WRITE_SCOPE)).toBe(true);
     expect(hasAnyWriteCapability("tools:write offline_access")).toBe(true);
-    expect(() => validateScope("offline_access tools:read wallet:read")).toThrow(
-      "scope must match either the default read bundle or the full write bundle"
-    );
-    expect(() => validateScope("offline_access tools:read tools:write wallet:read wallet:execute")).toThrow(
-      "scope must match either the default read bundle or the full write bundle"
-    );
     expect(() => validateScope("notifications:read tools:read offline_access")).toThrow(
-      "scope must match either the default read bundle or the full write bundle"
+      "scope must match one of the supported read/write bundles, with or without notifications:read"
     );
     expect(() => validateScope("wallet:read wallet:execute offline_access")).toThrow(
-      "scope must match either the default read bundle or the full write bundle"
+      "scope must match one of the supported read/write bundles, with or without notifications:read"
     );
   });
 
@@ -65,7 +66,7 @@ describe("oauth contract", () => {
       responseType: "code",
       clientId: "cli",
       redirectUri: "http://127.0.0.1:43111/auth/callback",
-      scope: "tools:read notifications:read wallet:read offline_access",
+      scope: CLI_OAUTH_NOTIFICATIONS_READ_SCOPE,
       codeChallenge: "a".repeat(43),
       codeChallengeMethod: "S256",
       state: "state1234",
@@ -81,14 +82,14 @@ describe("oauth contract", () => {
       responseType: "code",
       clientId: "cli",
       redirectUri: "http://127.0.0.1:43111/auth/callback",
-      scope: CLI_OAUTH_WRITE_SCOPE,
+      scope: CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPE,
       codeChallenge: "a".repeat(43),
       codeChallengeMethod: "S256",
       state: "state1234",
       agentKey: "default",
     });
 
-    expect(writeParsed.scope).toBe(CLI_OAUTH_WRITE_SCOPE);
+    expect(writeParsed.scope).toBe(CLI_OAUTH_NOTIFICATIONS_WRITE_SCOPE);
   });
 
   it("rejects invalid authorize payload fields", () => {
@@ -97,7 +98,7 @@ describe("oauth contract", () => {
         responseType: "code",
         clientId: "cli",
         redirectUri: "http://127.0.0.1:43111/auth/callback",
-        scope: "tools:read notifications:read wallet:read offline_access",
+        scope: CLI_OAUTH_NOTIFICATIONS_READ_SCOPE,
         codeChallenge: "a".repeat(43),
         codeChallengeMethod: "S256",
         state: "state1234",
@@ -110,7 +111,7 @@ describe("oauth contract", () => {
         responseType: "code",
         clientId: "cli",
         redirectUri: "http://127.0.0.1:43111/auth/callback",
-        scope: "tools:read notifications:read wallet:read offline_access",
+        scope: CLI_OAUTH_NOTIFICATIONS_READ_SCOPE,
         codeChallenge: "a".repeat(43),
         codeChallengeMethod: "S256",
         state: "state1234",
@@ -125,7 +126,7 @@ describe("oauth contract", () => {
       response_type: "code",
       client_id: "cli",
       redirect_uri: "http://127.0.0.1:43111/auth/callback",
-      scope: "tools:read notifications:read wallet:read offline_access",
+      scope: CLI_OAUTH_NOTIFICATIONS_READ_SCOPE,
       code_challenge: "a".repeat(43),
       code_challenge_method: "S256",
       state: "state1234",
@@ -149,7 +150,7 @@ describe("oauth contract", () => {
         response_type: "code",
         client_id: "cli",
         redirect_uri: "http://127.0.0.1:43111/auth/callback",
-        scope: "tools:read notifications:read wallet:read offline_access",
+        scope: CLI_OAUTH_NOTIFICATIONS_READ_SCOPE,
         code_challenge: "a".repeat(43),
         code_challenge_method: "S256",
         state: "short",
