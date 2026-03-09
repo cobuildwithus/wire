@@ -12,6 +12,7 @@ export const CLI_OAUTH_REDIRECT_PATH = "/auth/callback";
 export const CLI_OAUTH_SUPPORTED_SCOPES = [
   "tools:read",
   "tools:write",
+  "notifications:read",
   "wallet:read",
   "wallet:execute",
   "offline_access",
@@ -22,12 +23,14 @@ export const CLI_OAUTH_REQUIRED_SCOPES = ["offline_access"] as const;
 export type CliOAuthScope = (typeof CLI_OAUTH_SUPPORTED_SCOPES)[number];
 
 export const CLI_OAUTH_DEFAULT_SCOPES = [
+  "notifications:read",
   "offline_access",
   "tools:read",
   "wallet:read",
 ] as const satisfies readonly CliOAuthScope[];
 
 export const CLI_OAUTH_WRITE_SCOPES = [
+  "notifications:read",
   "offline_access",
   "tools:read",
   "tools:write",

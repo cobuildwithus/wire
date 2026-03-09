@@ -16,13 +16,13 @@ describe("jwt claim helpers", () => {
         sub: "0xabc",
         sid: "sid_1",
         agentKey: "default",
-        scope: "tools:read offline_access",
+        scope: "notifications:read tools:read offline_access",
       })
     ).toEqual({
       sub: "0xabc",
       sid: "sid_1",
       agent_key: "default",
-      scope: "tools:read offline_access",
+      scope: "notifications:read tools:read offline_access",
     });
   });
 
@@ -32,13 +32,13 @@ describe("jwt claim helpers", () => {
         sub: "0xabc",
         sid: "sid_1",
         agent_key: "default",
-        scope: "tools:read offline_access",
+        scope: "notifications:read tools:read offline_access",
       })
     ).toEqual({
       sub: "0xabc",
       sid: "sid_1",
       agentKey: "default",
-      scope: "tools:read offline_access",
+      scope: "notifications:read tools:read offline_access",
     });
   });
 
@@ -48,7 +48,7 @@ describe("jwt claim helpers", () => {
         sub: "0xabc",
         sid: "sid_1",
         agent_key: "default",
-        scope: "tools:read offline_access",
+        scope: "notifications:read tools:read offline_access",
         iat: 1,
         exp: 2,
         iss: "issuer",
@@ -58,7 +58,7 @@ describe("jwt claim helpers", () => {
       sub: "0xabc",
       sid: "sid_1",
       agentKey: "default",
-      scope: "tools:read offline_access",
+      scope: "notifications:read tools:read offline_access",
       iat: 1,
       exp: 2,
       iss: "issuer",
@@ -73,7 +73,7 @@ describe("jwt claim helpers", () => {
       sub: "0xabc",
       sid: "sid_1",
       agent_key: "default",
-      scope: "tools:read offline_access",
+      scope: "notifications:read tools:read offline_access",
       iat: 1,
       exp: 2,
       iss: "issuer",
