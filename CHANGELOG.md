@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.6] - 2026-03-09
+
+### Added
+- refresh base implementation addresses
+- add notifications read scope
+
+### Fixed
+- relax notifications scope rollout
+- sync base factory entrypoints and abis
+- run local pre-commit before husky fallback
+
+### Changed
+- add local generation mode
+- bump repo-tools to v0.1.13
+- remove published helper fallbacks
+- align shared audit and review config
+- add wire dependent repo sync helper
+- bump to 0.1.8
+- use installed wrapper bins
+- share audit packaging
+- use published repo-tools
+- share repo tooling
+- extract shared repo scripts
+- simplify drift guardrails
+- remove local wrapper scripts
+- sync base implementations and regenerate abi exports
+
 ## [0.1.5] - 2026-03-05
 
 ### Added
