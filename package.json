@@ -32,7 +32,9 @@
   },
   "scripts": {
     "wagmi": "wagmi generate",
+    "wagmi:local": "WIRE_ABI_SOURCE=local wagmi generate",
     "generate": "pnpm wagmi && pnpm build",
+    "generate:local": "pnpm wagmi:local && pnpm build",
     "build": "tsc -p tsconfig.build.json",
     "prepare": "pnpm build && husky",
     "prepack": "pnpm build",

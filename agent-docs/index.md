@@ -53,6 +53,7 @@ Canonical map for docs used by agents working in this repository.
 ## Recent Updates
 
 - Routed `wire` sibling sync through the shared repo-tools helper while preserving the current direct-consumer set and local sibling fallback before the next repo-tools publish.
+- Added explicit `pnpm wagmi:local` / `pnpm generate:local` support so workspace ABI refreshes can use sibling `v1-core` Forge artifacts without changing the default Basescan source of truth.
 - Added a manual and release-hooked `sync:repos` flow for bumping direct `@cobuild/wire` workspace consumers after publish.
 - Documented the published-package expectation for direct `@cobuild/wire` consumers and the required downstream bump decision after release.
 - Updated the active Base address-sync execution plan scope to include GoalFactory/BudgetTCRFactory entrypoint refresh from `DeployGoalFactory.8453.txt`.

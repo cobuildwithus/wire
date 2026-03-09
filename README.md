@@ -26,6 +26,16 @@ pnpm typecheck
 pnpm test
 ```
 
+## Protocol ABI generation
+
+`pnpm wagmi` and `pnpm generate` keep Basescan as the default ABI source of truth. For fast post-deploy refreshes inside this workspace, use the local-artifact mode instead.
+
+- `pnpm generate:local` (or `WIRE_ABI_SOURCE=local pnpm wagmi`) uses sibling `v1-core/out` artifacts so ABI refreshes do not wait on explorer verification.
+- Default mode is Basescan; `WIRE_ABI_SOURCE=basescan` forces the same behavior explicitly.
+- `WIRE_ABI_SOURCE=local` requires sibling Forge artifacts and fails fast if they are missing.
+- `BASESCAN_API_KEY` (fallback `ETHERSCAN_API_KEY`) is required for default Basescan generation.
+- `WIRE_V1_CORE_PATH` can override the default sibling `v1-core` repo location when needed.
+
 ## Consumer workflow
 
 Committed downstream state should use the published `@cobuild/wire` package, not a sibling `link:` or `file:` dependency.
