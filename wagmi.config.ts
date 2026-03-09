@@ -181,6 +181,7 @@ function getMissingLocalArtifacts(artifactsDir: string): string[] {
 function getLocalContracts(artifactsDir: string) {
   return PROTOCOL_CONTRACTS.map(({ artifact, ...contract }) => ({
     ...contract,
+    address: { [BASE_CHAIN_ID]: contract.address },
     abi: readArtifactAbi(resolve(artifactsDir, artifact)),
   }));
 }
