@@ -21,11 +21,14 @@ Publish a new `@cobuild/wire` release with the refreshed Base implementation add
 - Verified the refreshed `wire` payload locally before release prep.
 - Confirmed the repository is on `main`.
 - Confirmed the release tooling requires a clean git tree before publish.
+- Committed the refreshed Base address and ABI payload.
+- Released `@cobuild/wire@0.1.6` and pushed tag `v0.1.6`.
+- Waited for npm visibility, then updated downstream consumers to the published release.
 
 ## Now
 
-- Commit the refreshed `wire` payload, publish a new patch release, and then propagate the released version to downstream consumers.
+- None.
 
 ## Next
 
-- Remove the temporary `indexer` ABI bridge once the published package contains the treasury failure events.
+- Keep downstream consumers on published semver-only `@cobuild/wire` specs for future ABI/address refreshes.
