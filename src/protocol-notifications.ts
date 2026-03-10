@@ -206,6 +206,7 @@ function focusForProtocolNotification(
       return "mechanism";
     case "underwriter_slashed":
     case "underwriter_withdrawal_prep_required":
+    case "underwriter_withdrawal_prep_complete":
       return "underwriter";
     case "premium_claimable":
     case "premium_claimed":
@@ -234,6 +235,7 @@ function pageForProtocolNotification(reason: string): "events" | "allocate" {
     case "budget_success_resolution_disabled":
     case "underwriter_slashed":
     case "underwriter_withdrawal_prep_required":
+    case "underwriter_withdrawal_prep_complete":
     case "premium_claimable":
     case "premium_claimed":
     case "mechanism_proposed":
@@ -475,6 +477,8 @@ function buildTitle(
       return goalName ? `Underwriter slash applied in ${goalName}.` : "Underwriter slash applied.";
     case "underwriter_withdrawal_prep_required":
       return goalName ? `Withdrawal prep required in ${goalName}.` : "Withdrawal prep required.";
+    case "underwriter_withdrawal_prep_complete":
+      return goalName ? `Withdrawal prep complete in ${goalName}.` : "Withdrawal prep complete.";
     case "premium_claimable":
       return goalName ? `Premium ready to claim in ${goalName}.` : "Premium ready to claim.";
     case "premium_claimed":
@@ -726,6 +730,8 @@ function buildExcerpt(
       return "A slash was applied to your underwriting position.";
     case "underwriter_withdrawal_prep_required":
       return "This goal is resolved. Prepare your withdrawal before withdrawing stake.";
+    case "underwriter_withdrawal_prep_complete":
+      return "Your withdrawal is prepared. You can now withdraw stake from this resolved goal.";
     case "premium_claimable":
       return "Premium is now claimable on this underwriting position.";
     case "premium_claimed":

@@ -190,6 +190,25 @@ describe("protocol notification presenter", () => {
     });
   });
 
+  it("uses withdrawal prep completion copy", () => {
+    expect(
+      buildProtocolNotificationPresentation({
+        reason: "underwriter_withdrawal_prep_complete",
+        actorWalletAddress: null,
+        payload: {
+          role: "goal_stakeholder",
+          labels: { goalName: "Alpha" },
+          resource: { goalTreasury },
+        },
+      })
+    ).toEqual({
+      title: "Withdrawal prep complete in Alpha.",
+      excerpt: "Your withdrawal is prepared. You can now withdraw stake from this resolved goal.",
+      appPath: `/${goalTreasury}/allocate?focus=underwriter`,
+      actorName: null,
+    });
+  });
+
   it("renders budget success assertion notifications with allocate paths", () => {
     expect(
       buildProtocolNotificationPresentation({
@@ -989,6 +1008,11 @@ describe("protocol notification presenter", () => {
       "underwriter_slashed",
       "Underwriter slash applied in Alpha.",
       "A slash was applied to your underwriting position.",
+    ],
+    [
+      "underwriter_withdrawal_prep_complete",
+      "Withdrawal prep complete in Alpha.",
+      "Your withdrawal is prepared. You can now withdraw stake from this resolved goal.",
     ],
     [
       "mechanism_proposed",
