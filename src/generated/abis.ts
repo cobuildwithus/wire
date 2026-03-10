@@ -719,6 +719,18 @@ export const allocationMechanismTcrAbi = [
         type: 'bytes32',
         indexed: false,
       },
+      {
+        name: '_requestIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: '_challenger',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
     ],
     name: 'Dispute',
   },
@@ -1049,6 +1061,12 @@ export const allocationMechanismTcrAbi = [
         internalType: 'enum IGeneralizedTCR.Status',
         type: 'uint8',
         indexed: true,
+      },
+      {
+        name: '_requester',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
       },
     ],
     name: 'RequestSubmitted',
@@ -3220,6 +3238,18 @@ export const budgetTcrAbi = [
         type: 'bytes32',
         indexed: false,
       },
+      {
+        name: '_requestIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: '_challenger',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
     ],
     name: 'Dispute',
   },
@@ -3391,6 +3421,12 @@ export const budgetTcrAbi = [
         internalType: 'enum IGeneralizedTCR.Status',
         type: 'uint8',
         indexed: true,
+      },
+      {
+        name: '_requester',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
       },
     ],
     name: 'RequestSubmitted',
@@ -4688,6 +4724,7 @@ export const budgetTreasuryAbi = [
             internalType: 'bytes32',
             type: 'bytes32',
           },
+          { name: 'spendPolicy', internalType: 'address', type: 'address' },
         ],
       },
     ],
@@ -4847,6 +4884,13 @@ export const budgetTreasuryAbi = [
     name: 'settleResidualToParentForFinalize',
     outputs: [],
     stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'spendPolicy',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
   },
   {
     type: 'function',
@@ -5365,6 +5409,11 @@ export const budgetTreasuryAbi = [
   { type: 'error', inputs: [], name: 'INVALID_DEADLINES' },
   { type: 'error', inputs: [], name: 'INVALID_EXECUTION_DURATION' },
   { type: 'error', inputs: [], name: 'INVALID_REASSERT_GRACE_DURATION' },
+  {
+    type: 'error',
+    inputs: [{ name: 'policy', internalType: 'address', type: 'address' }],
+    name: 'INVALID_SPEND_POLICY',
+  },
   { type: 'error', inputs: [], name: 'INVALID_STATE' },
   {
     type: 'error',
@@ -9029,6 +9078,7 @@ export const goalFactoryAbi = [
               },
             ],
           },
+          { name: 'goalSpendPolicy', internalType: 'address', type: 'address' },
         ],
       },
     ],
@@ -11098,7 +11148,6 @@ export const goalTreasuryAbi = [
   {
     type: 'function',
     inputs: [
-      { name: 'initialOwner', internalType: 'address', type: 'address' },
       {
         name: 'config',
         internalType: 'struct IGoalTreasury.GoalConfig',
@@ -11145,6 +11194,7 @@ export const goalTreasuryAbi = [
             internalType: 'bytes32',
             type: 'bytes32',
           },
+          { name: 'spendPolicy', internalType: 'address', type: 'address' },
         ],
       },
     ],
@@ -11341,6 +11391,13 @@ export const goalTreasuryAbi = [
     name: 'settleResidualForFinalize',
     outputs: [],
     stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'spendPolicy',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
   },
   {
     type: 'function',
@@ -11585,12 +11642,6 @@ export const goalTreasuryAbi = [
     type: 'event',
     anonymous: false,
     inputs: [
-      {
-        name: 'owner',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
       {
         name: 'flow',
         internalType: 'address',
@@ -12070,6 +12121,11 @@ export const goalTreasuryAbi = [
     type: 'error',
     inputs: [{ name: 'controller', internalType: 'address', type: 'address' }],
     name: 'INVALID_REVNET_CONTROLLER',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'policy', internalType: 'address', type: 'address' }],
+    name: 'INVALID_SPEND_POLICY',
   },
   { type: 'error', inputs: [], name: 'INVALID_STATE' },
   {
@@ -14271,6 +14327,18 @@ export const roundSubmissionTcrAbi = [
         type: 'bytes32',
         indexed: false,
       },
+      {
+        name: '_requestIndex',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+      {
+        name: '_challenger',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
     ],
     name: 'Dispute',
   },
@@ -14442,6 +14510,12 @@ export const roundSubmissionTcrAbi = [
         internalType: 'enum IGeneralizedTCR.Status',
         type: 'uint8',
         indexed: true,
+      },
+      {
+        name: '_requester',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
       },
     ],
     name: 'RequestSubmitted',

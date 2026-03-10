@@ -38,6 +38,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/2026-03-03-release-docs-drift-fix.md` | Active execution plan to restore docs drift gate compliance for release patch verification. |
 | `agent-docs/exec-plans/active/2026-03-04-abi-etherscan-docs-drift-fix.md` | Active execution plan to restore docs drift compliance after migrating ABI generation to Wagmi Etherscan plugin fetches. |
 | `agent-docs/exec-plans/active/2026-03-05-base-implementation-address-sync.md` | Active execution plan for syncing Base implementation + factory entrypoint addresses and regenerated ABI outputs to latest v1-core deployments. |
+| `agent-docs/exec-plans/active/2026-03-10-tcr-request-actor-abi-sync.md` | Active execution plan for regenerating wire ABIs after the TCR requester/challenger event payload cutover. |
 | `agent-docs/exec-plans/completed/` | Completed execution plan archive. |
 | `agent-docs/exec-plans/completed/2026-03-07-shared-sync-helper-cleanup.md` | Completed execution record for routing wire sibling-sync automation through the shared repo-tools helper. |
 | `agent-docs/exec-plans/completed/2026-03-07-wire-post-publish-sync.md` | Completed execution record for adding post-publish sibling consumer sync automation to wire releases. |
