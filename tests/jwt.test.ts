@@ -3,6 +3,7 @@ import {
   DEFAULT_CLI_JWT_AUDIENCE,
   DEFAULT_CLI_JWT_ISSUER,
   DEFAULT_DEV_CLI_JWT_PUBLIC_KEY,
+  deriveCliVerifiedPrincipal,
   deriveCliScopeCapabilities,
   parseCliJwtClaims,
   parseCliJwtVerifiedClaims,
@@ -103,5 +104,57 @@ describe("jwt claim helpers", () => {
       hasWalletExecute: true,
       hasAnyWriteScope: true,
     });
+  });
+
+  it("derives a normalized principal from verified claims", () => {
+    expect(
+      deriveCliVerifiedPrincipal({
+        sub: "0x00000000000000000000000000000000000000AA",
+        sid: " 42 ",
+        agentKey: " ops ",
+        scope: "tools:read tools:write wallet:read",
+        iat: 1,
+        exp: 2,
+        iss: "issuer",
+        aud: "audience",
+      })
+    ).toEqual({
+      sessionId: "42",
+      ownerAddress: "0x00000000000000000000000000000000000000aa",
+      agentKey: "ops",
+      scope: "tools:read tools:write wallet:read",
+      scopes: ["tools:read", "tools:write", "wallet:read"],
+      hasToolsRead: true,
+      hasToolsWrite: true,
+      hasWalletExecute: false,
+      hasAnyWriteScope: true,
+    });
+  });
+
+  it("rejects verified principals with invalid normalized fields", () => {
+    expect(
+      deriveCliVerifiedPrincipal({
+        sub: "bad-address",
+        sid: "42",
+        agentKey: "ops",
+        scope: "tools:read",
+        iat: 1,
+        exp: 2,
+        iss: "issuer",
+        aud: "audience",
+      })
+    ).toBeNull();
+    expect(
+      deriveCliVerifiedPrincipal({
+        sub: "0x0000000000000000000000000000000000000001",
+        sid: "42",
+        agentKey: "ops",
+        scope: "   ",
+        iat: 1,
+        exp: 2,
+        iss: "issuer",
+        aud: "audience",
+      })
+    ).toBeNull();
   });
 });

@@ -7,8 +7,10 @@ Finish the shared protocol notification contract for the remaining lifecycle rea
 ## Scope
 
 - Add shared presenter support for goal and budget success-assertion reasons.
+- Cover finalize-failed, resolver-lifecycle, juror reward, and reminder reason families through the same shared contract.
 - Add controller-like role-aware copy without splitting semantic reasons.
 - Route budget, mechanism, success-assertion, and dispute notifications to the most relevant existing app surfaces with structured query refs intact.
+- Preserve richer shared payload metadata for schedules, amounts, reminder context labels, and reward buckets.
 - Keep web and chat consumers aligned through the shared presenter contract.
 
 ## Constraints
@@ -24,5 +26,5 @@ Finish the shared protocol notification contract for the remaining lifecycle rea
 - `pnpm docs:drift`
 - `pnpm docs:gardening`
 
-Status: in_progress
+Status: completed
 Updated: 2026-03-10

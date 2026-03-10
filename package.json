@@ -18,9 +18,23 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./protocol-participant-preflights": {
+      "types": "./dist/protocol-participant-preflights.d.ts",
+      "import": "./dist/protocol-participant-preflights.js"
+    },
     "./protocol-notifications": {
       "types": "./dist/protocol-notifications.d.ts",
       "import": "./dist/protocol-notifications.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "protocol-participant-preflights": [
+        "dist/protocol-participant-preflights.d.ts"
+      ],
+      "protocol-notifications": [
+        "dist/protocol-notifications.d.ts"
+      ]
     }
   },
   "bin": {

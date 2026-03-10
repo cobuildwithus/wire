@@ -5,11 +5,16 @@
 - JWT claim key mapping (`agent_key` <-> `agentKey`)
 - Idempotency header and UUID schema
 - x402 payload schema and invariants
+- Protocol notification contracts:
+  - shared wallet notification kind constants and list-wallet-notifications DTO surface
+  - protocol notification payload normalization including shared schedule/reward/amount metadata
+  - shared discussion/protocol app-path builders plus protocol route-state helpers
+  - shared presenter copy for success-assertion, juror reward, and reminder reason families
 - Protocol address exports and aliases:
   - Base-only protocol network helpers (`PROTOCOL_NETWORKS`, `normalizeProtocolNetwork`, `resolveProtocolAddresses`)
   - canonical Base deployment sets (`baseEntrypoints`, `baseImplementations`, `baseDefaults`, `baseConfig`)
   - canonical shared Base token and ecosystem contract sets (`baseTokens`, `baseEcosystemContracts`, `baseContracts`, `WETH_ADDRESS`, `USDC_BASE_ADDRESS`)
-  - convenience aliases for token/revnet/swap fields in camelCase and constant-case forms (`cobuildTokenAddress`, `cobuildSwapAddress`, `COBUILD_TOKEN`, `COBUILD_REVNET_ID`, `COBUILD_SWAP`, `COBUILD_SWAP_IMPL`)
+  - convenience camelCase aliases for entrypoint addresses (`goalFactoryAddress`, `budgetTcrFactoryAddress`, `cobuildTokenAddress`, `cobuildSwapAddress`, `cobuildTerminalAddress`, `buybackHookDataHookAddress`, `buybackHookAddress`)
 - Protocol indexed inspect helpers:
   - stable goal/budget state label tables (`GOAL_STATE_LABELS`, `BUDGET_STATE_LABELS`)
   - pure lookup/account/address normalization helpers (`normalizeLookupIdentifier`, `normalizeGoalLookupKey`, `normalizeIndexedIdentifier`, `normalizeAccountLookup`, `normalizeHexAddress`)
@@ -25,8 +30,18 @@
   - strict GoalFactory `DeployParams` normalization against the generated ABI surface (no legacy `revnet.owner` / `underwriting.coverageLambda` passthrough)
   - shared `deployGoal` transaction and write-request builders
   - shared `GoalDeployed` log and receipt decoding helpers
+- Protocol governance helpers:
+  - shared TCR/arbitrator planners, payload coders, commit-hash helpers, and receipt decoders
+- Protocol participant write helpers:
+  - shared treasury donation planners and donation receipt decoders
+  - shared stake-vault deposit/withdraw/juror planners and receipt decoders
+  - shared premium-escrow claim/checkpoint planners and receipt decoders
+  - shared round prize-vault claim/downgrade planners and receipt decoders
+  - shared flow allocation/maintenance planners, allocation-vector normalizers, and allocation receipt helpers
 - Farcaster signup wire contracts:
   - canonical contract addresses and ABIs (IdGateway, KeyGateway, IdRegistry)
   - SignedKeyRequest typed-data domain/types/message builders
   - deterministic signup preflight status classification (`already_registered`, `needs_funding`, `ready`)
   - hosted/local shared signup call-plan intent shapes
+  - canonical signup success envelopes (`needs_funding`, `complete`) and already-registered error envelopes
+  - canonical hosted x402 payment response envelope for the hosted signer flow

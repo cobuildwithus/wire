@@ -12,6 +12,34 @@ export function normalizeEvmAddress(value: string, label: string): EvmAddress {
   return normalized as EvmAddress;
 }
 
+export function parseEvmAddress(value: unknown): EvmAddress | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  try {
+    return normalizeEvmAddress(trimmed, "address");
+  } catch {
+    return null;
+  }
+}
+
+export function isSameEvmAddress(left: unknown, right: unknown): boolean {
+  const normalizedLeft = parseEvmAddress(left);
+  const normalizedRight = parseEvmAddress(right);
+
+  if (!normalizedLeft || !normalizedRight) {
+    return false;
+  }
+
+  return normalizedLeft === normalizedRight;
+}
+
 export function normalizeHexBytes(value: string, bytesLength: number, label: string): HexBytes {
   const normalized = value.trim().toLowerCase();
   if (!isHex(normalized) || size(normalized) !== bytesLength) {

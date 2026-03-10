@@ -1,3 +1,20 @@
+export const NOTIFICATION_KINDS = ["discussion", "payment", "protocol"] as const;
+export const LIST_WALLET_NOTIFICATIONS_DEFAULT_LIMIT = 20;
+export const LIST_WALLET_NOTIFICATIONS_LIMIT_MIN = 1;
+export const LIST_WALLET_NOTIFICATIONS_LIMIT_MAX = 50;
+export const LIST_WALLET_NOTIFICATIONS_CURSOR_MAX_LENGTH = 512;
+
+export type NotificationKind = (typeof NOTIFICATION_KINDS)[number];
+
+export type NotificationDtoValue =
+  | string
+  | boolean
+  | null
+  | NotificationDtoValue[]
+  | { [key: string]: NotificationDtoValue };
+
+type NotificationDtoRecord = { [key: string]: NotificationDtoValue };
+
 export type ProtocolNotificationRole =
   | "requester"
   | "challenger"
@@ -9,7 +26,11 @@ export type ProtocolNotificationRole =
   | "budget_underwriter"
   | "juror";
 
-export type ProtocolNotificationResource = {
+export interface ProtocolNotificationActor extends NotificationDtoRecord {
+  walletAddress: string | null;
+}
+
+export interface ProtocolNotificationResource extends NotificationDtoRecord {
   kind: string | null;
   goalTreasury: string | null;
   budgetTreasury: string | null;
@@ -17,38 +38,47 @@ export type ProtocolNotificationResource = {
   requestIndex: string | null;
   arbitrator: string | null;
   disputeId: string | null;
-};
+}
 
-export type ProtocolNotificationLabels = {
+export interface ProtocolNotificationLabels extends NotificationDtoRecord {
   goalName: string | null;
   budgetName: string | null;
   mechanismName: string | null;
-};
+  reminderContextLabel: string | null;
+}
 
-export type ProtocolNotificationSchedule = {
+export interface ProtocolNotificationSchedule extends NotificationDtoRecord {
   deliverAt: string | null;
   votingStartAt: string | null;
   votingEndAt: string | null;
   revealEndAt: string | null;
-};
+  challengeWindowEndAt: string | null;
+  reassertGraceDeadline: string | null;
+}
 
-export type ProtocolNotificationAmounts = {
+export interface ProtocolNotificationAmounts extends NotificationDtoRecord {
   allocatedStake: string | null;
   claimable: string | null;
   claimedAmount: string | null;
   snapshotWeight: string | null;
   snapshotVotes: string | null;
   slashWeight: string | null;
-};
+}
 
-export type ProtocolNotificationPayload = {
+export interface ProtocolNotificationReward extends NotificationDtoRecord {
+  bucket: string | null;
+  bucketLabel: string | null;
+}
+
+export interface ProtocolNotificationPayload extends NotificationDtoRecord {
   role: ProtocolNotificationRole | null;
   resource: ProtocolNotificationResource | null;
-  actorWalletAddress: string | null;
+  actor: ProtocolNotificationActor | null;
   labels: ProtocolNotificationLabels | null;
   schedule: ProtocolNotificationSchedule | null;
   amounts: ProtocolNotificationAmounts | null;
-};
+  reward: ProtocolNotificationReward | null;
+}
 
 export type ProtocolNotificationPresentation = {
   title: string;
@@ -57,8 +87,111 @@ export type ProtocolNotificationPresentation = {
   actorName: string | null;
 };
 
+export type ProtocolRouteFocus =
+  | "request"
+  | "dispute"
+  | "budget"
+  | "mechanism"
+  | "goal"
+  | "success_assertion"
+  | "underwriter"
+  | "premium";
+
+export type ProtocolRouteState = {
+  focus: ProtocolRouteFocus | null;
+  budgetTreasury: string | null;
+  itemId: string | null;
+  requestIndex: string | null;
+  disputeId: string | null;
+  arbitrator: string | null;
+};
+
+export type ProtocolRouteHint = {
+  title: string;
+  description: string;
+  chips: Array<{ label: string; value: string }>;
+  focusSectionId: "position-summary" | "funding-flow" | null;
+};
+
+export type WalletNotificationActor = {
+  fid: number | null;
+  walletAddress: string | null;
+  name: string | null;
+  username: string | null;
+  avatarUrl: string | null;
+};
+
+export type WalletNotificationSummary = {
+  title: string | null;
+  excerpt: string | null;
+};
+
+export type WalletNotificationResource = {
+  sourceType: string;
+  sourceId: string;
+  sourceHash: string | null;
+  rootHash: string | null;
+  targetHash: string | null;
+  appPath: string | null;
+};
+
+export type PaymentNotificationPayload = {
+  amount: string | null;
+};
+
+export type WalletNotificationPayload =
+  | ProtocolNotificationPayload
+  | PaymentNotificationPayload
+  | null;
+
+export type WalletNotificationItem = {
+  id: string;
+  kind: string;
+  reason: string;
+  eventAt: string | null;
+  createdAt: string;
+  isUnread: boolean;
+  actor: WalletNotificationActor | null;
+  summary: WalletNotificationSummary;
+  resource: WalletNotificationResource;
+  payload: WalletNotificationPayload;
+};
+
+export type WalletNotificationsUnreadState = {
+  count: number;
+  watermark: string;
+};
+
+export type ListWalletNotificationsInput = {
+  limit: number;
+  cursor?: string;
+  unreadOnly: boolean;
+  kinds?: NotificationKind[];
+};
+
+export type ListWalletNotificationsOutput = {
+  subjectWalletAddress: string;
+  items: WalletNotificationItem[];
+  pageInfo: {
+    limit: number;
+    nextCursor: string | null;
+    hasMore: boolean;
+  };
+  unread: WalletNotificationsUnreadState;
+};
+
+type RawSearchParams = Record<string, string | string[] | undefined>;
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function isDtoRecord(value: NotificationDtoValue | undefined): value is NotificationDtoRecord {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function normalizeHash(value: unknown): string | null {
+  return typeof value === "string" && /^0x[0-9a-f]+$/i.test(value) ? value.toLowerCase() : null;
 }
 
 function normalizeHexAddress(value: unknown): string | null {
@@ -73,9 +206,70 @@ function trimNonEmptyString(value: unknown): string | null {
   return trimmed === "" ? null : trimmed;
 }
 
+function normalizeIntegerString(value: unknown): string | null {
+  const trimmed = trimNonEmptyString(value);
+  return trimmed && /^[0-9]+$/.test(trimmed) ? trimmed : null;
+}
+
+function normalizeNotificationDtoValue(value: unknown): NotificationDtoValue | undefined {
+  if (value === null) {
+    return null;
+  }
+  if (typeof value === "string" || typeof value === "boolean") {
+    return value;
+  }
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? String(value) : undefined;
+  }
+  if (typeof value === "bigint") {
+    return value.toString();
+  }
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+  if (Array.isArray(value)) {
+    return value.flatMap((entry) => {
+      const normalized = normalizeNotificationDtoValue(entry);
+      return normalized === undefined ? [] : [normalized];
+    });
+  }
+  if (!value || typeof value !== "object") {
+    return undefined;
+  }
+  const jsonValue = typeof (value as { toJSON?: () => unknown }).toJSON === "function"
+    ? (value as { toJSON: () => unknown }).toJSON()
+    : null;
+  if (jsonValue !== null && jsonValue !== value) {
+    return normalizeNotificationDtoValue(jsonValue);
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) {
+    return undefined;
+  }
+
+  const record: NotificationDtoRecord = {};
+  for (const [key, entry] of Object.entries(value as Record<string, unknown>)) {
+    const normalized = normalizeNotificationDtoValue(entry);
+    if (normalized !== undefined) {
+      record[key] = normalized;
+    }
+  }
+  return record;
+}
+
+function normalizeNotificationDtoRecord(value: unknown): NotificationDtoRecord | null {
+  const normalized = normalizeNotificationDtoValue(value);
+  return isDtoRecord(normalized) ? normalized : null;
+}
+
 function shortenAddress(value: string | null): string | null {
   if (!value) return null;
   return `${value.slice(0, 6)}...${value.slice(-4)}`;
+}
+
+export function isNotificationKind(value: string): value is NotificationKind {
+  return NOTIFICATION_KINDS.includes(value as NotificationKind);
 }
 
 function parseRole(value: unknown): ProtocolNotificationRole | null {
@@ -95,47 +289,61 @@ function parseRole(value: unknown): ProtocolNotificationRole | null {
   }
 }
 
-function parseResource(value: unknown): ProtocolNotificationResource | null {
-  if (!isRecord(value)) return null;
+function parseActor(value: NotificationDtoValue | undefined): ProtocolNotificationActor | null {
+  if (!isDtoRecord(value)) return null;
 
   return {
+    ...value,
+    walletAddress: normalizeHexAddress(value.walletAddress),
+  };
+}
+
+function parseResource(value: NotificationDtoValue | undefined): ProtocolNotificationResource | null {
+  if (!isDtoRecord(value)) return null;
+
+  return {
+    ...value,
     kind: trimNonEmptyString(value.kind),
     goalTreasury: normalizeHexAddress(value.goalTreasury),
     budgetTreasury: normalizeHexAddress(value.budgetTreasury),
-    itemId: typeof value.itemId === "string" && /^0x[0-9a-f]+$/i.test(value.itemId)
-      ? value.itemId.toLowerCase()
-      : null,
-    requestIndex: trimNonEmptyString(value.requestIndex),
+    itemId: normalizeHash(value.itemId),
+    requestIndex: normalizeIntegerString(value.requestIndex),
     arbitrator: normalizeHexAddress(value.arbitrator),
-    disputeId: trimNonEmptyString(value.disputeId),
+    disputeId: normalizeIntegerString(value.disputeId),
   };
 }
 
-function parseLabels(value: unknown): ProtocolNotificationLabels | null {
-  if (!isRecord(value)) return null;
+function parseLabels(value: NotificationDtoValue | undefined): ProtocolNotificationLabels | null {
+  if (!isDtoRecord(value)) return null;
 
   return {
+    ...value,
     goalName: trimNonEmptyString(value.goalName),
     budgetName: trimNonEmptyString(value.budgetName),
     mechanismName: trimNonEmptyString(value.mechanismName),
+    reminderContextLabel: trimNonEmptyString(value.reminderContextLabel),
   };
 }
 
-function parseSchedule(value: unknown): ProtocolNotificationSchedule | null {
-  if (!isRecord(value)) return null;
+function parseSchedule(value: NotificationDtoValue | undefined): ProtocolNotificationSchedule | null {
+  if (!isDtoRecord(value)) return null;
 
   return {
+    ...value,
     deliverAt: trimNonEmptyString(value.deliverAt),
     votingStartAt: trimNonEmptyString(value.votingStartAt),
     votingEndAt: trimNonEmptyString(value.votingEndAt),
     revealEndAt: trimNonEmptyString(value.revealEndAt),
+    challengeWindowEndAt: trimNonEmptyString(value.challengeWindowEndAt),
+    reassertGraceDeadline: trimNonEmptyString(value.reassertGraceDeadline),
   };
 }
 
-function parseAmounts(value: unknown): ProtocolNotificationAmounts | null {
-  if (!isRecord(value)) return null;
+function parseAmounts(value: NotificationDtoValue | undefined): ProtocolNotificationAmounts | null {
+  if (!isDtoRecord(value)) return null;
 
   return {
+    ...value,
     allocatedStake: trimNonEmptyString(value.allocatedStake),
     claimable: trimNonEmptyString(value.claimable),
     claimedAmount: trimNonEmptyString(value.claimedAmount),
@@ -145,25 +353,197 @@ function parseAmounts(value: unknown): ProtocolNotificationAmounts | null {
   };
 }
 
-export function parseProtocolNotificationPayload(value: unknown): ProtocolNotificationPayload | null {
-  if (!isRecord(value)) return null;
-
-  const actor = isRecord(value.actor) ? value.actor : null;
+function parseReward(value: NotificationDtoValue | undefined): ProtocolNotificationReward | null {
+  if (!isDtoRecord(value)) return null;
 
   return {
-    role: parseRole(value.role),
-    resource: parseResource(value.resource),
-    actorWalletAddress: normalizeHexAddress(actor?.walletAddress),
-    labels: parseLabels(value.labels),
-    schedule: parseSchedule(value.schedule),
-    amounts: parseAmounts(value.amounts),
+    ...value,
+    bucket: trimNonEmptyString(value.bucket),
+    bucketLabel: trimNonEmptyString(value.bucketLabel),
   };
+}
+
+export function parseProtocolNotificationPayload(value: unknown): ProtocolNotificationPayload | null {
+  const normalized = normalizeNotificationDtoRecord(value);
+  if (!normalized) return null;
+
+  return {
+    ...normalized,
+    role: parseRole(normalized.role),
+    resource: parseResource(normalized.resource),
+    actor: parseActor(normalized.actor),
+    labels: parseLabels(normalized.labels),
+    schedule: parseSchedule(normalized.schedule),
+    amounts: parseAmounts(normalized.amounts),
+    reward: parseReward(normalized.reward),
+  };
+}
+
+export function parsePaymentNotificationPayload(value: unknown): PaymentNotificationPayload | null {
+  const normalized = normalizeNotificationDtoRecord(value);
+  if (!normalized) return null;
+
+  const amount = trimNonEmptyString(normalized.amount);
+  return amount === null ? null : { amount };
+}
+
+export function normalizeWalletNotificationPayload(
+  kind: string,
+  value: unknown
+): WalletNotificationPayload {
+  if (kind === "protocol") {
+    return parseProtocolNotificationPayload(value);
+  }
+  if (kind === "payment") {
+    return parsePaymentNotificationPayload(value);
+  }
+  return null;
+}
+
+type SuccessAssertionScope = "goal" | "budget";
+
+type SuccessAssertionState =
+  | "registered"
+  | "cleared"
+  | "resolution_fail_closed"
+  | "reassert_grace_activated"
+  | "finalize_failed"
+  | "disputed"
+  | "resolved"
+  | "settled"
+  | "reassert_grace_ending_soon"
+  | "unknown";
+
+type ParsedSuccessAssertionReason = {
+  scope: SuccessAssertionScope;
+  rawState: string;
+  normalizedState: SuccessAssertionState;
+};
+
+type RequestChallengeReminderContext =
+  | "budget_request"
+  | "budget_removal"
+  | "mechanism_request"
+  | "mechanism_removal";
+
+function normalizeSuccessAssertionState(rawState: string): SuccessAssertionState {
+  switch (rawState) {
+    case "registered":
+      return "registered";
+    case "cleared":
+      return "cleared";
+    case "resolution_fail_closed":
+      return "resolution_fail_closed";
+    case "reassert_grace_activated":
+      return "reassert_grace_activated";
+    case "finalize_failed":
+      return "finalize_failed";
+    case "disputed":
+    case "assertion_disputed":
+      return "disputed";
+    case "resolved":
+    case "success_resolved":
+    case "treasury_success_resolved":
+      return "resolved";
+    case "settled":
+    case "assertion_settled":
+      return "settled";
+    case "reassert_grace_ending_soon":
+    case "reassert_grace_deadline_soon":
+      return "reassert_grace_ending_soon";
+    default:
+      return "unknown";
+  }
+}
+
+function parseSuccessAssertionReason(reason: string): ParsedSuccessAssertionReason | null {
+  const match = /^(goal|budget)_success_assertion_(.+)$/.exec(reason);
+  if (!match) return null;
+
+  const scope = match[1] as SuccessAssertionScope;
+  const rawState = match[2] ?? "";
+  return {
+    scope,
+    rawState,
+    normalizedState: normalizeSuccessAssertionState(rawState),
+  };
+}
+
+function reminderContextFromLabel(value: string | null): RequestChallengeReminderContext | null {
+  if (!value) return null;
+
+  const normalized = value.toLowerCase();
+  if (normalized.includes("mechanism")) {
+    return normalized.includes("removal") ? "mechanism_removal" : "mechanism_request";
+  }
+  if (normalized.includes("budget")) {
+    return normalized.includes("removal") ? "budget_removal" : "budget_request";
+  }
+  return null;
+}
+
+function parseChallengeWindowReminderContext(
+  reason: string,
+  payload: ProtocolNotificationPayload | null
+): RequestChallengeReminderContext | null {
+  if (
+    !reason.endsWith("challenge_window_ending_soon") &&
+    !reason.endsWith("challenge_deadline_soon")
+  ) {
+    return null;
+  }
+
+  const normalizedReason = reason.toLowerCase();
+  if (normalizedReason.includes("mechanism")) {
+    return normalizedReason.includes("removal") ? "mechanism_removal" : "mechanism_request";
+  }
+  if (normalizedReason.includes("budget")) {
+    return normalizedReason.includes("removal") ? "budget_removal" : "budget_request";
+  }
+
+  const labelContext = reminderContextFromLabel(payload?.labels?.reminderContextLabel ?? null);
+  if (payload?.resource?.kind === "mechanism_request") {
+    return labelContext === "mechanism_removal" ? labelContext : "mechanism_request";
+  }
+  if (payload?.resource?.kind === "budget_request") {
+    return labelContext === "budget_removal" ? labelContext : "budget_request";
+  }
+  return labelContext;
+}
+
+function isJurorVoteDeadlineReminder(reason: string): boolean {
+  return reason === "juror_vote_deadline_soon" || reason === "juror_voting_deadline_soon";
+}
+
+function isJurorRevealDeadlineReminder(reason: string): boolean {
+  return reason === "juror_reveal_deadline_soon";
+}
+
+function isJurorRewardReason(reason: string): boolean {
+  return reason === "juror_reward_claimable" || reason === "juror_reward_claimed";
 }
 
 function focusForProtocolNotification(
   reason: string,
-  resource: ProtocolNotificationResource | null
-): string | null {
+  payload: ProtocolNotificationPayload | null
+): ProtocolRouteFocus | null {
+  const resource = payload?.resource ?? null;
+  if (parseSuccessAssertionReason(reason)) {
+    return "success_assertion";
+  }
+
+  if (parseChallengeWindowReminderContext(reason, payload)) {
+    return "request";
+  }
+
+  if (isJurorVoteDeadlineReminder(reason) || isJurorRevealDeadlineReminder(reason)) {
+    return "dispute";
+  }
+
+  if (isJurorRewardReason(reason)) {
+    return resource?.disputeId || resource?.arbitrator ? "dispute" : null;
+  }
+
   switch (reason) {
     case "budget_proposed":
     case "budget_accepted":
@@ -191,15 +571,7 @@ function focusForProtocolNotification(
     case "budget_failed":
     case "budget_expired":
       return "budget";
-    case "budget_success_assertion_registered":
-    case "budget_success_assertion_cleared":
-    case "budget_success_assertion_resolution_fail_closed":
-    case "budget_success_assertion_reassert_grace_activated":
     case "budget_success_resolution_disabled":
-    case "goal_success_assertion_registered":
-    case "goal_success_assertion_cleared":
-    case "goal_success_assertion_resolution_fail_closed":
-    case "goal_success_assertion_reassert_grace_activated":
       return "success_assertion";
     case "mechanism_activated":
     case "mechanism_removed":
@@ -220,7 +592,20 @@ function focusForProtocolNotification(
   }
 }
 
-function pageForProtocolNotification(reason: string): "events" | "allocate" {
+export function pageForProtocolNotification(
+  reason: string,
+  payload?: ProtocolNotificationPayload | null
+): "events" | "allocate" {
+  const successAssertionReason = parseSuccessAssertionReason(reason);
+  if (successAssertionReason) {
+    return successAssertionReason.scope === "budget" ? "allocate" : "events";
+  }
+
+  const requestChallengeReminderContext = parseChallengeWindowReminderContext(reason, payload ?? null);
+  if (requestChallengeReminderContext) {
+    return requestChallengeReminderContext.startsWith("mechanism") ? "allocate" : "events";
+  }
+
   switch (reason) {
     case "budget_activated":
     case "budget_removed":
@@ -228,10 +613,6 @@ function pageForProtocolNotification(reason: string): "events" | "allocate" {
     case "budget_succeeded":
     case "budget_failed":
     case "budget_expired":
-    case "budget_success_assertion_registered":
-    case "budget_success_assertion_cleared":
-    case "budget_success_assertion_resolution_fail_closed":
-    case "budget_success_assertion_reassert_grace_activated":
     case "budget_success_resolution_disabled":
     case "underwriter_slashed":
     case "underwriter_withdrawal_prep_required":
@@ -251,30 +632,221 @@ function pageForProtocolNotification(reason: string): "events" | "allocate" {
   }
 }
 
+function takeFirst(value: string | string[] | undefined): string | null {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed === "" ? null : trimmed;
+  }
+  if (Array.isArray(value)) {
+    return takeFirst(value[0]);
+  }
+  return null;
+}
+
+function normalizeFocus(value: string | null): ProtocolRouteFocus | null {
+  switch (value) {
+    case "request":
+    case "dispute":
+    case "budget":
+    case "mechanism":
+    case "goal":
+    case "success_assertion":
+    case "underwriter":
+    case "premium":
+      return value;
+    default:
+      return null;
+  }
+}
+
+function shortenHex(value: string | null): string | null {
+  if (!value) return null;
+  return `${value.slice(0, 6)}...${value.slice(-4)}`;
+}
+
+function buildHintCopy(
+  page: "events" | "allocate",
+  focus: ProtocolRouteFocus
+): Omit<ProtocolRouteHint, "chips"> {
+  if (page === "events") {
+    switch (focus) {
+      case "request":
+        return {
+          title: "Focused governance request",
+          description: "This notification points to a specific request cycle for this goal.",
+          focusSectionId: null,
+        };
+      case "dispute":
+        return {
+          title: "Focused dispute context",
+          description: "This notification references a challenged request or juror dispute.",
+          focusSectionId: null,
+        };
+      case "success_assertion":
+        return {
+          title: "Focused success assertion update",
+          description:
+            "This notification references a goal-level success assertion lifecycle event.",
+          focusSectionId: null,
+        };
+      case "goal":
+      default:
+        return {
+          title: "Focused goal update",
+          description: "This notification points to a goal-wide lifecycle transition.",
+          focusSectionId: null,
+        };
+    }
+  }
+
+  switch (focus) {
+    case "mechanism":
+      return {
+        title: "Focused allocation mechanism",
+        description: "This notification points to an allocation mechanism lifecycle update.",
+        focusSectionId: "funding-flow",
+      };
+    case "success_assertion":
+      return {
+        title: "Focused success assertion update",
+        description: "This notification points to a budget success-assertion lifecycle update.",
+        focusSectionId: "funding-flow",
+      };
+    case "underwriter":
+      return {
+        title: "Focused underwriter action",
+        description: "This notification points to an underwriting action or slash event.",
+        focusSectionId: "position-summary",
+      };
+    case "premium":
+      return {
+        title: "Focused premium activity",
+        description:
+          "This notification points to premium claim state for an underwriting position.",
+        focusSectionId: "position-summary",
+      };
+    case "budget":
+    default:
+      return {
+        title: "Focused budget context",
+        description: "This notification points to a budget lifecycle update in the allocate view.",
+        focusSectionId: "funding-flow",
+      };
+  }
+}
+
+export function resolveProtocolRouteState(searchParams: RawSearchParams): ProtocolRouteState {
+  return {
+    focus: normalizeFocus(takeFirst(searchParams.focus)),
+    budgetTreasury: normalizeHexAddress(takeFirst(searchParams.budgetTreasury)),
+    itemId: normalizeHash(takeFirst(searchParams.itemId)),
+    requestIndex: normalizeIntegerString(takeFirst(searchParams.requestIndex)),
+    disputeId: normalizeIntegerString(takeFirst(searchParams.disputeId)),
+    arbitrator: normalizeHexAddress(takeFirst(searchParams.arbitrator)),
+  };
+}
+
+export function buildProtocolRouteHint(
+  page: "events" | "allocate",
+  state: ProtocolRouteState
+): ProtocolRouteHint | null {
+  if (!state.focus) return null;
+
+  const hint = buildHintCopy(page, state.focus);
+  const chips = [
+    state.budgetTreasury
+      ? {
+          label: "Budget",
+          value: shortenHex(state.budgetTreasury) ?? state.budgetTreasury,
+        }
+      : null,
+    state.itemId
+      ? {
+          label: "Item",
+          value: shortenHex(state.itemId) ?? state.itemId,
+        }
+      : null,
+    state.requestIndex
+      ? {
+          label: "Request",
+          value: `#${state.requestIndex}`,
+        }
+      : null,
+    state.disputeId
+      ? {
+          label: "Dispute",
+          value: `#${state.disputeId}`,
+        }
+      : null,
+    state.arbitrator
+      ? {
+          label: "Arbitrator",
+          value: shortenHex(state.arbitrator) ?? state.arbitrator,
+        }
+      : null,
+  ].filter((value): value is { label: string; value: string } => value !== null);
+
+  return {
+    ...hint,
+    chips,
+  };
+}
+
+export function buildProtocolNotificationRouteState(
+  payload: ProtocolNotificationPayload | null,
+  reason?: string
+): ProtocolRouteState {
+  const resource = payload?.resource ?? null;
+
+  return {
+    focus: reason ? focusForProtocolNotification(reason, payload) : null,
+    budgetTreasury: resource?.budgetTreasury ?? null,
+    itemId: resource?.itemId ?? null,
+    requestIndex: resource?.requestIndex ?? null,
+    disputeId: resource?.disputeId ?? null,
+    arbitrator: resource?.arbitrator ?? null,
+  };
+}
+
+export function buildProtocolRouteSearchParams(state: ProtocolRouteState): URLSearchParams {
+  const params = new URLSearchParams();
+  if (state.budgetTreasury) params.set("budgetTreasury", state.budgetTreasury);
+  if (state.itemId) params.set("itemId", state.itemId);
+  if (state.requestIndex) params.set("requestIndex", state.requestIndex);
+  if (state.disputeId) params.set("disputeId", state.disputeId);
+  if (state.arbitrator) params.set("arbitrator", state.arbitrator);
+  if (state.focus) params.set("focus", state.focus);
+  return params;
+}
+
 export function buildProtocolNotificationAppPath(
   payload: ProtocolNotificationPayload | null,
   reason?: string
 ): string {
-  const resource = payload?.resource ?? null;
-  const goalTreasury = resource?.goalTreasury;
+  const goalTreasury = payload?.resource?.goalTreasury ?? null;
   if (!goalTreasury) return "/notifications";
 
-  const params = new URLSearchParams();
-  if (resource?.budgetTreasury) params.set("budgetTreasury", resource.budgetTreasury);
-  if (resource?.itemId) params.set("itemId", resource.itemId);
-  if (resource?.requestIndex) params.set("requestIndex", resource.requestIndex);
-  if (resource?.disputeId) params.set("disputeId", resource.disputeId);
-  if (resource?.arbitrator) params.set("arbitrator", resource.arbitrator);
-
-  const focus = reason ? focusForProtocolNotification(reason, resource) : null;
-  if (focus) {
-    params.set("focus", focus);
-  }
-
-  const query = params.toString();
-  const page = reason ? pageForProtocolNotification(reason) : "events";
+  const query = buildProtocolRouteSearchParams(
+    buildProtocolNotificationRouteState(payload, reason)
+  ).toString();
+  const page = reason ? pageForProtocolNotification(reason, payload) : "events";
   const basePath = `/${goalTreasury}/${page}`;
   return query ? `${basePath}?${query}` : basePath;
+}
+
+export function buildDiscussionNotificationAppPath(
+  sourceHash: string | null,
+  rootHash: string | null
+): string | null {
+  const normalizedSourceHash = normalizeHash(sourceHash);
+  const normalizedRootHash = normalizeHash(rootHash);
+  if (!normalizedSourceHash) {
+    return null;
+  }
+  if (!normalizedRootHash || normalizedSourceHash === normalizedRootHash) {
+    return `/cast/${normalizedSourceHash}`;
+  }
+  return `/cast/${normalizedRootHash}?post=${normalizedSourceHash}`;
 }
 
 function roleAwareTitle(
@@ -436,13 +1008,226 @@ function roleAwareTitle(
   return null;
 }
 
+function successAssertionScopeLabel(scope: SuccessAssertionScope): string {
+  return scope === "goal" ? "Goal" : "Budget";
+}
+
+function successAssertionScopeNoun(scope: SuccessAssertionScope): string {
+  return scope === "goal" ? "goal" : "budget";
+}
+
+function buildExtendedSuccessAssertionTitle(
+  reason: string,
+  goalName: string | null
+): string | null {
+  const parsed = parseSuccessAssertionReason(reason);
+  if (!parsed) return null;
+
+  const scopeLabel = successAssertionScopeLabel(parsed.scope);
+  switch (parsed.normalizedState) {
+    case "finalize_failed":
+      return goalName
+        ? `${scopeLabel} success assertion finalization failed in ${goalName}.`
+        : `${scopeLabel} success assertion finalization failed.`;
+    case "disputed":
+      return goalName
+        ? `${scopeLabel} success assertion disputed in ${goalName}.`
+        : `${scopeLabel} success assertion disputed.`;
+    case "resolved":
+      return goalName
+        ? `${scopeLabel} success assertion resolved in ${goalName}.`
+        : `${scopeLabel} success assertion resolved.`;
+    case "settled":
+      return goalName
+        ? `${scopeLabel} success assertion settled in ${goalName}.`
+        : `${scopeLabel} success assertion settled.`;
+    case "reassert_grace_ending_soon":
+      return goalName
+        ? `${scopeLabel} reassert grace ending soon in ${goalName}.`
+        : `${scopeLabel} reassert grace ending soon.`;
+    case "registered":
+    case "cleared":
+    case "resolution_fail_closed":
+    case "reassert_grace_activated":
+      return null;
+    case "unknown":
+    default:
+      return goalName
+        ? `${scopeLabel} success assertion updated in ${goalName}.`
+        : `${scopeLabel} success assertion updated.`;
+  }
+}
+
+function buildExtendedSuccessAssertionExcerpt(reason: string): string | null {
+  const parsed = parseSuccessAssertionReason(reason);
+  if (!parsed) return null;
+
+  const scopeNoun = successAssertionScopeNoun(parsed.scope);
+  switch (parsed.normalizedState) {
+    case "finalize_failed":
+      return `The ${scopeNoun} success assertion could not be finalized cleanly and needs follow-up.`;
+    case "disputed":
+      return `The ${scopeNoun} success assertion moved into dispute.`;
+    case "resolved":
+      return `The resolver marked this ${scopeNoun} success assertion as resolved.`;
+    case "settled":
+      return `The oracle settled this ${scopeNoun} success assertion.`;
+    case "reassert_grace_ending_soon":
+      return `The reassert grace window for this ${scopeNoun} success assertion is ending soon.`;
+    case "registered":
+    case "cleared":
+    case "resolution_fail_closed":
+    case "reassert_grace_activated":
+      return null;
+    case "unknown":
+    default:
+      return `This ${scopeNoun} success assertion has a new lifecycle update.`;
+  }
+}
+
+function formatRewardBucketLabel(value: string | null): string | null {
+  if (!value) return null;
+  const normalized = value.replace(/[_-]+/g, " ").trim();
+  return normalized === "" ? null : normalized;
+}
+
+function rewardBucketLabel(payload: ProtocolNotificationPayload | null): string | null {
+  return (
+    formatRewardBucketLabel(payload?.reward?.bucketLabel ?? null) ??
+    formatRewardBucketLabel(payload?.reward?.bucket ?? null)
+  );
+}
+
+function buildJurorRewardTitle(
+  reason: string,
+  goalName: string | null,
+  payload: ProtocolNotificationPayload | null
+): string | null {
+  if (!isJurorRewardReason(reason)) return null;
+
+  const bucketLabel = rewardBucketLabel(payload);
+  const subject = bucketLabel ? `Juror ${bucketLabel} reward` : "Juror reward";
+  if (reason === "juror_reward_claimable") {
+    return goalName ? `${subject} ready to claim in ${goalName}.` : `${subject} ready to claim.`;
+  }
+  return goalName ? `${subject} claimed in ${goalName}.` : `${subject} claimed.`;
+}
+
+function buildJurorRewardExcerpt(
+  reason: string,
+  payload: ProtocolNotificationPayload | null
+): string | null {
+  if (!isJurorRewardReason(reason)) return null;
+
+  const bucketLabel = rewardBucketLabel(payload);
+  if (reason === "juror_reward_claimable") {
+    return bucketLabel
+      ? `A juror reward is now claimable from the ${bucketLabel} bucket.`
+      : "A juror reward is now claimable from this dispute.";
+  }
+  return bucketLabel
+    ? `A juror reward claim was completed from the ${bucketLabel} bucket.`
+    : "A juror reward claim was completed for this dispute.";
+}
+
+function buildReminderTitle(
+  reason: string,
+  goalName: string | null,
+  payload: ProtocolNotificationPayload | null
+): string | null {
+  const requestContext = parseChallengeWindowReminderContext(reason, payload);
+  if (requestContext) {
+    switch (requestContext) {
+      case "budget_request":
+        return goalName
+          ? `Budget challenge window ending soon in ${goalName}.`
+          : "Budget challenge window ending soon.";
+      case "budget_removal":
+        return goalName
+          ? `Budget removal challenge window ending soon in ${goalName}.`
+          : "Budget removal challenge window ending soon.";
+      case "mechanism_request":
+        return goalName
+          ? `Allocation mechanism challenge window ending soon in ${goalName}.`
+          : "Allocation mechanism challenge window ending soon.";
+      case "mechanism_removal":
+        return goalName
+          ? `Allocation mechanism removal challenge window ending soon in ${goalName}.`
+          : "Allocation mechanism removal challenge window ending soon.";
+    }
+  }
+
+  if (
+    reason.endsWith("challenge_window_ending_soon") ||
+    reason.endsWith("challenge_deadline_soon")
+  ) {
+    return goalName ? `Challenge window ending soon in ${goalName}.` : "Challenge window ending soon.";
+  }
+
+  if (isJurorVoteDeadlineReminder(reason)) {
+    return goalName ? `Juror vote deadline soon in ${goalName}.` : "Juror vote deadline soon.";
+  }
+
+  if (isJurorRevealDeadlineReminder(reason)) {
+    return goalName ? `Juror reveal deadline soon in ${goalName}.` : "Juror reveal deadline soon.";
+  }
+
+  return null;
+}
+
+function buildReminderExcerpt(
+  reason: string,
+  payload: ProtocolNotificationPayload | null
+): string | null {
+  const requestContext = parseChallengeWindowReminderContext(reason, payload);
+  if (requestContext) {
+    switch (requestContext) {
+      case "budget_request":
+        return "The current challenge window for this budget request is ending soon.";
+      case "budget_removal":
+        return "The current challenge window for this budget removal request is ending soon.";
+      case "mechanism_request":
+        return "The current challenge window for this allocation mechanism request is ending soon.";
+      case "mechanism_removal":
+        return "The current challenge window for this allocation mechanism removal request is ending soon.";
+    }
+  }
+
+  if (
+    reason.endsWith("challenge_window_ending_soon") ||
+    reason.endsWith("challenge_deadline_soon")
+  ) {
+    return "The current challenge window is ending soon.";
+  }
+
+  if (isJurorVoteDeadlineReminder(reason)) {
+    return "Cast your vote before the voting window closes.";
+  }
+
+  if (isJurorRevealDeadlineReminder(reason)) {
+    return "Reveal your vote before the reveal window closes.";
+  }
+
+  return null;
+}
+
 function buildTitle(
   reason: string,
   goalName: string | null,
-  role: ProtocolNotificationRole | null
+  role: ProtocolNotificationRole | null,
+  payload: ProtocolNotificationPayload | null
 ): string {
   const personalizedTitle = roleAwareTitle(reason, goalName, role);
   if (personalizedTitle) return personalizedTitle;
+
+  const successAssertionTitle = buildExtendedSuccessAssertionTitle(reason, goalName);
+  if (successAssertionTitle) return successAssertionTitle;
+
+  const jurorRewardTitle = buildJurorRewardTitle(reason, goalName, payload);
+  if (jurorRewardTitle) return jurorRewardTitle;
+
+  const reminderTitle = buildReminderTitle(reason, goalName, payload);
+  if (reminderTitle) return reminderTitle;
 
   switch (reason) {
     case "budget_proposed":
@@ -686,10 +1471,20 @@ function roleAwareExcerpt(
 function buildExcerpt(
   reason: string,
   actorWalletAddress: string | null,
-  role: ProtocolNotificationRole | null
+  role: ProtocolNotificationRole | null,
+  payload: ProtocolNotificationPayload | null
 ): string | null {
   const personalizedExcerpt = roleAwareExcerpt(reason, actorWalletAddress, role);
   if (personalizedExcerpt) return personalizedExcerpt;
+
+  const successAssertionExcerpt = buildExtendedSuccessAssertionExcerpt(reason);
+  if (successAssertionExcerpt) return successAssertionExcerpt;
+
+  const jurorRewardExcerpt = buildJurorRewardExcerpt(reason, payload);
+  if (jurorRewardExcerpt) return jurorRewardExcerpt;
+
+  const reminderExcerpt = buildReminderExcerpt(reason, payload);
+  if (reminderExcerpt) return reminderExcerpt;
 
   const actorLabel = shortenAddress(actorWalletAddress);
 
@@ -806,11 +1601,11 @@ export function buildProtocolNotificationPresentation(args: {
   const goalName = payload?.labels?.goalName ?? null;
   const role = payload?.role ?? null;
   const actorWalletAddress =
-    normalizeHexAddress(args.actorWalletAddress) ?? payload?.actorWalletAddress ?? null;
+    normalizeHexAddress(args.actorWalletAddress) ?? payload?.actor?.walletAddress ?? null;
 
   return {
-    title: buildTitle(args.reason, goalName, role),
-    excerpt: buildExcerpt(args.reason, actorWalletAddress, role),
+    title: buildTitle(args.reason, goalName, role, payload),
+    excerpt: buildExcerpt(args.reason, actorWalletAddress, role, payload),
     appPath: buildProtocolNotificationAppPath(payload, args.reason),
     actorName: shortenAddress(actorWalletAddress),
   };

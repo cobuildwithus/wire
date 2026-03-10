@@ -5,6 +5,7 @@ import {
   normalizeUnsignedDecimal,
 } from "./evm.js";
 import { BASE_CHAIN_ID } from "./chains.js";
+import { USDC_BASE_ADDRESS } from "./protocol-addresses.js";
 
 export { BASE_CHAIN_ID } from "./chains.js";
 
@@ -14,7 +15,7 @@ export const X402_VERSION = 1;
 export const X402_SCHEME = "exact";
 export const X402_NETWORK = "base";
 export const X402_TOKEN_SYMBOL = "usdc";
-export const X402_USDC_CONTRACT = "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913";
+export const X402_USDC_CONTRACT = USDC_BASE_ADDRESS;
 export const X402_PAY_TO_ADDRESS = "0xa6a8736f18f383f1cc2d938576933e5ea7df01a1";
 export const X402_VALUE_MICRO_USDC = "1000";
 export const X402_VALUE_USDC_DISPLAY = "0.001";

@@ -6,6 +6,13 @@ import {
   FARCASTER_SIGNUP_CHAIN_ID,
   FARCASTER_SIGNUP_GAS_BUFFER_WEI,
   FARCASTER_SIGNUP_NETWORK,
+  buildFarcasterHostedX402PaymentResponse,
+  buildFarcasterHostedX402PaymentResult,
+  buildFarcasterSignupAlreadyRegisteredDetails,
+  buildFarcasterSignupAlreadyRegisteredErrorResponse,
+  buildFarcasterSignupCompletedResult,
+  buildFarcasterSignupNeedsFundingResult,
+  buildFarcasterSignupResponse,
   buildFarcasterSignedKeyRequestMetadata,
   buildFarcasterSignedKeyRequestTypedData,
   buildFarcasterSignupCallPlan,
@@ -13,8 +20,17 @@ import {
   computeFarcasterSignedKeyRequestDeadline,
   encodeFarcasterSignedKeyRequestMetadata,
   evaluateFarcasterSignupPreflight,
+  formatFarcasterSignupFundingAmounts,
   normalizeFarcasterSignerPublicKey,
+  validateFarcasterHostedX402PaymentResponse,
+  validateFarcasterSignupAlreadyRegisteredErrorResponse,
+  validateFarcasterSignupResponse,
 } from "../src/farcaster.js";
+import {
+  X402_PAY_TO_ADDRESS,
+  X402_USDC_CONTRACT,
+  X402_VALUE_MICRO_USDC,
+} from "../src/x402.js";
 
 const ADDRESS_A = "0x00000000000000000000000000000000000000aa";
 const ADDRESS_B = "0x00000000000000000000000000000000000000bb";
@@ -181,5 +197,196 @@ describe("farcaster wire contract", () => {
       balanceWei: FARCASTER_SIGNUP_GAS_BUFFER_WEI + 100n,
     });
     expect(ready.status).toBe("ready");
+  });
+
+  it("formats and builds canonical Farcaster signup result contracts", () => {
+    expect(
+      formatFarcasterSignupFundingAmounts({
+        idGatewayPriceWei: 7_000_000_000_000_000n,
+        balanceWei: 0n,
+        requiredWei: 7_200_000_000_000_000n,
+      })
+    ).toEqual({
+      idGatewayPriceWei: "7000000000000000",
+      idGatewayPriceEth: "0.007",
+      balanceWei: "0",
+      balanceEth: "0",
+      requiredWei: "7200000000000000",
+      requiredEth: "0.0072",
+    });
+
+    const needsFunding = buildFarcasterSignupNeedsFundingResult({
+      ownerAddress: ADDRESS_A.toUpperCase(),
+      custodyAddress: ADDRESS_B,
+      recoveryAddress: ADDRESS_A,
+      idGatewayPriceWei: 7_000_000_000_000_000n,
+      balanceWei: 0n,
+      requiredWei: 7_200_000_000_000_000n,
+    });
+    expect(needsFunding).toEqual({
+      status: "needs_funding",
+      network: FARCASTER_SIGNUP_NETWORK,
+      ownerAddress: ADDRESS_A,
+      custodyAddress: ADDRESS_B,
+      recoveryAddress: ADDRESS_A,
+      idGatewayPriceWei: "7000000000000000",
+      idGatewayPriceEth: "0.007",
+      balanceWei: "0",
+      balanceEth: "0",
+      requiredWei: "7200000000000000",
+      requiredEth: "0.0072",
+    });
+
+    const completed = buildFarcasterSignupCompletedResult({
+      ownerAddress: ADDRESS_A,
+      custodyAddress: ADDRESS_B.toUpperCase(),
+      recoveryAddress: ADDRESS_A,
+      fid: 55n,
+      idGatewayPriceWei: 7_000_000_000_000_000n,
+      txHash: `0x${"33".repeat(32)}`,
+    });
+    expect(completed).toEqual({
+      status: "complete",
+      network: FARCASTER_SIGNUP_NETWORK,
+      ownerAddress: ADDRESS_A,
+      custodyAddress: ADDRESS_B,
+      recoveryAddress: ADDRESS_A,
+      fid: "55",
+      idGatewayPriceWei: "7000000000000000",
+      txHash: `0x${"33".repeat(32)}`,
+    });
+
+    expect(validateFarcasterSignupResponse(buildFarcasterSignupResponse(completed))).toEqual({
+      ok: true,
+      result: completed,
+    });
+  });
+
+  it("builds and validates already-registered signup error details", () => {
+    const details = buildFarcasterSignupAlreadyRegisteredDetails({
+      fid: 77n,
+      custodyAddress: ADDRESS_A.toUpperCase(),
+    });
+    expect(details).toEqual({
+      fid: "77",
+      custodyAddress: ADDRESS_A,
+    });
+
+    const response = buildFarcasterSignupAlreadyRegisteredErrorResponse({
+      error: "already registered",
+      fid: 77n,
+      custodyAddress: ADDRESS_A,
+    });
+    expect(validateFarcasterSignupAlreadyRegisteredErrorResponse(response)).toEqual(response);
+  });
+
+  it("rejects malformed signup response envelopes", () => {
+    expect(() =>
+      validateFarcasterSignupResponse({
+        ok: true,
+        result: {
+          status: "complete",
+          network: FARCASTER_SIGNUP_NETWORK,
+          ownerAddress: ADDRESS_A,
+          custodyAddress: ADDRESS_B,
+          recoveryAddress: ADDRESS_A,
+          fid: "55",
+          idGatewayPriceWei: "7000000000000000",
+          txHash: "0x1234",
+        },
+      })
+    ).toThrow("result.txHash must be a 32-byte hex value");
+
+    expect(() =>
+      validateFarcasterSignupAlreadyRegisteredErrorResponse({
+        ok: false,
+        error: "already registered",
+        details: {
+          fid: "0",
+          custodyAddress: ADDRESS_A,
+        },
+      })
+    ).toThrow("details.fid must be greater than zero.");
+  });
+
+  it("builds and validates hosted x402 response contracts", () => {
+    const result = buildFarcasterHostedX402PaymentResult({
+      xPayment: "base64-payload",
+      payerAddress: ADDRESS_A,
+      agentKey: "default",
+      validAfter: 0,
+      validBefore: 1_700_000_300,
+    });
+    expect(result).toEqual({
+      xPayment: "base64-payload",
+      payerAddress: ADDRESS_A,
+      payTo: X402_PAY_TO_ADDRESS,
+      token: X402_USDC_CONTRACT,
+      amount: X402_VALUE_MICRO_USDC,
+      network: "base",
+      validAfter: 0,
+      validBefore: 1_700_000_300,
+      agentKey: "default",
+    });
+
+    expect(
+      validateFarcasterHostedX402PaymentResponse(buildFarcasterHostedX402PaymentResponse(result))
+    ).toEqual({
+      ok: true,
+      result,
+    });
+  });
+
+  it("rejects invalid hosted x402 metadata drift", () => {
+    expect(() =>
+      validateFarcasterHostedX402PaymentResponse({
+        ok: true,
+        result: {
+          xPayment: "base64-payload",
+          payerAddress: ADDRESS_A,
+          payTo: ADDRESS_B,
+          token: X402_USDC_CONTRACT,
+          amount: X402_VALUE_MICRO_USDC,
+          network: "base",
+          validAfter: 0,
+          validBefore: 1,
+          agentKey: "default",
+        },
+      })
+    ).toThrow(`payTo must be "${X402_PAY_TO_ADDRESS}".`);
+
+    expect(() =>
+      validateFarcasterHostedX402PaymentResponse({
+        ok: true,
+        result: {
+          xPayment: "base64-payload",
+          payerAddress: ADDRESS_A,
+          payTo: X402_PAY_TO_ADDRESS,
+          token: ADDRESS_B,
+          amount: X402_VALUE_MICRO_USDC,
+          network: "base",
+          validAfter: 0,
+          validBefore: 1,
+          agentKey: "default",
+        },
+      })
+    ).toThrow(`token must be "${X402_USDC_CONTRACT}".`);
+
+    expect(() =>
+      validateFarcasterHostedX402PaymentResponse({
+        ok: true,
+        result: {
+          xPayment: "base64-payload",
+          payerAddress: ADDRESS_A,
+          payTo: X402_PAY_TO_ADDRESS,
+          token: X402_USDC_CONTRACT,
+          amount: X402_VALUE_MICRO_USDC,
+          network: "base",
+          validAfter: 2,
+          validBefore: 1,
+          agentKey: "default",
+        },
+      })
+    ).toThrow("validBefore must be greater than or equal to validAfter.");
   });
 });

@@ -2,7 +2,9 @@ import {
   hasAnyWriteCapability,
   hasToolsWrite,
   hasWalletExecute,
+  splitScope,
 } from "./oauth.js";
+import { parseEvmAddress, type EvmAddress } from "./evm.js";
 
 export type CliJwtClaims = {
   sub: string;
@@ -39,6 +41,18 @@ export const DEFAULT_CLI_JWT_ISSUER = "cobuild-chat-api";
 export const DEFAULT_CLI_JWT_AUDIENCE = "cli";
 
 export type CliScopeCapabilities = {
+  hasToolsWrite: boolean;
+  hasWalletExecute: boolean;
+  hasAnyWriteScope: boolean;
+};
+
+export type CliVerifiedPrincipal = {
+  sessionId: string;
+  ownerAddress: EvmAddress;
+  agentKey: string;
+  scope: string;
+  scopes: string[];
+  hasToolsRead: boolean;
   hasToolsWrite: boolean;
   hasWalletExecute: boolean;
   hasAnyWriteScope: boolean;
@@ -121,3 +135,35 @@ export function parseCliJwtVerifiedClaims(payload: unknown): CliJwtVerifiedClaim
 }
 
 export const parseVerifiedCliAccessTokenClaims = parseCliJwtVerifiedClaims;
+
+export function deriveCliVerifiedPrincipal(
+  claims: CliJwtVerifiedClaims
+): CliVerifiedPrincipal | null {
+  const ownerAddress = parseEvmAddress(claims.sub);
+  if (!ownerAddress) {
+    return null;
+  }
+
+  const sessionId = claims.sid.trim();
+  const agentKey = claims.agentKey.trim();
+  const scope = claims.scope.trim();
+
+  if (!sessionId || !agentKey || !scope) {
+    return null;
+  }
+
+  const scopes = splitScope(scope);
+  if (scopes.length === 0) {
+    return null;
+  }
+
+  return {
+    sessionId,
+    ownerAddress,
+    agentKey,
+    scope,
+    scopes,
+    hasToolsRead: scopes.includes("tools:read"),
+    ...deriveCliScopeCapabilities(scope),
+  };
+}

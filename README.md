@@ -10,8 +10,11 @@ Shared wire-level contracts for Cobuild clients/services.
 - Bearer token parsing
 - Idempotency key/header contract
 - Goal-create calldata validation/builders and `GoalDeployed` receipt decoding helpers
+- Base-only governance planners, payload coders, and receipt decoding helpers
+- Base-only participant write planners for treasury donations, stake/premium flows, prize-vault claims, and flow allocation maintenance
 - x402 payload/domain/type builders + payload validation
 - Farcaster signup wire contracts (typed-data, preflight, call-plan + executable-call builders)
+- Farcaster hosted contract envelopes for signup success/error responses and x402 payment responses
 
 ## Non-goals
 

@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-10 (protocol address/helper surface)
+Last verified: 2026-03-10 (notification shared-surface expansion)
 
 ## Purpose
 
@@ -34,13 +34,19 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/` | Active execution plan workspace. |
 | `agent-docs/exec-plans/active/README.md` | Active execution plan conventions. |
 | `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` | Cross-agent ownership ledger. |
+| `agent-docs/exec-plans/active/2026-03-10-farcaster-hosted-contracts.md` | Active execution plan for shared Farcaster hosted/signup contract hard cutover. |
+| `agent-docs/exec-plans/active/2026-03-10-final-hard-cutover-sweep.md` | Active execution plan for removing final compatibility-only shared-surface aliases. |
 | `agent-docs/exec-plans/active/2026-03-03-farcaster-wire-contract.md` | Active execution plan for Farcaster wire contract additions. |
 | `agent-docs/exec-plans/active/2026-03-03-release-docs-drift-fix.md` | Active execution plan to restore docs drift gate compliance for release patch verification. |
 | `agent-docs/exec-plans/active/2026-03-04-abi-etherscan-docs-drift-fix.md` | Active execution plan to restore docs drift compliance after migrating ABI generation to Wagmi Etherscan plugin fetches. |
 | `agent-docs/exec-plans/active/2026-03-05-base-implementation-address-sync.md` | Active execution plan for syncing Base implementation + factory entrypoint addresses and regenerated ABI outputs to latest v1-core deployments. |
+| `agent-docs/exec-plans/active/2026-03-10-protocol-governance-phase1.md` | Active execution plan for shared Base-only TCR/vote/dispute planners, payload coders, and receipt decoders. |
+| `agent-docs/exec-plans/active/2026-03-10-protocol-address-helper-surface.md` | Active execution plan for shared Base token/ecosystem address exports and pure indexed-inspect helper extraction. |
+| `agent-docs/exec-plans/active/2026-03-10-protocol-notification-completeness.md` | Active execution plan for expanding the shared notification presenter across the remaining protocol lifecycle reasons. |
 | `agent-docs/exec-plans/active/2026-03-10-tcr-request-actor-abi-sync.md` | Active execution plan for regenerating wire ABIs after the TCR requester/challenger event payload cutover. |
 | `agent-docs/exec-plans/completed/` | Completed execution plan archive. |
 | `agent-docs/exec-plans/completed/2026-03-10-protocol-phase1-foundation.md` | Completed execution record for Base-only goal-create helper extraction and shared protocol utility cleanup. |
+| `agent-docs/exec-plans/completed/2026-03-10-protocol-stake-premium-phase1.md` | Completed execution record for shared Base-only stake/premium planner and receipt-decoder helpers. |
 | `agent-docs/exec-plans/completed/2026-03-07-shared-sync-helper-cleanup.md` | Completed execution record for routing wire sibling-sync automation through the shared repo-tools helper. |
 | `agent-docs/exec-plans/completed/2026-03-07-wire-post-publish-sync.md` | Completed execution record for adding post-publish sibling consumer sync automation to wire releases. |
 | `agent-docs/exec-plans/completed/2026-03-07-published-consumer-rollout-guidance.md` | Completed execution record for documenting published-package expectations and downstream consumer bump guidance. |
@@ -54,8 +60,13 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Expanded shared protocol notification normalization, routing, and presenter coverage for finalize-failed, resolver lifecycle, juror reward, and reminder reason families.
 - Added canonical shared Base token/ecosystem contract exports plus pure indexed-inspect normalization/state helpers for downstream `chat-api` and `interface` cutover.
+- Regenerated GoalFactory ABI exports from local `v1-core` artifacts and hard-cut goal-create helpers to the current deploy shape (required spend-policy addresses, no `revnet.owner`, no `underwriting.coverageLambda`).
 - Added shared goal-create calldata/receipt helpers and documented the Base-only protocol utility direction for phase one.
+- Added shared Base-only TCR/vote/dispute planners, payload coders, commit-hash helpers, and receipt decoders for downstream governance execution surfaces.
+- Added shared Base-only stake-vault and premium-escrow planner/receipt helpers for the first downstream execution slice.
+- Added shared Base-only participant write planners/receipt helpers for treasury donations, stake-vault juror lifecycle, round prize vault actions, and flow allocation maintenance.
 - Routed `wire` sibling sync through the shared repo-tools helper while preserving the current direct-consumer set and local sibling fallback before the next repo-tools publish.
 - Added explicit `pnpm wagmi:local` / `pnpm generate:local` support so workspace ABI refreshes can use sibling `v1-core` Forge artifacts without changing the default Basescan source of truth.
 - Added a manual and release-hooked `sync:repos` flow for bumping direct `@cobuild/wire` workspace consumers after publish.
@@ -77,6 +88,6 @@ Canonical map for docs used by agents working in this repository.
 - Updated active coordination ledger for GoalTreasury `GoalConfigured` ABI payload sync (added slasher/token event fields).
 - `CobuildSwapImpl` ABI generation now fetches verified ABI from Basescan at `0x21a580054e7a5e833f38033f2d958e00e4c50f0f` (no empty placeholder ABI export).
 - Added canonical Base V1 core address exports (`protocol-addresses`) for entrypoints and implementation addresses.
-- Added compatibility aliases for protocol token/revnet/swap exports in constant-case: `COBUILD_TOKEN`, `COBUILD_REVNET_ID`, `COBUILD_SWAP`, and `COBUILD_SWAP_IMPL`.
+- Removed constant-case protocol address compatibility aliases after downstream cutover.
 - Added an active execution plan to track docs drift-gate remediation for release patch verification.
 - Synced Base `8453` implementation/default/config addresses to latest `DeployGoalFactoryImplementations.8453.txt` and updated wagmi ABI generation to fetch verified impl ABIs from Basescan with local factory ABI fallback.

@@ -1,5 +1,7 @@
-import { type Address, parseEther, parseUnits } from "viem";
+import { getAddress, type Address, parseEther, parseUnits } from "viem";
 import { normalizeEvmAddress } from "./evm.js";
+import { USDC_BASE_ADDRESS } from "./protocol-addresses.js";
+import { parseBaseOnlyNetwork } from "./base-network.js";
 
 export const CLI_WALLET_MODES = ["hosted", "local"] as const;
 export type CliWalletMode = (typeof CLI_WALLET_MODES)[number];
@@ -12,7 +14,7 @@ export type CliWalletNetwork = (typeof CLI_WALLET_NETWORKS)[number];
 
 export const DEFAULT_BASE_RPC_URL = "https://mainnet.base.org";
 
-export const BASE_USDC_CONTRACT = "0x833589fCD6EDB6E08F4C7C32D4F71B54BDA02913" as Address;
+export const BASE_USDC_CONTRACT = getAddress(USDC_BASE_ADDRESS) as Address;
 
 export type CliWalletSendToken = "eth" | "usdc" | Address;
 
@@ -37,8 +39,8 @@ export function isCliWalletNetwork(value: string): value is CliWalletNetwork {
 }
 
 export function normalizeCliWalletNetwork(value: string): CliWalletNetwork {
-  const normalized = value.trim().toLowerCase();
-  if (!isCliWalletNetwork(normalized)) {
+  const normalized = parseBaseOnlyNetwork(value);
+  if (!normalized || !isCliWalletNetwork(normalized)) {
     throw new Error(`unsupported wallet network: ${value}`);
   }
   return normalized;
