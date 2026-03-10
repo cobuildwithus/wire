@@ -411,12 +411,10 @@ type SuccessAssertionState =
   | "disputed"
   | "resolved"
   | "settled"
-  | "reassert_grace_ending_soon"
-  | "unknown";
+  | "reassert_grace_ending_soon";
 
 type ParsedSuccessAssertionReason = {
   scope: SuccessAssertionScope;
-  rawState: string;
   normalizedState: SuccessAssertionState;
 };
 
@@ -426,7 +424,7 @@ type RequestChallengeReminderContext =
   | "mechanism_request"
   | "mechanism_removal";
 
-function normalizeSuccessAssertionState(rawState: string): SuccessAssertionState {
+function normalizeSuccessAssertionState(rawState: string): SuccessAssertionState | null {
   switch (rawState) {
     case "registered":
       return "registered";
@@ -439,20 +437,15 @@ function normalizeSuccessAssertionState(rawState: string): SuccessAssertionState
     case "finalize_failed":
       return "finalize_failed";
     case "disputed":
-    case "assertion_disputed":
       return "disputed";
     case "resolved":
-    case "success_resolved":
-    case "treasury_success_resolved":
       return "resolved";
     case "settled":
-    case "assertion_settled":
       return "settled";
     case "reassert_grace_ending_soon":
-    case "reassert_grace_deadline_soon":
       return "reassert_grace_ending_soon";
     default:
-      return "unknown";
+      return null;
   }
 }
 
@@ -462,10 +455,12 @@ function parseSuccessAssertionReason(reason: string): ParsedSuccessAssertionReas
 
   const scope = match[1] as SuccessAssertionScope;
   const rawState = match[2] ?? "";
+  const normalizedState = normalizeSuccessAssertionState(rawState);
+  if (!normalizedState) return null;
+
   return {
     scope,
-    rawState,
-    normalizedState: normalizeSuccessAssertionState(rawState),
+    normalizedState,
   };
 }
 
@@ -487,8 +482,7 @@ function parseChallengeWindowReminderContext(
   payload: ProtocolNotificationPayload | null
 ): RequestChallengeReminderContext | null {
   if (
-    !reason.endsWith("challenge_window_ending_soon") &&
-    !reason.endsWith("challenge_deadline_soon")
+    !reason.endsWith("challenge_window_ending_soon")
   ) {
     return null;
   }
@@ -512,7 +506,7 @@ function parseChallengeWindowReminderContext(
 }
 
 function isJurorVoteDeadlineReminder(reason: string): boolean {
-  return reason === "juror_vote_deadline_soon" || reason === "juror_voting_deadline_soon";
+  return reason === "juror_vote_deadline_soon";
 }
 
 function isJurorRevealDeadlineReminder(reason: string): boolean {
@@ -1050,12 +1044,9 @@ function buildExtendedSuccessAssertionTitle(
     case "resolution_fail_closed":
     case "reassert_grace_activated":
       return null;
-    case "unknown":
-    default:
-      return goalName
-        ? `${scopeLabel} success assertion updated in ${goalName}.`
-        : `${scopeLabel} success assertion updated.`;
   }
+
+  return null;
 }
 
 function buildExtendedSuccessAssertionExcerpt(reason: string): string | null {
@@ -1079,14 +1070,14 @@ function buildExtendedSuccessAssertionExcerpt(reason: string): string | null {
     case "resolution_fail_closed":
     case "reassert_grace_activated":
       return null;
-    case "unknown":
-    default:
-      return `This ${scopeNoun} success assertion has a new lifecycle update.`;
   }
+
+  return null;
 }
 
 function formatRewardBucketLabel(value: string | null): string | null {
   if (!value) return null;
+
   const normalized = value.replace(/[_-]+/g, " ").trim();
   return normalized === "" ? null : normalized;
 }
@@ -1158,8 +1149,7 @@ function buildReminderTitle(
   }
 
   if (
-    reason.endsWith("challenge_window_ending_soon") ||
-    reason.endsWith("challenge_deadline_soon")
+    reason.endsWith("challenge_window_ending_soon")
   ) {
     return goalName ? `Challenge window ending soon in ${goalName}.` : "Challenge window ending soon.";
   }
@@ -1194,8 +1184,7 @@ function buildReminderExcerpt(
   }
 
   if (
-    reason.endsWith("challenge_window_ending_soon") ||
-    reason.endsWith("challenge_deadline_soon")
+    reason.endsWith("challenge_window_ending_soon")
   ) {
     return "The current challenge window is ending soon.";
   }

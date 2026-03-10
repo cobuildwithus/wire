@@ -10,6 +10,7 @@
   - protocol notification payload normalization including shared schedule/reward/amount metadata
   - shared discussion/protocol app-path builders plus protocol route-state helpers
   - shared presenter copy for success-assertion, juror reward, and reminder reason families
+  - canonical-only protocol notification reason matching for success-assertion and reminder presenter families (legacy alias spellings are intentionally unsupported)
 - Protocol address exports and aliases:
   - Base-only protocol network helpers (`PROTOCOL_NETWORKS`, `normalizeProtocolNetwork`, `resolveProtocolAddresses`)
   - canonical Base deployment sets (`baseEntrypoints`, `baseImplementations`, `baseDefaults`, `baseConfig`)

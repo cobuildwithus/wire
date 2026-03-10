@@ -17,6 +17,10 @@ import {
 } from "./evm.js";
 import { goalFactoryAbi } from "./protocol-abis.js";
 import {
+  buildProtocolCallStep,
+  type ProtocolExecutionPlan,
+} from "./protocol-plans.js";
+import {
   normalizeProtocolNetwork,
   resolveProtocolAddresses,
   type ProtocolNetwork,
@@ -136,6 +140,12 @@ export type GoalCreatePlan = {
   deployParams: GoalFactoryDeployParams;
   transaction: GoalCreateTransaction;
   writeContract: GoalCreateWriteContractRequest;
+};
+
+export type GoalCreateProtocolPlan = ProtocolExecutionPlan<"goal.create"> & {
+  chainId: typeof BASE_CHAIN_ID;
+  goalFactory: EvmAddress;
+  deployParams: GoalFactoryDeployParams;
 };
 
 export type GoalDeployedStack = {
@@ -652,6 +662,36 @@ export function buildGoalCreatePlan(params: {
       valueEth: "0",
     },
     writeContract,
+  };
+}
+
+export function buildGoalCreateProtocolPlan(params: {
+  deployParams: unknown;
+  factoryAddress?: string;
+  network?: ProtocolNetwork | string;
+}): GoalCreateProtocolPlan {
+  const basePlan = buildGoalCreatePlan(params);
+
+  return {
+    chainId: basePlan.chainId,
+    network: basePlan.network,
+    action: "goal.create",
+    riskClass: "economic",
+    summary: `Deploy a goal through GoalFactory ${basePlan.goalFactory}.`,
+    goalFactory: basePlan.goalFactory,
+    deployParams: basePlan.deployParams,
+    preconditions: [],
+    expectedEvents: ["GoalDeployed"],
+    steps: [
+      buildProtocolCallStep({
+        contract: "GoalFactory",
+        functionName: "deployGoal",
+        label: "Deploy goal",
+        to: basePlan.goalFactory,
+        abi: goalFactoryAbi as Abi,
+        args: [basePlan.deployParams],
+      }),
+    ],
   };
 }
 

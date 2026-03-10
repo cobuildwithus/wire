@@ -36,6 +36,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` | Cross-agent ownership ledger. |
 | `agent-docs/exec-plans/active/2026-03-10-farcaster-hosted-contracts.md` | Active execution plan for shared Farcaster hosted/signup contract hard cutover. |
 | `agent-docs/exec-plans/active/2026-03-10-final-hard-cutover-sweep.md` | Active execution plan for removing final compatibility-only shared-surface aliases. |
+| `agent-docs/exec-plans/active/2026-03-10-protocol-notification-hard-cutover.md` | Active execution plan for removing legacy protocol-notification reason aliases from the shared presenter surface. |
 | `agent-docs/exec-plans/active/2026-03-03-farcaster-wire-contract.md` | Active execution plan for Farcaster wire contract additions. |
 | `agent-docs/exec-plans/active/2026-03-03-release-docs-drift-fix.md` | Active execution plan to restore docs drift gate compliance for release patch verification. |
 | `agent-docs/exec-plans/active/2026-03-04-abi-etherscan-docs-drift-fix.md` | Active execution plan to restore docs drift compliance after migrating ABI generation to Wagmi Etherscan plugin fetches. |
@@ -60,6 +61,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Removed compatibility-only protocol-notification reason aliases so only canonical success-assertion and reminder spellings reach the shared presenter/routing surface.
 - Expanded shared protocol notification normalization, routing, and presenter coverage for finalize-failed, resolver lifecycle, juror reward, and reminder reason families.
 - Added canonical shared Base token/ecosystem contract exports plus pure indexed-inspect normalization/state helpers for downstream `chat-api` and `interface` cutover.
 - Regenerated GoalFactory ABI exports from local `v1-core` artifacts and hard-cut goal-create helpers to the current deploy shape (required spend-policy addresses, no `revnet.owner`, no `underwriting.coverageLambda`).
