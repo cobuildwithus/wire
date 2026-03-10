@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.7] - 2026-03-10
+
+### Added
+- share protocol notification presenter
+- add base-only goal create helpers
+
+### Changed
+- restore active notification completeness plan
+- sync tcr request actor events
+- close release coordination
+
 ## [0.1.6] - 2026-03-09
 
 ### Added
