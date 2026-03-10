@@ -2,6 +2,7 @@ export type ProtocolNotificationRole =
   | "requester"
   | "challenger"
   | "proposer"
+  | "budget_controller"
   | "goal_owner"
   | "goal_stakeholder"
   | "goal_underwriter"
@@ -82,6 +83,7 @@ function parseRole(value: unknown): ProtocolNotificationRole | null {
     case "requester":
     case "challenger":
     case "proposer":
+    case "budget_controller":
     case "goal_owner":
     case "goal_stakeholder":
     case "goal_underwriter":
@@ -171,7 +173,7 @@ function focusForProtocolNotification(
     case "mechanism_accepted":
     case "mechanism_removal_requested":
     case "mechanism_removal_accepted":
-      return resource?.itemId || resource?.requestIndex ? "request" : null;
+      return "request";
     case "budget_proposal_challenged":
     case "budget_removal_challenged":
     case "mechanism_challenged":
@@ -181,24 +183,69 @@ function focusForProtocolNotification(
     case "juror_ruling_final":
     case "juror_slashable":
     case "juror_slashed":
-      if (resource?.disputeId || resource?.arbitrator) return "dispute";
-      return resource?.itemId || resource?.requestIndex ? "request" : null;
+      return resource?.disputeId || resource?.arbitrator ? "dispute" : "request";
     case "budget_activated":
     case "budget_removed":
     case "budget_active":
     case "budget_succeeded":
     case "budget_failed":
     case "budget_expired":
+      return "budget";
+    case "budget_success_assertion_registered":
+    case "budget_success_assertion_cleared":
+    case "budget_success_assertion_resolution_fail_closed":
+    case "budget_success_assertion_reassert_grace_activated":
+    case "budget_success_resolution_disabled":
+    case "goal_success_assertion_registered":
+    case "goal_success_assertion_cleared":
+    case "goal_success_assertion_resolution_fail_closed":
+    case "goal_success_assertion_reassert_grace_activated":
+      return "success_assertion";
+    case "mechanism_activated":
+    case "mechanism_removed":
+      return "mechanism";
+    case "underwriter_slashed":
+    case "underwriter_withdrawal_prep_required":
+      return "underwriter";
+    case "premium_claimable":
+    case "premium_claimed":
+      return "premium";
+    case "goal_active":
+    case "goal_succeeded":
+    case "goal_expired":
+      return "goal";
+    default:
+      return null;
+  }
+}
+
+function pageForProtocolNotification(reason: string): "events" | "allocate" {
+  switch (reason) {
+    case "budget_activated":
+    case "budget_removed":
+    case "budget_active":
+    case "budget_succeeded":
+    case "budget_failed":
+    case "budget_expired":
+    case "budget_success_assertion_registered":
+    case "budget_success_assertion_cleared":
+    case "budget_success_assertion_resolution_fail_closed":
+    case "budget_success_assertion_reassert_grace_activated":
+    case "budget_success_resolution_disabled":
     case "underwriter_slashed":
     case "underwriter_withdrawal_prep_required":
     case "premium_claimable":
     case "premium_claimed":
-      return resource?.budgetTreasury ? "budget" : null;
+    case "mechanism_proposed":
+    case "mechanism_challenged":
+    case "mechanism_accepted":
     case "mechanism_activated":
+    case "mechanism_removal_requested":
+    case "mechanism_removal_accepted":
     case "mechanism_removed":
-      return resource?.budgetTreasury ? "mechanism" : null;
+      return "allocate";
     default:
-      return null;
+      return "events";
   }
 }
 
@@ -218,12 +265,14 @@ export function buildProtocolNotificationAppPath(
   if (resource?.arbitrator) params.set("arbitrator", resource.arbitrator);
 
   const focus = reason ? focusForProtocolNotification(reason, resource) : null;
-  if (focus && params.size > 0) {
+  if (focus) {
     params.set("focus", focus);
   }
 
   const query = params.toString();
-  return query ? `/${goalTreasury}/events?${query}` : `/${goalTreasury}/events`;
+  const page = reason ? pageForProtocolNotification(reason) : "events";
+  const basePath = `/${goalTreasury}/${page}`;
+  return query ? `${basePath}?${query}` : basePath;
 }
 
 function roleAwareTitle(
@@ -464,6 +513,42 @@ function buildTitle(
       return goalName ? `${goalName} succeeded.` : "Goal succeeded.";
     case "goal_expired":
       return goalName ? `${goalName} expired.` : "Goal expired.";
+    case "goal_success_assertion_registered":
+      return goalName
+        ? `Goal success assertion registered in ${goalName}.`
+        : "Goal success assertion registered.";
+    case "goal_success_assertion_cleared":
+      return goalName
+        ? `Goal success assertion cleared in ${goalName}.`
+        : "Goal success assertion cleared.";
+    case "goal_success_assertion_resolution_fail_closed":
+      return goalName
+        ? `Goal success assertion failed closed in ${goalName}.`
+        : "Goal success assertion failed closed.";
+    case "goal_success_assertion_reassert_grace_activated":
+      return goalName
+        ? `Goal reassert grace activated in ${goalName}.`
+        : "Goal reassert grace activated.";
+    case "budget_success_assertion_registered":
+      return goalName
+        ? `Budget success assertion registered in ${goalName}.`
+        : "Budget success assertion registered.";
+    case "budget_success_assertion_cleared":
+      return goalName
+        ? `Budget success assertion cleared in ${goalName}.`
+        : "Budget success assertion cleared.";
+    case "budget_success_assertion_resolution_fail_closed":
+      return goalName
+        ? `Budget success assertion failed closed in ${goalName}.`
+        : "Budget success assertion failed closed.";
+    case "budget_success_assertion_reassert_grace_activated":
+      return goalName
+        ? `Budget reassert grace activated in ${goalName}.`
+        : "Budget reassert grace activated.";
+    case "budget_success_resolution_disabled":
+      return goalName
+        ? `Budget success resolution disabled in ${goalName}.`
+        : "Budget success resolution disabled.";
     case "juror_dispute_created":
       return goalName ? `New juror dispute in ${goalName}.` : "New juror dispute.";
     case "juror_voting_open":
@@ -671,6 +756,24 @@ function buildExcerpt(
       return "The goal reached a succeeded terminal state.";
     case "goal_expired":
       return "The goal reached an expired terminal state.";
+    case "goal_success_assertion_registered":
+      return "A goal success assertion was registered and is awaiting resolution.";
+    case "goal_success_assertion_cleared":
+      return "The pending goal success assertion was cleared.";
+    case "goal_success_assertion_resolution_fail_closed":
+      return "The goal success assertion closed without a successful resolution.";
+    case "goal_success_assertion_reassert_grace_activated":
+      return "A reassert grace window opened for the cleared goal assertion.";
+    case "budget_success_assertion_registered":
+      return "A budget success assertion was registered and is awaiting resolution.";
+    case "budget_success_assertion_cleared":
+      return "The pending budget success assertion was cleared.";
+    case "budget_success_assertion_resolution_fail_closed":
+      return "The budget success assertion closed without a successful resolution.";
+    case "budget_success_assertion_reassert_grace_activated":
+      return "A reassert grace window opened for the cleared budget assertion.";
+    case "budget_success_resolution_disabled":
+      return "Success assertions were disabled for this budget.";
     case "juror_dispute_created":
       return "A new dispute is waiting for juror attention.";
     case "juror_voting_open":

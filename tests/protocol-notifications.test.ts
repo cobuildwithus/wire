@@ -24,6 +24,16 @@ describe("protocol notification presenter", () => {
     };
   }
 
+  function expectedPresentationAppPath(
+    reason: string,
+    payload: Record<string, unknown>
+  ): string {
+    return buildProtocolNotificationAppPath(
+      parseProtocolNotificationPayload(payload),
+      reason
+    );
+  }
+
   it("parses the structured payload contract", () => {
     expect(
       parseProtocolNotificationPayload({
@@ -102,7 +112,32 @@ describe("protocol notification presenter", () => {
     );
   });
 
-  it("keeps the plain goal events path when no scoped refs are present", () => {
+  it("routes budget lifecycle notifications to the allocate surface", () => {
+    const payload = parseProtocolNotificationPayload({
+      resource: {
+        goalTreasury,
+        budgetTreasury,
+      },
+    });
+
+    expect(buildProtocolNotificationAppPath(payload, "budget_succeeded")).toBe(
+      `/${goalTreasury}/allocate?budgetTreasury=${budgetTreasury}&focus=budget`
+    );
+  });
+
+  it("keeps focus query params even when only goal-level refs exist", () => {
+    const payload = parseProtocolNotificationPayload({
+      resource: {
+        goalTreasury,
+      },
+    });
+
+    expect(buildProtocolNotificationAppPath(payload, "goal_success_assertion_registered")).toBe(
+      `/${goalTreasury}/events?focus=success_assertion`
+    );
+  });
+
+  it("keeps goal-level focus when only the goal treasury is available", () => {
     expect(
       buildProtocolNotificationAppPath(
         parseProtocolNotificationPayload({
@@ -110,26 +145,28 @@ describe("protocol notification presenter", () => {
         }),
         "goal_expired"
       )
-    ).toBe(`/${goalTreasury}/events`);
+    ).toBe(`/${goalTreasury}/events?focus=goal`);
     expect(buildProtocolNotificationAppPath(null, "goal_expired")).toBe("/notifications");
   });
 
   it("falls back to the payload actor when the row actor is missing", () => {
+    const payload = {
+      role: "requester",
+      actor: { walletAddress: actorWalletAddress },
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "budget_removal_challenged",
         actorWalletAddress: null,
-        payload: {
-          role: "requester",
-          actor: { walletAddress: actorWalletAddress },
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title: "Your removal request was challenged in Alpha.",
       excerpt: "0x0000...00aa challenged your removal request.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath("budget_removal_challenged", payload),
       actorName: "0x0000...00aa",
     });
   });
@@ -148,7 +185,29 @@ describe("protocol notification presenter", () => {
     ).toEqual({
       title: "Withdrawal prep required in Alpha.",
       excerpt: "This goal is resolved. Prepare your withdrawal before withdrawing stake.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: `/${goalTreasury}/allocate?focus=underwriter`,
+      actorName: null,
+    });
+  });
+
+  it("renders budget success assertion notifications with allocate paths", () => {
+    expect(
+      buildProtocolNotificationPresentation({
+        reason: "budget_success_assertion_registered",
+        actorWalletAddress: null,
+        payload: {
+          role: "budget_controller",
+          labels: { goalName: "Alpha" },
+          resource: {
+            goalTreasury,
+            budgetTreasury,
+          },
+        },
+      })
+    ).toEqual({
+      title: "Budget success assertion registered in Alpha.",
+      excerpt: "A budget success assertion was registered and is awaiting resolution.",
+      appPath: `/${goalTreasury}/allocate?budgetTreasury=${budgetTreasury}&focus=success_assertion`,
       actorName: null,
     });
   });
@@ -272,20 +331,24 @@ describe("protocol notification presenter", () => {
   ])(
     "builds requester-specific copy for %s",
     (reason, title, excerpt, roleActorWalletAddress, goalName) => {
+      const payload = {
+        role: "requester",
+        labels: { goalName },
+        resource: { goalTreasury: goalName.trim() ? goalTreasury : "not-an-address" },
+      };
+
       expect(
         buildProtocolNotificationPresentation({
           reason,
           actorWalletAddress: roleActorWalletAddress,
-          payload: {
-            role: "requester",
-            labels: { goalName },
-            resource: { goalTreasury: goalName.trim() ? goalTreasury : "not-an-address" },
-          },
+          payload,
         })
       ).toEqual({
         title,
         excerpt,
-        appPath: goalName.trim() ? `/${goalTreasury}/events` : "/notifications",
+        appPath: goalName.trim()
+          ? expectedPresentationAppPath(reason, payload)
+          : "/notifications",
         actorName: roleActorWalletAddress ? "0x0000...00aa" : null,
       });
     }
@@ -379,97 +442,109 @@ describe("protocol notification presenter", () => {
   ])(
     "builds proposer-specific copy for %s",
     (reason, title, excerpt, roleActorWalletAddress, goalName) => {
+      const payload = {
+        role: "proposer",
+        labels: { goalName },
+        resource: { goalTreasury: goalName.trim() ? goalTreasury : "not-an-address" },
+      };
+
       expect(
         buildProtocolNotificationPresentation({
           reason,
           actorWalletAddress: roleActorWalletAddress,
-          payload: {
-            role: "proposer",
-            labels: { goalName },
-            resource: { goalTreasury: goalName.trim() ? goalTreasury : "not-an-address" },
-          },
+          payload,
         })
       ).toEqual({
         title,
         excerpt,
-        appPath: goalName.trim() ? `/${goalTreasury}/events` : "/notifications",
+        appPath: goalName.trim()
+          ? expectedPresentationAppPath(reason, payload)
+          : "/notifications",
         actorName: roleActorWalletAddress ? "0x0000...00aa" : null,
       });
     }
   );
 
   it("builds proposer-specific challenge copy with an actor label", () => {
+    const payload = {
+      role: "proposer",
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "budget_proposal_challenged",
         actorWalletAddress,
-        payload: {
-          role: "proposer",
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title: "Your budget proposal was challenged in Alpha.",
       excerpt: "0x0000...00aa challenged your budget proposal.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath("budget_proposal_challenged", payload),
       actorName: "0x0000...00aa",
     });
   });
 
   it("builds proposer-specific removal-request copy without an actor label", () => {
+    const payload = {
+      role: "proposer",
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "budget_removal_requested",
         actorWalletAddress: null,
-        payload: {
-          role: "proposer",
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title: "Removal requested for your budget in Alpha.",
       excerpt: "A removal request was submitted for your budget.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath("budget_removal_requested", payload),
       actorName: null,
     });
   });
 
   it("builds proposer-specific removal challenge copy with an actor label", () => {
+    const payload = {
+      role: "proposer",
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "budget_removal_challenged",
         actorWalletAddress,
-        payload: {
-          role: "proposer",
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title: "Removal request challenged for your budget in Alpha.",
       excerpt: "0x0000...00aa challenged a removal request for your budget.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath("budget_removal_challenged", payload),
       actorName: "0x0000...00aa",
     });
   });
 
   it("falls back to generic copy for challenger roles on non-dispute reasons", () => {
+    const payload = {
+      role: "challenger",
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "budget_accepted",
         actorWalletAddress,
-        payload: {
-          role: "challenger",
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title: "Budget accepted in Alpha.",
       excerpt: "The proposal cleared governance and is queued for activation.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath("budget_accepted", payload),
       actorName: "0x0000...00aa",
     });
   });
@@ -477,20 +552,22 @@ describe("protocol notification presenter", () => {
   it.each(["requester", "proposer"])(
     "falls back to generic copy for %s roles on non-request reasons",
     (role) => {
+      const payload = {
+        role,
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury },
+      };
+
       expect(
         buildProtocolNotificationPresentation({
           reason: "goal_active",
           actorWalletAddress,
-          payload: {
-            role,
-            labels: { goalName: "Alpha" },
-            resource: { goalTreasury },
-          },
+          payload,
         })
       ).toEqual({
         title: "Alpha is now active.",
         excerpt: "The goal has moved from funding into the active phase.",
-        appPath: `/${goalTreasury}/events`,
+        appPath: expectedPresentationAppPath("goal_active", payload),
         actorName: "0x0000...00aa",
       });
     }
@@ -499,76 +576,84 @@ describe("protocol notification presenter", () => {
   it.each(["goal_owner", "goal_stakeholder", "goal_underwriter", "budget_underwriter", "juror"])(
     "parses %s as a recognized role and falls back to generic copy",
     (role) => {
+      const payload = {
+        role,
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury },
+      };
+
       expect(
         buildProtocolNotificationPresentation({
           reason: "budget_activated",
           actorWalletAddress: null,
-          payload: {
-            role,
-            labels: { goalName: "Alpha" },
-            resource: { goalTreasury },
-          },
+          payload,
         })
       ).toEqual({
         title: "Budget activated in Alpha.",
         excerpt: "The budget is now active for funding.",
-        appPath: `/${goalTreasury}/events`,
+        appPath: expectedPresentationAppPath("budget_activated", payload),
         actorName: null,
       });
     }
   );
 
   it("renders requester completion copy for removed budgets", () => {
+    const payload = {
+      role: "requester",
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury, budgetTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "budget_removed",
         actorWalletAddress: null,
-        payload: {
-          role: "requester",
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury, budgetTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title: "Your removal request completed in Alpha.",
       excerpt: "Your removal request completed and the budget was detached from active funding.",
-      appPath: `/${goalTreasury}/events?budgetTreasury=${budgetTreasury}&focus=budget`,
+      appPath: expectedPresentationAppPath("budget_removed", payload),
       actorName: null,
     });
   });
 
   it("builds juror copy for phase-open notifications", () => {
+    const payload = {
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "juror_voting_open",
         actorWalletAddress: null,
-        payload: {
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title: "Juror voting opened in Alpha.",
       excerpt: "Voting is now open on this dispute.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath("juror_voting_open", payload),
       actorName: null,
     });
   });
 
   it("builds underwriter slash copy", () => {
+    const payload = {
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "underwriter_slashed",
         actorWalletAddress: null,
-        payload: {
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title: "Underwriter slash applied in Alpha.",
       excerpt: "A slash was applied to your underwriting position.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath("underwriter_slashed", payload),
       actorName: null,
     });
   });
@@ -640,38 +725,42 @@ describe("protocol notification presenter", () => {
     ["juror_slashable", "Juror slash risk in Alpha.", "The dispute resolved in a way that may leave your juror stake slashable."],
     ["juror_slashed", "Juror slashed in Alpha.", "A slash was applied to your juror stake."],
   ])("builds generic titled copy for %s", (reason, title, excerpt) => {
+    const payload = {
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason,
         actorWalletAddress: null,
-        payload: {
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title,
       excerpt,
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath(reason, payload),
       actorName: null,
     });
   });
 
   it("falls back to generic request copy when payload role is unknown", () => {
+    const payload = {
+      role: "someone_else",
+      labels: { goalName: "Alpha" },
+      resource: { goalTreasury },
+    };
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "budget_proposed",
         actorWalletAddress,
-        payload: {
-          role: "someone_else",
-          labels: { goalName: "Alpha" },
-          resource: { goalTreasury },
-        },
+        payload,
       })
     ).toEqual({
       title: "New budget proposed in Alpha.",
       excerpt: "0x0000...00aa opened a new budget request.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath("budget_proposed", payload),
       actorName: "0x0000...00aa",
     });
   });
@@ -732,16 +821,18 @@ describe("protocol notification presenter", () => {
       "Your allocation mechanism was detached from active allocation.",
     ],
   ])("builds personalized completion copy for %s on %s", (role, reason, title, excerpt) => {
+    const payload = basePayload(role);
+
     expect(
       buildProtocolNotificationPresentation({
         reason,
         actorWalletAddress: null,
-        payload: basePayload(role),
+        payload,
       })
     ).toEqual({
       title,
       excerpt,
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath(reason, payload),
       actorName: null,
     });
   });
@@ -796,16 +887,18 @@ describe("protocol notification presenter", () => {
       "0x0000...00aa requested removal of your allocation mechanism.",
     ],
   ])("uses actor-specific excerpt copy for %s on %s", (role, reason, title, excerpt) => {
+    const payload = basePayload(role);
+
     expect(
       buildProtocolNotificationPresentation({
         reason,
         actorWalletAddress,
-        payload: basePayload(role),
+        payload,
       })
     ).toEqual({
       title,
       excerpt,
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath(reason, payload),
       actorName: "0x0000...00aa",
     });
   });
@@ -830,16 +923,18 @@ describe("protocol notification presenter", () => {
       "The allocation mechanism request is now in dispute.",
     ],
   ])("builds challenger copy for %s", (role, reason, title, excerpt) => {
+    const payload = basePayload(role);
+
     expect(
       buildProtocolNotificationPresentation({
         reason,
         actorWalletAddress,
-        payload: basePayload(role),
+        payload,
       })
     ).toEqual({
       title,
       excerpt,
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath(reason, payload),
       actorName: "0x0000...00aa",
     });
   });
@@ -966,16 +1061,18 @@ describe("protocol notification presenter", () => {
       "A slash was applied to your juror stake.",
     ],
   ])("builds generic protocol copy for %s", (reason, title, excerpt) => {
+    const payload = basePayload(null);
+
     expect(
       buildProtocolNotificationPresentation({
         reason,
         actorWalletAddress: null,
-        payload: basePayload(null),
+        payload,
       })
     ).toEqual({
       title,
       excerpt,
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath(reason, payload),
       actorName: null,
     });
   });
@@ -987,16 +1084,18 @@ describe("protocol notification presenter", () => {
     "budget_underwriter",
     "juror",
   ])("treats %s as a recognized fallback role", (role) => {
+    const payload = basePayload(role);
+
     expect(
       buildProtocolNotificationPresentation({
         reason: "budget_activated",
         actorWalletAddress: null,
-        payload: basePayload(role),
+        payload,
       })
     ).toEqual({
       title: "Budget activated in Alpha.",
       excerpt: "The budget is now active for funding.",
-      appPath: `/${goalTreasury}/events`,
+      appPath: expectedPresentationAppPath("budget_activated", payload),
       actorName: null,
     });
   });
