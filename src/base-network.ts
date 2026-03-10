@@ -10,7 +10,6 @@ const BASE_ONLY_RUNTIME_ALIASES = new Map<string, BaseOnlyNetwork>([
 
 const BASE_ONLY_CONFIGURED_ALIASES = new Map<string, BaseOnlyNetwork>([
   ...BASE_ONLY_RUNTIME_ALIASES,
-  ["base-sepolia", "base"],
 ]);
 
 function canonicalizeBaseNetwork(

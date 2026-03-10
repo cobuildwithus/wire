@@ -18,7 +18,7 @@ describe("base network helpers", () => {
   it("canonicalizes configured Base aliases", () => {
     expect(canonicalizeBaseOnlyConfiguredNetwork("base")).toBe("base");
     expect(canonicalizeBaseOnlyConfiguredNetwork("base-mainnet")).toBe("base");
-    expect(canonicalizeBaseOnlyConfiguredNetwork(" base-sepolia ")).toBe("base");
+    expect(canonicalizeBaseOnlyConfiguredNetwork(" base-sepolia ")).toBeNull();
     expect(canonicalizeBaseOnlyConfiguredNetwork("")).toBeNull();
     expect(canonicalizeBaseOnlyConfiguredNetwork("ethereum")).toBeNull();
   });
