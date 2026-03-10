@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2026-03-10
+
+### Added
+- publish shared contract updates
+
+### Fixed
+- reject unsupported base-sepolia alias
+
+### Changed
+- clear oauth cutover ledger
+
 ## [0.1.10] - 2026-03-10
 
 ### Added
