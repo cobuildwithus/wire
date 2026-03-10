@@ -17,6 +17,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./protocol-notifications": {
+      "types": "./dist/protocol-notifications.d.ts",
+      "import": "./dist/protocol-notifications.js"
     }
   },
   "bin": {
