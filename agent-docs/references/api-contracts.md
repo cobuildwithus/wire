@@ -16,7 +16,8 @@
   - `WIRE_V1_CORE_PATH` optionally overrides the default sibling `v1-core` repo location.
   - `CobuildSwapImpl` ABI is sourced from Basescan (not an empty placeholder ABI), and `cobuildSwapImplAddress` is pinned to `0x21a580054e7a5e833f38033f2d958e00e4c50f0f`
 - Protocol goal helpers:
-  - shared `deployGoal` calldata validation/builders
+  - strict GoalFactory `DeployParams` normalization against the generated ABI surface (no legacy `revnet.owner` / `underwriting.coverageLambda` passthrough)
+  - shared `deployGoal` transaction and write-request builders
   - shared `GoalDeployed` log and receipt decoding helpers
 - Farcaster signup wire contracts:
   - canonical contract addresses and ABIs (IdGateway, KeyGateway, IdRegistry)

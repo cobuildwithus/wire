@@ -1,18 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { encodeAbiParameters, encodeEventTopics, encodeFunctionData } from "viem";
 import {
+  buildGoalCreatePlan,
   buildGoalCreateTransaction,
+  buildGoalCreateWriteContractRequest,
   decodeGoalDeployedEvent,
   encodeGoalFactoryDeployGoalData,
   extractGoalFactoryDeployParams,
   goalFactoryAbi,
   goalFactoryAddress,
+  isGoalFactoryDeployParamsInput,
+  normalizeGoalFactoryDeployParams,
   serializeGoalDeployedEvent,
 } from "../src/index.js";
 
-const deployParams = {
+const normalizedDeployParams = {
   revnet: {
-    owner: "0x1111111111111111111111111111111111111111",
     name: "Alpha Goal",
     ticker: "ALPHA",
     uri: "ipfs://goal",
@@ -42,7 +45,6 @@ const deployParams = {
     url: "https://example.com",
   },
   underwriting: {
-    coverageLambda: 0n,
     budgetPremiumPpm: 0,
     budgetSlashPpm: 0,
   },
@@ -72,6 +74,7 @@ const deployParams = {
       bondAmount: 1n,
     },
     budgetSuccessResolver: "0x4444444444444444444444444444444444444444",
+    budgetSpendPolicy: "0x5555555555555555555555555555555555555555",
     arbitratorParams: {
       votingPeriod: 7_200n,
       votingDelay: 1n,
@@ -81,7 +84,80 @@ const deployParams = {
       slashCallerBountyBps: 100n,
     },
   },
-  goalSpendPolicy: "0x0000000000000000000000000000000000000000",
+  goalSpendPolicy: "0x6666666666666666666666666666666666666666",
+} as const;
+
+const rawDeployParams = {
+  revnet: {
+    name: "Alpha Goal",
+    ticker: "ALPHA",
+    uri: "ipfs://goal",
+    initialIssuance: "1",
+    cashOutTaxRate: "0",
+    reservedPercent: "9900",
+    durationSeconds: "86400",
+  },
+  timing: {
+    minRaise: "10",
+    minRaiseDurationSeconds: "3600",
+  },
+  success: {
+    successResolver: "0x2222222222222222222222222222222222222222",
+    successAssertionLiveness: "86400",
+    successAssertionBond: "0",
+    successOracleSpecHash:
+      "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    successAssertionPolicyHash:
+      "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+  },
+  flowMetadata: {
+    title: "Alpha Goal",
+    description: "Build phase one",
+    image: "ipfs://image",
+    tagline: "Ship it",
+    url: "https://example.com",
+  },
+  underwriting: {
+    budgetPremiumPpm: "0",
+    budgetSlashPpm: "0",
+  },
+  budgetTCR: {
+    allocationMechanismAdmin: "0x3333333333333333333333333333333333333333",
+    invalidRoundRewardsSink: "0x000000000000000000000000000000000000dEaD",
+    submissionDepositStrategy: "0x0000000000000000000000000000000000000000",
+    submissionBaseDeposit: "0",
+    removalBaseDeposit: "0",
+    submissionChallengeBaseDeposit: "0",
+    removalChallengeBaseDeposit: "0",
+    registrationMetaEvidence: "ipfs://reg",
+    clearingMetaEvidence: "ipfs://clear",
+    challengePeriodDuration: "7200",
+    arbitratorExtraData: "0x",
+    budgetBounds: {
+      minFundingLeadTime: "0",
+      maxFundingHorizon: "86400",
+      minExecutionDuration: "0",
+      maxExecutionDuration: "86400",
+      minActivationThreshold: "0",
+      maxActivationThreshold: "1",
+      maxRunwayCap: "1",
+    },
+    oracleBounds: {
+      liveness: "1",
+      bondAmount: "1",
+    },
+    budgetSuccessResolver: "0x4444444444444444444444444444444444444444",
+    budgetSpendPolicy: "0x5555555555555555555555555555555555555555",
+    arbitratorParams: {
+      votingPeriod: "7200",
+      votingDelay: "1",
+      revealPeriod: "1",
+      arbitrationCost: "1",
+      wrongOrMissedSlashBps: "50",
+      slashCallerBountyBps: "100",
+    },
+  },
+  goalSpendPolicy: "0x6666666666666666666666666666666666666666",
 } as const;
 
 const goalDeployedLog = (() => {
@@ -133,33 +209,86 @@ const goalDeployedLog = (() => {
 })();
 
 describe("protocol goals contract", () => {
-  it("extracts deploy params from raw input aliases", () => {
-    expect(extractGoalFactoryDeployParams({ deployParams })).toBe(deployParams);
-    expect(extractGoalFactoryDeployParams({ params: deployParams })).toBe(deployParams);
-    expect(extractGoalFactoryDeployParams({ p: deployParams })).toBe(deployParams);
+  it("extracts and normalizes deploy params from raw input aliases", () => {
+    expect(isGoalFactoryDeployParamsInput(rawDeployParams)).toBe(true);
+    expect(normalizeGoalFactoryDeployParams(rawDeployParams)).toEqual(normalizedDeployParams);
+    expect(extractGoalFactoryDeployParams({ deployParams: rawDeployParams })).toEqual(
+      normalizedDeployParams
+    );
+    expect(extractGoalFactoryDeployParams({ params: rawDeployParams })).toEqual(
+      normalizedDeployParams
+    );
+    expect(extractGoalFactoryDeployParams({ p: rawDeployParams })).toEqual(normalizedDeployParams);
     expect(() => extractGoalFactoryDeployParams({ nope: true })).toThrow(
       "Goal deploy params must include keys"
     );
   });
 
-  it("encodes goal deploy calldata and builds a transaction envelope", () => {
-    const data = encodeGoalFactoryDeployGoalData(deployParams);
+  it("rejects stale goal deploy fields that no longer exist on GoalFactory", () => {
+    expect(() =>
+      extractGoalFactoryDeployParams({
+        ...rawDeployParams,
+        revnet: {
+          owner: "0x1111111111111111111111111111111111111111",
+          ...rawDeployParams.revnet,
+        },
+      })
+    ).toThrow("deployParams.revnet.owner is not supported");
+
+    expect(() =>
+      extractGoalFactoryDeployParams({
+        ...rawDeployParams,
+        underwriting: {
+          coverageLambda: "0",
+          ...rawDeployParams.underwriting,
+        },
+      })
+    ).toThrow("deployParams.underwriting.coverageLambda is not supported");
+  });
+
+  it("encodes goal deploy calldata and builds plan/transaction envelopes", () => {
+    const data = encodeGoalFactoryDeployGoalData(rawDeployParams);
     expect(data).toBe(
       encodeFunctionData({
         abi: goalFactoryAbi,
         functionName: "deployGoal",
-        args: [deployParams],
+        args: [normalizedDeployParams],
       })
     );
 
-    expect(buildGoalCreateTransaction({ deployParams })).toEqual({
+    expect(buildGoalCreateTransaction({ deployParams: rawDeployParams })).toEqual({
       to: goalFactoryAddress.toLowerCase(),
       data,
       valueEth: "0",
     });
+
+    expect(buildGoalCreatePlan({ deployParams: rawDeployParams })).toMatchObject({
+      chainId: 8453,
+      network: "base",
+      goalFactory: goalFactoryAddress.toLowerCase(),
+      deployParams: normalizedDeployParams,
+      transaction: {
+        to: goalFactoryAddress.toLowerCase(),
+        data,
+        valueEth: "0",
+      },
+      writeContract: {
+        address: goalFactoryAddress.toLowerCase(),
+        functionName: "deployGoal",
+        args: [normalizedDeployParams],
+      },
+    });
+
+    expect(buildGoalCreateWriteContractRequest({ deployParams: rawDeployParams })).toEqual({
+      address: goalFactoryAddress.toLowerCase(),
+      abi: goalFactoryAbi,
+      functionName: "deployGoal",
+      args: [normalizedDeployParams],
+    });
   });
 
   it("decodes GoalDeployed logs and serializes bigint fields", () => {
+    expect(decodeGoalDeployedEvent([])).toBeNull();
     const decoded = decodeGoalDeployedEvent([goalDeployedLog]);
     expect(decoded).not.toBeNull();
     expect(decoded?.caller).toBe("0x1111111111111111111111111111111111111111");

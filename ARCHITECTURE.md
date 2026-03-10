@@ -18,5 +18,5 @@ This package provides canonical wire-contract utilities shared between CLI, chat
 - `parse-bearer-token`: bearer extraction utility.
 - `idempotency`: UUIDv4/idempotency header contract.
 - `x402`: typed-data domain/types and xPayment payload encode/decode validation.
-- `protocol-goals`: shared goal-create calldata validation/builders and `GoalDeployed` receipt decoding helpers.
+- `protocol-goals`: shared GoalFactory deploy-param normalization, goal-create transaction/write-request builders, and `GoalDeployed` receipt decoding helpers.
 - `farcaster`: Farcaster signup constants, typed-data contract helpers, preflight status classifier, call-plan builders, and executable-call builders.

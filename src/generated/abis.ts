@@ -388,12 +388,21 @@ export const allocationMechanismTcrAbi = [
   },
   {
     type: 'function',
+    inputs: [],
+    name: 'initialMechanismFactories',
+    outputs: [
+      { name: 'factories', internalType: 'address[]', type: 'address[]' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     inputs: [
       { name: 'budgetTreasury_', internalType: 'address', type: 'address' },
       {
-        name: 'initialMechanismFactory_',
-        internalType: 'address',
-        type: 'address',
+        name: 'initialMechanismFactories_',
+        internalType: 'address[]',
+        type: 'address[]',
       },
       {
         name: 'initConfig',
@@ -980,6 +989,63 @@ export const allocationMechanismTcrAbi = [
         type: 'bytes32',
         indexed: true,
       },
+      {
+        name: 'callTarget',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'selector',
+        internalType: 'bytes4',
+        type: 'bytes4',
+        indexed: true,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'MechanismMaintenanceCallFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'payoutRecipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'recipient',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'amount',
+        internalType: 'uint256',
+        type: 'uint256',
+        indexed: false,
+      },
+    ],
+    name: 'MechanismPayoutSwept',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
     ],
     name: 'MechanismRemovalQueued',
   },
@@ -1265,6 +1331,7 @@ export const allocationMechanismTcrAbi = [
   { type: 'error', inputs: [], name: 'NOT_DEPLOYED' },
   { type: 'error', inputs: [], name: 'NOT_QUEUED' },
   { type: 'error', inputs: [], name: 'NOT_REGISTERED' },
+  { type: 'error', inputs: [], name: 'NO_INITIAL_MECHANISM_FACTORIES' },
   {
     type: 'error',
     inputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
@@ -2083,6 +2150,13 @@ export const budgetTcrAbi = [
   },
   {
     type: 'function',
+    inputs: [],
+    name: 'budgetSpendPolicy',
+    outputs: [{ name: 'policy', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     inputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
     name: 'budgetStackTopology',
     outputs: [
@@ -2556,6 +2630,11 @@ export const budgetTcrAbi = [
           { name: 'stackDeployer', internalType: 'address', type: 'address' },
           {
             name: 'budgetSuccessResolver',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'budgetSpendPolicy',
             internalType: 'address',
             type: 'address',
           },
@@ -3540,6 +3619,11 @@ export const budgetTcrAbi = [
   { type: 'error', inputs: [], name: 'DISPUTE_TIMEOUT_NOT_PASSED' },
   { type: 'error', inputs: [], name: 'GOAL_TERMINAL' },
   { type: 'error', inputs: [], name: 'INVALID_BOUNDS' },
+  {
+    type: 'error',
+    inputs: [{ name: 'policy', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_SPEND_POLICY',
+  },
   { type: 'error', inputs: [], name: 'INVALID_DISPUTE_ID' },
   { type: 'error', inputs: [], name: 'INVALID_ITEM_DATA' },
   {
@@ -3583,6 +3667,11 @@ export const budgetTcrAbi = [
   { type: 'error', inputs: [], name: 'MUST_BE_A_REQUEST' },
   { type: 'error', inputs: [], name: 'MUST_BE_REGISTERED_TO_BE_REMOVED' },
   { type: 'error', inputs: [], name: 'MUST_FULLY_FUND_YOUR_SIDE' },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'NOT_A_CONTRACT',
+  },
   {
     type: 'error',
     inputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
@@ -3644,6 +3733,7 @@ export const budgetTcrDeployerAbi = [
         type: 'address',
       },
       { name: 'roundFactory_', internalType: 'address', type: 'address' },
+      { name: 'teamFlowFactory_', internalType: 'address', type: 'address' },
       {
         name: 'allocationMechanismTcrImplementation_',
         internalType: 'address',
@@ -3756,6 +3846,7 @@ export const budgetTcrDeployerAbi = [
         ],
       },
       { name: 'successResolver', internalType: 'address', type: 'address' },
+      { name: 'spendPolicy', internalType: 'address', type: 'address' },
       {
         name: 'successAssertionLiveness',
         internalType: 'uint64',
@@ -3812,6 +3903,15 @@ export const budgetTcrDeployerAbi = [
     name: 'emitBudgetStackDeployed',
     outputs: [],
     stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'initialMechanismFactories',
+    outputs: [
+      { name: 'factories', internalType: 'address[]', type: 'address[]' },
+    ],
+    stateMutability: 'view',
   },
   {
     type: 'function',
@@ -3904,6 +4004,13 @@ export const budgetTcrDeployerAbi = [
     type: 'function',
     inputs: [],
     name: 'sharedBudgetFlowStrategyLedger',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'teamFlowFactory',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
@@ -4135,6 +4242,11 @@ export const budgetTcrFactoryAbi = [
           { name: 'stackDeployer', internalType: 'address', type: 'address' },
           {
             name: 'budgetSuccessResolver',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'budgetSpendPolicy',
             internalType: 'address',
             type: 'address',
           },
@@ -5424,14 +5536,6 @@ export const budgetTreasuryAbi = [
     name: 'INVALID_THRESHOLDS',
   },
   { type: 'error', inputs: [], name: 'InvalidInitialization' },
-  {
-    type: 'error',
-    inputs: [
-      { name: 'incomingRate', internalType: 'int96', type: 'int96' },
-      { name: 'spenddownRate', internalType: 'int96', type: 'int96' },
-    ],
-    name: 'NEGATIVE_FLOW_COMPONENT',
-  },
   {
     type: 'error',
     inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
@@ -8598,6 +8702,11 @@ export const goalFactoryAbi = [
         internalType: 'contract BudgetTCRFactory',
         type: 'address',
       },
+      {
+        name: 'goalDeploymentRegistry',
+        internalType: 'contract IGoalDeploymentRegistry',
+        type: 'address',
+      },
       { name: 'cobuildToken', internalType: 'address', type: 'address' },
       { name: 'cobuildRevnetId', internalType: 'uint256', type: 'uint256' },
       { name: 'cobuildTerminal', internalType: 'address', type: 'address' },
@@ -8731,6 +8840,19 @@ export const goalFactoryAbi = [
     inputs: [],
     name: 'FLOW_IMPL',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'GOAL_DEPLOYMENT_REGISTRY',
+    outputs: [
+      {
+        name: '',
+        internalType: 'contract IGoalDeploymentRegistry',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
   },
   {
@@ -9036,6 +9158,11 @@ export const goalFactoryAbi = [
               },
               {
                 name: 'budgetSuccessResolver',
+                internalType: 'address',
+                type: 'address',
+              },
+              {
+                name: 'budgetSpendPolicy',
                 internalType: 'address',
                 type: 'address',
               },
