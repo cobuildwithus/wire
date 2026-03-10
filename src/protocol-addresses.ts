@@ -33,6 +33,32 @@ export const baseEntrypoints = {
   superfluidHost: "0x4C073B3baB6d8826b8C5b229f3cfdC1eC6E47E74",
 } as const;
 
+export const baseTokens = {
+  weth: "0x4200000000000000000000000000000000000006",
+  usdc: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+  zora: "0x1111111111166b7fe7bd91427724b487980afc69",
+} as const;
+
+export const baseEcosystemContracts = {
+  zoraFactory: "0x777777751622c0d3258f214F9DF38E35BF45baF3",
+  zoraFactoryImpl: "0x0e2ea62e5377d46fef114a60afbe3d5ea7490577",
+  creatorCoinImpl: "0x88cc4e08c7608723f3e44e17ac669fb43b6a8313",
+  uniswapStateView: "0xa3c0c9b65bad0b08107aa264b0f3db444b867a71",
+  uniswapV3ZoraUsdcPool: "0xedc625b74537ee3a10874f53d170e9c17a906b9c",
+  flowDeployerImpl: "0xd9725b54b5dc4d61a3e9dfe669955f0239f62e92",
+  flowDeployer: "0x62953560766ac1be810e6ef13ab3736f8e2c8a41",
+  usdcPermitAdmin: "0x9108f3c347d642b900602c543e061aee9e8e271f",
+  cobuildFlowManager: "0xb9d58f3575bf264cf705c15fcfa06eb4afdcea64",
+  cobuildFlowAllocator: "0x279adb5201ee14f717560cfaa560e4648f037dc3",
+  jbDirectory: "0x0061e516886a0540f63157f112c0588ee0651dcf",
+  jbMultiTerminal: "0x2db6d704058e552defe415753465df8df0361846",
+  jbController: "0x27da30646502e2f642be5281322ae8c394f7668a",
+  jbPermissions: "0x04fD6913d6c32D8C216e153a43C04b1857a7793d",
+  jbTerminalStore: "0xfE33B439Ec53748C87DcEDACb83f05aDd5014744",
+  revLoans: "0x1880D832aa283d05b8eAB68877717E25FbD550Bb",
+  jbTokens: "0x4d0edd347fb1fa21589c1e109b3474924be87636",
+} as const;
+
 export const baseImplementations = {
   goalTreasuryImpl: "0xCB87F7dac555F907EA07A00127590479AC4558fb",
   goalStakeVaultImpl: "0x04F131525e66678e867cA12f56d4aC37839DE2ac",
@@ -70,9 +96,39 @@ export const baseConfig = {
   fakeUmaDomainId: "0x0000000000000000000000000000000000000000000000000000000000000000",
 } as const;
 
+export const baseContracts = {
+  CobuildSwap: baseEntrypoints.cobuildSwap,
+  CobuildSwapImpl: baseImplementations.cobuildSwapImpl,
+  CobuildToken: baseEntrypoints.cobuildToken,
+  USDCBase: baseTokens.usdc,
+  ZoraFactory: baseEcosystemContracts.zoraFactory,
+  ZoraFactoryImpl: baseEcosystemContracts.zoraFactoryImpl,
+  CreatorCoinImpl: baseEcosystemContracts.creatorCoinImpl,
+  UniswapStateView: baseEcosystemContracts.uniswapStateView,
+  ZoraToken: baseTokens.zora,
+  UniswapV3ZoraUsdcPool: baseEcosystemContracts.uniswapV3ZoraUsdcPool,
+  FlowDeployerImpl: baseEcosystemContracts.flowDeployerImpl,
+  FlowDeployer: baseEcosystemContracts.flowDeployer,
+  USDCPermitAdmin: baseEcosystemContracts.usdcPermitAdmin,
+  CobuildFlowManager: baseEcosystemContracts.cobuildFlowManager,
+  CobuildFlowAllocator: baseEcosystemContracts.cobuildFlowAllocator,
+  CustomFlowImpl: baseImplementations.customFlowImpl,
+  JBDirectory: baseEcosystemContracts.jbDirectory,
+  JBMultiTerminal: baseEcosystemContracts.jbMultiTerminal,
+  JBController: baseEcosystemContracts.jbController,
+  JBPermissions: baseEcosystemContracts.jbPermissions,
+  JBTerminalStore: baseEcosystemContracts.jbTerminalStore,
+  REVDeployer: baseEntrypoints.revDeployer,
+  REVLoans: baseEcosystemContracts.revLoans,
+  JBTokens: baseEcosystemContracts.jbTokens,
+} as const;
+
 export const baseAddresses = {
   chainId: BASE_CHAIN_ID,
+  tokens: baseTokens,
   entrypoints: baseEntrypoints,
+  ecosystemContracts: baseEcosystemContracts,
+  contracts: baseContracts,
   implementations: baseImplementations,
   defaults: baseDefaults,
   config: baseConfig,
@@ -90,6 +146,8 @@ export const cobuildSwapAddress = baseEntrypoints.cobuildSwap;
 export const cobuildTerminalAddress = baseEntrypoints.cobuildTerminal;
 export const buybackHookDataHookAddress = baseEntrypoints.buybackHookDataHook;
 export const buybackHookAddress = baseEntrypoints.buybackHook;
+export const WETH_ADDRESS = baseTokens.weth;
+export const USDC_BASE_ADDRESS = baseTokens.usdc;
 export const COBUILD_TOKEN = baseEntrypoints.cobuildToken;
 export const COBUILD_REVNET_ID = baseConfig.cobuildRevnetId;
 export const COBUILD_SWAP = baseEntrypoints.cobuildSwap;

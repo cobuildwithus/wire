@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-10 (protocol phase-one helpers)
+Last verified: 2026-03-10 (protocol address/helper surface)
 
 ## Purpose
 
@@ -54,6 +54,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Added canonical shared Base token/ecosystem contract exports plus pure indexed-inspect normalization/state helpers for downstream `chat-api` and `interface` cutover.
 - Added shared goal-create calldata/receipt helpers and documented the Base-only protocol utility direction for phase one.
 - Routed `wire` sibling sync through the shared repo-tools helper while preserving the current direct-consumer set and local sibling fallback before the next repo-tools publish.
 - Added explicit `pnpm wagmi:local` / `pnpm generate:local` support so workspace ABI refreshes can use sibling `v1-core` Forge artifacts without changing the default Basescan source of truth.

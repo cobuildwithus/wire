@@ -8,7 +8,13 @@
 - Protocol address exports and aliases:
   - Base-only protocol network helpers (`PROTOCOL_NETWORKS`, `normalizeProtocolNetwork`, `resolveProtocolAddresses`)
   - canonical Base deployment sets (`baseEntrypoints`, `baseImplementations`, `baseDefaults`, `baseConfig`)
+  - canonical shared Base token and ecosystem contract sets (`baseTokens`, `baseEcosystemContracts`, `baseContracts`, `WETH_ADDRESS`, `USDC_BASE_ADDRESS`)
   - convenience aliases for token/revnet/swap fields in camelCase and constant-case forms (`cobuildTokenAddress`, `cobuildSwapAddress`, `COBUILD_TOKEN`, `COBUILD_REVNET_ID`, `COBUILD_SWAP`, `COBUILD_SWAP_IMPL`)
+- Protocol indexed inspect helpers:
+  - stable goal/budget state label tables (`GOAL_STATE_LABELS`, `BUDGET_STATE_LABELS`)
+  - pure lookup/account/address normalization helpers (`normalizeLookupIdentifier`, `normalizeGoalLookupKey`, `normalizeIndexedIdentifier`, `normalizeAccountLookup`, `normalizeHexAddress`)
+  - composite identifier builders for TCR requests and premium accounts (`buildTcrItemId`, `buildTcrRequestId`, `buildPremiumAccountId`)
+  - pure timestamp/state/amount helpers for indexed response shaping (`toIsoTimestamp`, `toStateCode`, `goalStateLabel`, `budgetStateLabel`, `subtractAmounts`, `compositeIdEndsWithAddress`)
 - Protocol ABI exports:
   - `pnpm wagmi` / `pnpm generate` fetch protocol ABIs from Basescan via Wagmi `etherscan` plugin (`chainId=8453`) by default.
   - `pnpm wagmi:local` / `pnpm generate:local` (or `WIRE_ABI_SOURCE=local`) require sibling `v1-core/out` Forge artifacts and skip explorer fetches entirely.

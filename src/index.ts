@@ -8,6 +8,7 @@ export * from "./x402.js";
 export * from "./farcaster.js";
 export * from "./protocol-abis.js";
 export * from "./protocol-addresses.js";
+export * from "./protocol-indexed-inspect.js";
 export * from "./protocol-goals.js";
 export * from "./protocol-notifications.js";
 export * from "./builder-codes.js";
