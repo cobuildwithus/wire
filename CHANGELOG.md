@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.9] - 2026-03-10
+
+### Added
+- centralize address and inspect helpers
+- add withdrawal prep completion copy
+
+### Changed
+- add participant protocol wire tracks
+- harden goal create helpers
+
 ## [0.1.8] - 2026-03-10
 
 ### Added
