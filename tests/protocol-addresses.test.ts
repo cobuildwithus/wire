@@ -21,6 +21,8 @@ import {
   cobuildTerminalAddress,
   cobuildTokenAddress,
   goalFactoryAddress,
+  normalizeProtocolNetwork,
+  resolveProtocolAddresses,
 } from "../src/protocol-addresses.js";
 
 describe("protocol address exports", () => {
@@ -69,5 +71,12 @@ describe("protocol address exports", () => {
     for (const address of addresses) {
       expect(isAddress(address, { strict: false })).toBe(true);
     }
+  });
+
+  it("resolves the canonical Base-only protocol network", () => {
+    expect(normalizeProtocolNetwork(" base ")).toBe("base");
+    expect(resolveProtocolAddresses()).toBe(baseAddresses);
+    expect(resolveProtocolAddresses("base")).toBe(baseAddresses);
+    expect(() => normalizeProtocolNetwork("base-sepolia")).toThrow("unsupported protocol network");
   });
 });

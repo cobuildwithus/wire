@@ -7,14 +7,12 @@ export type CliWalletMode = (typeof CLI_WALLET_MODES)[number];
 export const CLI_WALLET_INIT_MODES = ["hosted", "local-generate", "local-key"] as const;
 export type CliWalletInitMode = (typeof CLI_WALLET_INIT_MODES)[number];
 
-export const CLI_WALLET_NETWORKS = ["base", "base-sepolia"] as const;
+export const CLI_WALLET_NETWORKS = ["base"] as const;
 export type CliWalletNetwork = (typeof CLI_WALLET_NETWORKS)[number];
 
 export const DEFAULT_BASE_RPC_URL = "https://mainnet.base.org";
-export const DEFAULT_BASE_SEPOLIA_RPC_URL = "https://sepolia.base.org";
 
 export const BASE_USDC_CONTRACT = "0x833589fCD6EDB6E08F4C7C32D4F71B54BDA02913" as Address;
-export const BASE_SEPOLIA_USDC_CONTRACT = "0x036CbD53842c5426634e7929541eC2318f3dCf7e" as Address;
 
 export type CliWalletSendToken = "eth" | "usdc" | Address;
 
@@ -46,12 +44,12 @@ export function normalizeCliWalletNetwork(value: string): CliWalletNetwork {
   return normalized;
 }
 
-export function defaultRpcUrlForNetwork(network: CliWalletNetwork): string {
-  return network === "base" ? DEFAULT_BASE_RPC_URL : DEFAULT_BASE_SEPOLIA_RPC_URL;
+export function defaultRpcUrlForNetwork(_network: CliWalletNetwork): string {
+  return DEFAULT_BASE_RPC_URL;
 }
 
-export function usdcContractForNetwork(network: CliWalletNetwork): Address {
-  return network === "base" ? BASE_USDC_CONTRACT : BASE_SEPOLIA_USDC_CONTRACT;
+export function usdcContractForNetwork(_network: CliWalletNetwork): Address {
+  return BASE_USDC_CONTRACT;
 }
 
 export function normalizeCliWalletSendToken(token: string): CliWalletSendToken {
@@ -78,4 +76,3 @@ export function parseCliWalletSendAmountAtomic(params: {
   }
   return parseUnits(params.amount, params.decimals);
 }
-

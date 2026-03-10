@@ -1,5 +1,20 @@
 import { BASE_CHAIN_ID } from "./chains.js";
 
+export const PROTOCOL_NETWORKS = ["base"] as const;
+export type ProtocolNetwork = (typeof PROTOCOL_NETWORKS)[number];
+
+export function isProtocolNetwork(value: string): value is ProtocolNetwork {
+  return PROTOCOL_NETWORKS.includes(value.trim().toLowerCase() as ProtocolNetwork);
+}
+
+export function normalizeProtocolNetwork(value: string): ProtocolNetwork {
+  const normalized = value.trim().toLowerCase();
+  if (!isProtocolNetwork(normalized)) {
+    throw new Error(`unsupported protocol network: ${value}`);
+  }
+  return normalized;
+}
+
 /**
  * Canonical Base V1 core deployment addresses sourced from:
  * - v1-core/deploys/DeployGoalFactory.8453.txt
@@ -62,6 +77,11 @@ export const baseAddresses = {
   defaults: baseDefaults,
   config: baseConfig,
 } as const;
+
+export function resolveProtocolAddresses(network: ProtocolNetwork | string = "base") {
+  normalizeProtocolNetwork(network);
+  return baseAddresses;
+}
 
 export const goalFactoryAddress = baseEntrypoints.goalFactory;
 export const budgetTcrFactoryAddress = baseEntrypoints.budgetTcrFactory;

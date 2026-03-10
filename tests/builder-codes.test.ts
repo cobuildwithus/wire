@@ -21,8 +21,8 @@ import {
 describe("builder codes contract", () => {
   it("exposes base builder constants", () => {
     expect(BASE_BUILDER_CODE).toBe("bc_ddyrslix");
-    expect(BASE_BUILDER_CODE_CHAIN_IDS).toEqual([8453, 84532]);
-    expect(BASE_BUILDER_CODE_NETWORKS).toEqual(["base", "base-sepolia"]);
+    expect(BASE_BUILDER_CODE_CHAIN_IDS).toEqual([8453]);
+    expect(BASE_BUILDER_CODE_NETWORKS).toEqual(["base"]);
     expect(BASE_BUILDER_CODE_DATA_SUFFIX).toBe(
       "0x0b62635f64647972736c69780080218021802180218021802180218021"
     );
@@ -34,19 +34,19 @@ describe("builder codes contract", () => {
 
   it("resolves suffixes for supported chain ids and networks", () => {
     expect(isBaseBuilderCodeChainId(8453)).toBe(true);
-    expect(isBaseBuilderCodeChainId(84532)).toBe(true);
+    expect(isBaseBuilderCodeChainId(84532)).toBe(false);
     expect(isBaseBuilderCodeChainId(10)).toBe(false);
 
     expect(isBaseBuilderCodeNetwork("base")).toBe(true);
     expect(isBaseBuilderCodeNetwork(" BASE ")).toBe(true);
-    expect(isBaseBuilderCodeNetwork("base-sepolia")).toBe(true);
+    expect(isBaseBuilderCodeNetwork("base-sepolia")).toBe(false);
     expect(isBaseBuilderCodeNetwork("optimism")).toBe(false);
 
     expect(baseBuilderCodeDataSuffixForChainId(8453)).toBe(BASE_BUILDER_CODE_DATA_SUFFIX);
-    expect(baseBuilderCodeDataSuffixForChainId(84532)).toBe(BASE_BUILDER_CODE_DATA_SUFFIX);
+    expect(baseBuilderCodeDataSuffixForChainId(84532)).toBeUndefined();
     expect(baseBuilderCodeDataSuffixForChainId(10)).toBeUndefined();
     expect(baseBuilderCodeDataSuffixForNetwork("base")).toBe(BASE_BUILDER_CODE_DATA_SUFFIX);
-    expect(baseBuilderCodeDataSuffixForNetwork("Base-Sepolia")).toBe(BASE_BUILDER_CODE_DATA_SUFFIX);
+    expect(baseBuilderCodeDataSuffixForNetwork("Base-Sepolia")).toBeUndefined();
     expect(baseBuilderCodeDataSuffixForNetwork("optimism")).toBeUndefined();
   });
 
@@ -76,9 +76,7 @@ describe("builder codes contract", () => {
     expect(maybeAppendBaseBuilderCodeDataSuffix({ data: "0x1234", network: "base" })).toBe(
       `0x1234${BASE_BUILDER_CODE_DATA_SUFFIX.slice(2)}`
     );
-    expect(maybeAppendBaseBuilderCodeDataSuffix({ data: "0x1234", chainId: 84532 })).toBe(
-      `0x1234${BASE_BUILDER_CODE_DATA_SUFFIX.slice(2)}`
-    );
+    expect(maybeAppendBaseBuilderCodeDataSuffix({ data: "0x1234", chainId: 84532 })).toBe("0x1234");
     expect(maybeAppendBaseBuilderCodeDataSuffix({ data: "0x1234", network: "optimism" })).toBe(
       "0x1234"
     );

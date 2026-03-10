@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  BASE_SEPOLIA_USDC_CONTRACT,
   BASE_USDC_CONTRACT,
   CLI_WALLET_INIT_MODES,
   CLI_WALLET_NETWORKS,
@@ -25,14 +24,12 @@ describe("wallet contract", () => {
   });
 
   it("normalizes wallet networks and defaults", () => {
-    expect(CLI_WALLET_NETWORKS).toEqual(["base", "base-sepolia"]);
+    expect(CLI_WALLET_NETWORKS).toEqual(["base"]);
     expect(normalizeCliWalletNetwork(" BASE ")).toBe("base");
-    expect(normalizeCliWalletNetwork("base-sepolia")).toBe("base-sepolia");
+    expect(() => normalizeCliWalletNetwork("base-sepolia")).toThrow("unsupported wallet network");
     expect(() => normalizeCliWalletNetwork("ethereum")).toThrow("unsupported wallet network");
     expect(defaultRpcUrlForNetwork("base")).toBe("https://mainnet.base.org");
-    expect(defaultRpcUrlForNetwork("base-sepolia")).toBe("https://sepolia.base.org");
     expect(usdcContractForNetwork("base")).toBe(BASE_USDC_CONTRACT);
-    expect(usdcContractForNetwork("base-sepolia")).toBe(BASE_SEPOLIA_USDC_CONTRACT);
   });
 
   it("normalizes send token and amount parsing", () => {
@@ -60,4 +57,3 @@ describe("wallet contract", () => {
     ).toThrow("decimals is required for ERC-20 token addresses");
   });
 });
-

@@ -4,10 +4,10 @@ export const BASE_BUILDER_CODE = "bc_ddyrslix" as const;
 export const BASE_BUILDER_CODE_DATA_SUFFIX =
   "0x0b62635f64647972736c69780080218021802180218021802180218021" as const;
 
-export const BASE_BUILDER_CODE_CHAIN_IDS = [8453, 84532] as const;
+export const BASE_BUILDER_CODE_CHAIN_IDS = [8453] as const;
 export type BaseBuilderCodeChainId = (typeof BASE_BUILDER_CODE_CHAIN_IDS)[number];
 
-export const BASE_BUILDER_CODE_NETWORKS = ["base", "base-sepolia"] as const;
+export const BASE_BUILDER_CODE_NETWORKS = ["base"] as const;
 export type BaseBuilderCodeNetwork = (typeof BASE_BUILDER_CODE_NETWORKS)[number];
 
 function normalizeNetwork(value: string): string {

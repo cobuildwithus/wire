@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-05 (docs-drift simplification)
+Last verified: 2026-03-10 (protocol phase-one helpers)
 
 ## Purpose
 
@@ -40,6 +40,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/2026-03-05-base-implementation-address-sync.md` | Active execution plan for syncing Base implementation + factory entrypoint addresses and regenerated ABI outputs to latest v1-core deployments. |
 | `agent-docs/exec-plans/active/2026-03-10-tcr-request-actor-abi-sync.md` | Active execution plan for regenerating wire ABIs after the TCR requester/challenger event payload cutover. |
 | `agent-docs/exec-plans/completed/` | Completed execution plan archive. |
+| `agent-docs/exec-plans/completed/2026-03-10-protocol-phase1-foundation.md` | Completed execution record for Base-only goal-create helper extraction and shared protocol utility cleanup. |
 | `agent-docs/exec-plans/completed/2026-03-07-shared-sync-helper-cleanup.md` | Completed execution record for routing wire sibling-sync automation through the shared repo-tools helper. |
 | `agent-docs/exec-plans/completed/2026-03-07-wire-post-publish-sync.md` | Completed execution record for adding post-publish sibling consumer sync automation to wire releases. |
 | `agent-docs/exec-plans/completed/2026-03-07-published-consumer-rollout-guidance.md` | Completed execution record for documenting published-package expectations and downstream consumer bump guidance. |
@@ -53,6 +54,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Added shared goal-create calldata/receipt helpers and documented the Base-only protocol utility direction for phase one.
 - Routed `wire` sibling sync through the shared repo-tools helper while preserving the current direct-consumer set and local sibling fallback before the next repo-tools publish.
 - Added explicit `pnpm wagmi:local` / `pnpm generate:local` support so workspace ABI refreshes can use sibling `v1-core` Forge artifacts without changing the default Basescan source of truth.
 - Added a manual and release-hooked `sync:repos` flow for bumping direct `@cobuild/wire` workspace consumers after publish.

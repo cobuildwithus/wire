@@ -9,6 +9,7 @@ Shared wire-level contracts for Cobuild clients/services.
 - EVM/wallet validation helpers for network/token/mode contracts
 - Bearer token parsing
 - Idempotency key/header contract
+- Goal-create calldata validation/builders and `GoalDeployed` receipt decoding helpers
 - x402 payload/domain/type builders + payload validation
 - Farcaster signup wire contracts (typed-data, preflight, call-plan + executable-call builders)
 
