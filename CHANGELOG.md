@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-03-11
+
+### Added
+- share signup planner and x402 helpers
+- add shared cli auth and protocol-step contracts
+
+### Fixed
+- reject unsupported base-sepolia alias
+
+### Changed
+- clear oauth cutover ledger
+
 ## [0.1.10] - 2026-03-10
 
 ### Added
