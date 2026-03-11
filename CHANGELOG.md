@@ -8,6 +8,11 @@ All notable changes to this project will be documented in this file.
 - share signup planner and x402 helpers
 - add shared cli auth and protocol-step contracts
 
+## [0.2.0] - 2026-03-10
+
+### Added
+- publish shared contract updates
+
 ### Fixed
 - reject unsupported base-sepolia alias
 

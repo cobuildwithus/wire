@@ -37,7 +37,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/2026-03-11-farcaster-x402-canonical-signing-request.md` | Active execution plan for canonical Farcaster/Neynar x402 signing-request extraction. |
 | `agent-docs/exec-plans/active/2026-03-10-farcaster-hosted-contracts.md` | Active execution plan for shared Farcaster hosted/signup contract hard cutover. |
 | `agent-docs/exec-plans/active/2026-03-10-final-hard-cutover-sweep.md` | Active execution plan for removing final compatibility-only shared-surface aliases. |
-| `agent-docs/exec-plans/completed/2026-03-10-protocol-notification-hard-cutover.md` | Completed execution plan for removing legacy protocol-notification reason aliases from the shared presenter surface. |
+| `agent-docs/exec-plans/active/2026-03-10-protocol-notification-hard-cutover.md` | Active execution plan for removing legacy protocol-notification reason aliases from the shared presenter surface. |
 | `agent-docs/exec-plans/active/2026-03-03-farcaster-wire-contract.md` | Active execution plan for Farcaster wire contract additions. |
 | `agent-docs/exec-plans/active/2026-03-03-release-docs-drift-fix.md` | Active execution plan to restore docs drift gate compliance for release patch verification. |
 | `agent-docs/exec-plans/active/2026-03-04-abi-etherscan-docs-drift-fix.md` | Active execution plan to restore docs drift compliance after migrating ABI generation to Wagmi Etherscan plugin fetches. |
