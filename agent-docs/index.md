@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-10 (notification shared-surface expansion)
+Last verified: 2026-03-11 (Farcaster x402 signing-request cutover)
 
 ## Purpose
 
@@ -34,6 +34,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/` | Active execution plan workspace. |
 | `agent-docs/exec-plans/active/README.md` | Active execution plan conventions. |
 | `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` | Cross-agent ownership ledger. |
+| `agent-docs/exec-plans/active/2026-03-11-farcaster-x402-canonical-signing-request.md` | Active execution plan for canonical Farcaster/Neynar x402 signing-request extraction. |
 | `agent-docs/exec-plans/active/2026-03-10-farcaster-hosted-contracts.md` | Active execution plan for shared Farcaster hosted/signup contract hard cutover. |
 | `agent-docs/exec-plans/active/2026-03-10-final-hard-cutover-sweep.md` | Active execution plan for removing final compatibility-only shared-surface aliases. |
 | `agent-docs/exec-plans/completed/2026-03-10-protocol-notification-hard-cutover.md` | Completed execution plan for removing legacy protocol-notification reason aliases from the shared presenter surface. |
@@ -61,6 +62,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Added a canonical shared Farcaster/Neynar x402 signing-request helper so downstream hosted/local signers reuse one typed-data domain, validity window, and payment encoder.
 - Removed compatibility-only protocol-notification reason aliases so only canonical success-assertion and reminder spellings reach the shared presenter/routing surface.
 - Expanded shared protocol notification normalization, routing, and presenter coverage for finalize-failed, resolver lifecycle, juror reward, and reminder reason families.
 - Added canonical shared Base token/ecosystem contract exports plus pure indexed-inspect normalization/state helpers for downstream `chat-api` and `interface` cutover.

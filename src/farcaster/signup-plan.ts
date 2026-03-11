@@ -10,11 +10,24 @@ import {
 import { encodeAbiParameters, encodeFunctionData } from "viem";
 import {
   normalizeFarcasterAddress,
+  normalizeFarcasterExtraStorage,
   normalizeFarcasterNonNegativeBigInt,
   normalizeFarcasterSignerPublicKey,
 } from "./normalize.js";
+import {
+  buildFarcasterSignupCompletedResult,
+  buildFarcasterSignupNeedsFundingResult,
+} from "./contracts.js";
+import {
+  buildFarcasterSignedKeyRequestMetadata,
+  buildFarcasterSignedKeyRequestTypedData,
+  computeFarcasterSignedKeyRequestDeadline,
+} from "./typed-data.js";
 import type {
   FarcasterExecutableCall,
+  FarcasterSignupExecutionBuilderParams,
+  FarcasterSignupExecutionBundle,
+  FarcasterSignupPlanResult,
   FarcasterSignedKeyRequestMetadata,
   FarcasterSignupCallPlan,
   FarcasterSignupExecutableCalls,
@@ -23,13 +36,13 @@ import type {
 
 export function buildFarcasterSignupCallPlan(params: {
   recoveryAddress: string;
-  extraStorage: bigint;
+  extraStorage: bigint | number | string | undefined;
   idGatewayPriceWei: bigint;
   signerPublicKey: string;
   signedKeyRequestMetadata: FarcasterSignedKeyRequestMetadata;
 }): FarcasterSignupCallPlan {
   const recoveryAddress = normalizeFarcasterAddress(params.recoveryAddress, "recoveryAddress");
-  const extraStorage = normalizeFarcasterNonNegativeBigInt(params.extraStorage, "extraStorage");
+  const extraStorage = normalizeFarcasterExtraStorage(params.extraStorage, "extraStorage");
   const idGatewayPriceWei = normalizeFarcasterNonNegativeBigInt(
     params.idGatewayPriceWei,
     "idGatewayPriceWei"
@@ -175,5 +188,128 @@ export function evaluateFarcasterSignupPreflight(params: {
     status: "ready",
     ...common,
     deficitWei: "0",
+  };
+}
+
+function buildFarcasterSignupExecution(params: {
+  recoveryAddress: string;
+  extraStorage: bigint;
+  idGatewayPriceWei: bigint;
+  signerPublicKey: string;
+  requestSigner: string;
+  signature: string;
+  deadline: bigint;
+}): FarcasterSignupExecutionBundle {
+  const signedKeyRequestMetadata = buildFarcasterSignedKeyRequestMetadata({
+    requestFid: 0n,
+    requestSigner: params.requestSigner,
+    signature: params.signature,
+    deadline: params.deadline,
+  });
+  const signupCallPlan = buildFarcasterSignupCallPlan({
+    recoveryAddress: params.recoveryAddress,
+    extraStorage: params.extraStorage,
+    idGatewayPriceWei: params.idGatewayPriceWei,
+    signerPublicKey: params.signerPublicKey,
+    signedKeyRequestMetadata,
+  });
+
+  return {
+    signedKeyRequestMetadata,
+    signupCallPlan,
+    executableCalls: buildFarcasterSignupExecutableCalls(signupCallPlan),
+  };
+}
+
+export function planFarcasterSignup(params: {
+  ownerAddress: string;
+  custodyAddress: string;
+  recoveryAddress: string;
+  signerPublicKey: string;
+  existingFid: bigint;
+  idGatewayPriceWei: bigint;
+  balanceWei: bigint;
+  extraStorage?: bigint | number | string;
+  signedKeyRequestDeadline?: bigint;
+}): FarcasterSignupPlanResult {
+  const ownerAddress = normalizeFarcasterAddress(params.ownerAddress, "ownerAddress");
+  const custodyAddress = normalizeFarcasterAddress(params.custodyAddress, "custodyAddress");
+  const recoveryAddress = normalizeFarcasterAddress(params.recoveryAddress, "recoveryAddress");
+  const signerPublicKey = normalizeFarcasterSignerPublicKey(params.signerPublicKey);
+  const extraStorage = normalizeFarcasterExtraStorage(params.extraStorage, "extraStorage");
+  const existingFid = normalizeFarcasterNonNegativeBigInt(params.existingFid, "existingFid");
+  const idGatewayPriceWei = normalizeFarcasterNonNegativeBigInt(
+    params.idGatewayPriceWei,
+    "idGatewayPriceWei"
+  );
+  const balanceWei = normalizeFarcasterNonNegativeBigInt(params.balanceWei, "balanceWei");
+  const preflight = evaluateFarcasterSignupPreflight({
+    custodyAddress,
+    existingFid,
+    idGatewayPriceWei,
+    balanceWei,
+  });
+
+  if (preflight.status === "already_registered") {
+    return {
+      status: "already_registered",
+      ownerAddress,
+      custodyAddress,
+      recoveryAddress,
+      existingFid: preflight.existingFid,
+    };
+  }
+
+  if (preflight.status === "needs_funding") {
+    return buildFarcasterSignupNeedsFundingResult({
+      ownerAddress,
+      custodyAddress,
+      recoveryAddress,
+      idGatewayPriceWei,
+      balanceWei,
+      requiredWei: preflight.requiredWei,
+    });
+  }
+
+  const deadline =
+    params.signedKeyRequestDeadline ??
+    computeFarcasterSignedKeyRequestDeadline();
+  const typedData = buildFarcasterSignedKeyRequestTypedData({
+    requestFid: 0n,
+    signerPublicKey,
+    deadline,
+  });
+
+  const buildExecution = (buildParams: FarcasterSignupExecutionBuilderParams) =>
+    buildFarcasterSignupExecution({
+      recoveryAddress,
+      extraStorage,
+      idGatewayPriceWei,
+      signerPublicKey,
+      requestSigner: buildParams.requestSigner,
+      signature: buildParams.signature,
+      deadline: typedData.message.deadline,
+    });
+
+  return {
+    status: "ready",
+    network: FARCASTER_SIGNUP_NETWORK,
+    ownerAddress,
+    custodyAddress,
+    recoveryAddress,
+    extraStorage: extraStorage.toString(),
+    idGatewayPriceWei: idGatewayPriceWei.toString(),
+    typedData,
+    buildExecution,
+    buildExecutableCalls: (buildParams) => buildExecution(buildParams).executableCalls,
+    buildCompletedResult: ({ fid, txHash }) =>
+      buildFarcasterSignupCompletedResult({
+        ownerAddress,
+        custodyAddress,
+        recoveryAddress,
+        fid,
+        idGatewayPriceWei,
+        txHash,
+      }),
   };
 }

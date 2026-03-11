@@ -41,8 +41,10 @@
   - shared flow allocation/maintenance planners, allocation-vector normalizers, and allocation receipt helpers
 - Farcaster signup wire contracts:
   - canonical contract addresses and ABIs (IdGateway, KeyGateway, IdRegistry)
+  - shared extra-storage normalization contract with the current hosted/local cap
   - SignedKeyRequest typed-data domain/types/message builders
   - deterministic signup preflight status classification (`already_registered`, `needs_funding`, `ready`)
+  - pure signup planner that returns canonical funding-required output or a ready-to-sign execution bundle
   - hosted/local shared signup call-plan intent shapes
   - canonical signup success envelopes (`needs_funding`, `complete`) and already-registered error envelopes
   - canonical hosted x402 payment response envelope for the hosted signer flow

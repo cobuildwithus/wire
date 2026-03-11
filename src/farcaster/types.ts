@@ -82,6 +82,42 @@ export type FarcasterExecutableCall = {
 
 export type FarcasterSignupExecutableCalls = [FarcasterExecutableCall, FarcasterExecutableCall];
 
+export type FarcasterSignupExecutionBuilderParams = {
+  requestSigner: EvmAddress;
+  signature: FarcasterHexString;
+};
+
+export type FarcasterSignupExecutionBundle = {
+  signedKeyRequestMetadata: FarcasterSignedKeyRequestMetadata;
+  signupCallPlan: FarcasterSignupCallPlan;
+  executableCalls: FarcasterSignupExecutableCalls;
+};
+
+export type FarcasterSignupAlreadyRegisteredPlan = {
+  status: "already_registered";
+  ownerAddress: EvmAddress;
+  custodyAddress: EvmAddress;
+  recoveryAddress: EvmAddress;
+  existingFid: string;
+};
+
+export type FarcasterSignupReadyPlan = {
+  status: "ready";
+  network: typeof FARCASTER_SIGNUP_NETWORK;
+  ownerAddress: EvmAddress;
+  custodyAddress: EvmAddress;
+  recoveryAddress: EvmAddress;
+  extraStorage: string;
+  idGatewayPriceWei: string;
+  typedData: FarcasterSignedKeyRequestTypedData;
+  buildExecution(params: FarcasterSignupExecutionBuilderParams): FarcasterSignupExecutionBundle;
+  buildExecutableCalls(params: FarcasterSignupExecutionBuilderParams): FarcasterSignupExecutableCalls;
+  buildCompletedResult(params: {
+    fid: string | number | bigint;
+    txHash: string;
+  }): FarcasterSignupCompletedResult;
+};
+
 type FarcasterPreflightCommon = {
   custodyAddress: EvmAddress;
   idGatewayPriceWei: string;
@@ -141,6 +177,11 @@ export type FarcasterSignupCompletedResult = {
 export type FarcasterSignupResult =
   | FarcasterSignupNeedsFundingResult
   | FarcasterSignupCompletedResult;
+
+export type FarcasterSignupPlanResult =
+  | FarcasterSignupAlreadyRegisteredPlan
+  | FarcasterSignupNeedsFundingResult
+  | FarcasterSignupReadyPlan;
 
 export type FarcasterSignupResponse = {
   ok: true;

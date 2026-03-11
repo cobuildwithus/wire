@@ -3,6 +3,7 @@ import {
   FARCASTER_CONTRACTS,
   FARCASTER_KEY_METADATA_TYPE_SIGNED_KEY_REQUEST,
   FARCASTER_KEY_TYPE_ED25519,
+  FARCASTER_MAX_EXTRA_STORAGE,
   FARCASTER_SIGNUP_CHAIN_ID,
   FARCASTER_SIGNUP_GAS_BUFFER_WEI,
   FARCASTER_SIGNUP_NETWORK,
@@ -21,7 +22,9 @@ import {
   encodeFarcasterSignedKeyRequestMetadata,
   evaluateFarcasterSignupPreflight,
   formatFarcasterSignupFundingAmounts,
+  normalizeFarcasterExtraStorage,
   normalizeFarcasterSignerPublicKey,
+  planFarcasterSignup,
   validateFarcasterHostedX402PaymentResponse,
   validateFarcasterSignupAlreadyRegisteredErrorResponse,
   validateFarcasterSignupResponse,
@@ -35,7 +38,7 @@ import {
 const ADDRESS_A = "0x00000000000000000000000000000000000000aa";
 const ADDRESS_B = "0x00000000000000000000000000000000000000bb";
 const SIGNER_PUBLIC_KEY = `0x${"11".repeat(32)}`;
-const SIGNATURE = `0x${"22".repeat(65)}`;
+const SIGNATURE = `0x${"22".repeat(65)}` as `0x${string}`;
 
 describe("farcaster wire contract", () => {
   it("normalizes signer public keys", () => {
@@ -45,6 +48,20 @@ describe("farcaster wire contract", () => {
     expect(() => normalizeFarcasterSignerPublicKey("0x1234")).toThrow(
       "signerPublicKey must be a 32-byte hex value"
     );
+  });
+
+  it("normalizes Farcaster extra storage with the shared cap", () => {
+    expect(normalizeFarcasterExtraStorage(undefined)).toBe(0n);
+    expect(normalizeFarcasterExtraStorage("2")).toBe(2n);
+    expect(normalizeFarcasterExtraStorage(FARCASTER_MAX_EXTRA_STORAGE)).toBe(
+      FARCASTER_MAX_EXTRA_STORAGE
+    );
+    expect(() => normalizeFarcasterExtraStorage("-1")).toThrow(
+      "extraStorage must be a non-negative integer"
+    );
+    expect(() =>
+      normalizeFarcasterExtraStorage(FARCASTER_MAX_EXTRA_STORAGE + 1n)
+    ).toThrow(`extraStorage max is ${FARCASTER_MAX_EXTRA_STORAGE.toString()}`);
   });
 
   it("builds signed-key-request typed data with canonical defaults", () => {
@@ -197,6 +214,104 @@ describe("farcaster wire contract", () => {
       balanceWei: FARCASTER_SIGNUP_GAS_BUFFER_WEI + 100n,
     });
     expect(ready.status).toBe("ready");
+  });
+
+  it("plans signup outcomes and builds transport-ready execution bundles", () => {
+    const alreadyRegistered = planFarcasterSignup({
+      ownerAddress: ADDRESS_A,
+      custodyAddress: ADDRESS_B,
+      recoveryAddress: ADDRESS_A,
+      signerPublicKey: SIGNER_PUBLIC_KEY,
+      existingFid: 55n,
+      idGatewayPriceWei: 700n,
+      balanceWei: 0n,
+    });
+    expect(alreadyRegistered).toEqual({
+      status: "already_registered",
+      ownerAddress: ADDRESS_A,
+      custodyAddress: ADDRESS_B,
+      recoveryAddress: ADDRESS_A,
+      existingFid: "55",
+    });
+
+    const needsFunding = planFarcasterSignup({
+      ownerAddress: ADDRESS_A,
+      custodyAddress: ADDRESS_B,
+      recoveryAddress: ADDRESS_A,
+      signerPublicKey: SIGNER_PUBLIC_KEY,
+      existingFid: 0n,
+      idGatewayPriceWei: 700n,
+      balanceWei: 1n,
+    });
+    expect(needsFunding).toEqual(
+      buildFarcasterSignupNeedsFundingResult({
+        ownerAddress: ADDRESS_A,
+        custodyAddress: ADDRESS_B,
+        recoveryAddress: ADDRESS_A,
+        idGatewayPriceWei: 700n,
+        balanceWei: 1n,
+        requiredWei: FARCASTER_SIGNUP_GAS_BUFFER_WEI + 700n,
+      })
+    );
+
+    const ready = planFarcasterSignup({
+      ownerAddress: ADDRESS_A,
+      custodyAddress: ADDRESS_B,
+      recoveryAddress: ADDRESS_A,
+      signerPublicKey: SIGNER_PUBLIC_KEY,
+      existingFid: 0n,
+      idGatewayPriceWei: 700n,
+      balanceWei: FARCASTER_SIGNUP_GAS_BUFFER_WEI + 700n,
+      extraStorage: 2n,
+      signedKeyRequestDeadline: 900n,
+    });
+
+    expect(ready.status).toBe("ready");
+    if (ready.status !== "ready") {
+      throw new Error("expected ready plan");
+    }
+
+    expect(ready.network).toBe(FARCASTER_SIGNUP_NETWORK);
+    expect(ready.extraStorage).toBe("2");
+    expect(ready.idGatewayPriceWei).toBe("700");
+    expect(ready.typedData.message).toEqual({
+      requestFid: 0n,
+      key: SIGNER_PUBLIC_KEY,
+      deadline: 900n,
+    });
+
+    const execution = ready.buildExecution({
+      requestSigner: ADDRESS_B,
+      signature: SIGNATURE,
+    });
+    expect(execution.signedKeyRequestMetadata).toEqual({
+      requestFid: 0n,
+      requestSigner: ADDRESS_B,
+      signature: SIGNATURE,
+      deadline: 900n,
+    });
+    expect(execution.signupCallPlan.calls[0].args.extraStorage).toBe(2n);
+    expect(execution.signupCallPlan.calls[1].args.metadata).toEqual(
+      execution.signedKeyRequestMetadata
+    );
+    expect(ready.buildExecutableCalls({ requestSigner: ADDRESS_B, signature: SIGNATURE })).toEqual(
+      execution.executableCalls
+    );
+    expect(
+      ready.buildCompletedResult({
+        fid: 77n,
+        txHash: `0x${"33".repeat(32)}`,
+      })
+    ).toEqual(
+      buildFarcasterSignupCompletedResult({
+        ownerAddress: ADDRESS_A,
+        custodyAddress: ADDRESS_B,
+        recoveryAddress: ADDRESS_A,
+        fid: 77n,
+        idGatewayPriceWei: 700n,
+        txHash: `0x${"33".repeat(32)}`,
+      })
+    );
   });
 
   it("formats and builds canonical Farcaster signup result contracts", () => {

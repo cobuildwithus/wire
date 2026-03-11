@@ -65,6 +65,30 @@ export type X402ValidationPolicy = {
   nowSeconds?: number;
 };
 
+export type FarcasterX402Spec = {
+  network: typeof X402_NETWORK;
+  tokenSymbol: typeof X402_TOKEN_SYMBOL;
+  token: X402TypedDataDomain["verifyingContract"];
+  payTo: X402AuthorizationPayload["to"];
+  amount: X402AuthorizationPayload["value"];
+  amountDisplay: typeof X402_VALUE_USDC_DISPLAY;
+  defaultValidAfter: typeof X402_AUTH_VALID_AFTER;
+  authTtlSeconds: typeof X402_AUTH_TTL_SECONDS;
+  domain: X402TypedDataDomain;
+  types: X402TypedDataTypes;
+  primaryType: typeof X402_TRANSFER_PRIMARY_TYPE;
+};
+
+export type FarcasterX402SigningRequest = FarcasterX402Spec & {
+  authorization: X402AuthorizationPayload;
+  validAfter: number;
+  validBefore: number;
+  encodePayment(signature: string): string;
+};
+
+const FARCASTER_X402_TYPED_DATA_DOMAIN = buildX402TypedDataDomain();
+const FARCASTER_X402_TYPED_DATA_TYPES = buildX402TypedDataTypes();
+
 function randomBytes(length: number): Uint8Array {
   const bytes = new Uint8Array(length);
   globalThis.crypto.getRandomValues(bytes);
@@ -179,6 +203,21 @@ function normalizeValidationTimestamp(nowSeconds: number): bigint {
   return BigInt(nowSeconds);
 }
 
+function normalizeUnixSecondsNumber(value: number, fieldPath: string): number {
+  if (!Number.isFinite(value) || !Number.isInteger(value) || value < 0) {
+    throw new Error(`${fieldPath} must be a non-negative integer.`);
+  }
+  return value;
+}
+
+function normalizePositiveIntegerNumber(value: number, fieldPath: string): number {
+  const normalized = normalizeUnixSecondsNumber(value, fieldPath);
+  if (normalized <= 0) {
+    throw new Error(`${fieldPath} must be greater than zero.`);
+  }
+  return normalized;
+}
+
 function toBase64Utf8(value: string): string {
   if (typeof Buffer !== "undefined") {
     return Buffer.from(value, "utf8").toString("base64");
@@ -276,6 +315,77 @@ export function buildX402TypedDataTypes(): X402TypedDataTypes {
       { name: "validBefore", type: "uint256" },
       { name: "nonce", type: "bytes32" },
     ],
+  };
+}
+
+export function buildFarcasterX402Spec(): FarcasterX402Spec {
+  return {
+    network: X402_NETWORK,
+    tokenSymbol: X402_TOKEN_SYMBOL,
+    token: X402_USDC_CONTRACT,
+    payTo: X402_PAY_TO_ADDRESS,
+    amount: X402_VALUE_MICRO_USDC,
+    amountDisplay: X402_VALUE_USDC_DISPLAY,
+    defaultValidAfter: X402_AUTH_VALID_AFTER,
+    authTtlSeconds: X402_AUTH_TTL_SECONDS,
+    domain: FARCASTER_X402_TYPED_DATA_DOMAIN,
+    types: FARCASTER_X402_TYPED_DATA_TYPES,
+    primaryType: X402_TRANSFER_PRIMARY_TYPE,
+  };
+}
+
+export function buildFarcasterX402SigningRequest(params: {
+  payerAddress: string;
+  nowSeconds?: number;
+  validAfter?: number;
+  validBefore?: number;
+  ttlSeconds?: number;
+  nonce?: string;
+}): FarcasterX402SigningRequest {
+  const spec = buildFarcasterX402Spec();
+  const validAfter = normalizeUnixSecondsNumber(
+    params.validAfter ?? Number(spec.defaultValidAfter),
+    "validAfter"
+  );
+
+  const validBefore =
+    params.validBefore !== undefined
+      ? normalizeUnixSecondsNumber(params.validBefore, "validBefore")
+      : normalizeUnixSecondsNumber(
+          (params.nowSeconds !== undefined
+            ? normalizeUnixSecondsNumber(params.nowSeconds, "nowSeconds")
+            : Math.floor(Date.now() / 1000)) +
+            normalizePositiveIntegerNumber(params.ttlSeconds ?? spec.authTtlSeconds, "ttlSeconds"),
+          "validBefore"
+        );
+
+  if (validBefore < validAfter) {
+    throw new Error("validBefore must be greater than or equal to validAfter.");
+  }
+
+  const authorization = buildX402AuthorizationPayload({
+    from: params.payerAddress,
+    to: spec.payTo,
+    value: spec.amount,
+    validAfter,
+    validBefore,
+    ...(params.nonce !== undefined ? { nonce: params.nonce } : {}),
+  });
+
+  return {
+    ...spec,
+    authorization,
+    validAfter,
+    validBefore,
+    encodePayment(signature: string): string {
+      return encodeX402PaymentPayload(
+        buildX402PaymentPayload({
+          signature,
+          authorization,
+          network: spec.network,
+        })
+      );
+    },
   };
 }
 

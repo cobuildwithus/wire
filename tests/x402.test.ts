@@ -3,6 +3,8 @@ import {
   X402_NETWORK,
   X402_PAY_TO_ADDRESS,
   X402_VALUE_MICRO_USDC,
+  buildFarcasterX402SigningRequest,
+  buildFarcasterX402Spec,
   buildX402AuthorizationPayload,
   buildX402PaymentPayload,
   buildX402TypedDataDomain,
@@ -149,6 +151,41 @@ describe("x402 contract", () => {
     });
   });
 
+  it("builds the canonical Farcaster x402 signing request", () => {
+    const spec = buildFarcasterX402Spec();
+    expect(spec.network).toBe(X402_NETWORK);
+    expect(spec.payTo).toBe(X402_PAY_TO_ADDRESS);
+    expect(spec.amount).toBe(X402_VALUE_MICRO_USDC);
+    expect(spec.primaryType).toBe("TransferWithAuthorization");
+    expect(spec.domain.chainId).toBe(8453);
+
+    const signingRequest = buildFarcasterX402SigningRequest({
+      payerAddress: "0x1111111111111111111111111111111111111111",
+      nowSeconds: 1_700_000_000,
+      nonce: `0x${"2".repeat(64)}`,
+    });
+
+    expect(signingRequest.validAfter).toBe(0);
+    expect(signingRequest.validBefore).toBe(1_700_000_300);
+    expect(signingRequest.authorization).toEqual({
+      from: "0x1111111111111111111111111111111111111111",
+      to: X402_PAY_TO_ADDRESS,
+      value: X402_VALUE_MICRO_USDC,
+      validAfter: "0",
+      validBefore: "1700000300",
+      nonce: `0x${"2".repeat(64)}`,
+    });
+    expect(decodeX402PaymentPayload(signingRequest.encodePayment("0xabcd"))).toEqual({
+      x402Version: 1,
+      scheme: "exact",
+      network: X402_NETWORK,
+      payload: {
+        signature: "0xabcd",
+        authorization: signingRequest.authorization,
+      },
+    });
+  });
+
   it("rejects invalid builder nonce values", () => {
     expect(() =>
       buildX402AuthorizationPayload({
@@ -245,6 +282,23 @@ describe("x402 contract", () => {
         { nowSeconds: 100 }
       )
     ).toThrow("x402 payment header scheme mismatch");
+  });
+
+  it("rejects invalid Farcaster signing-request windows", () => {
+    expect(() =>
+      buildFarcasterX402SigningRequest({
+        payerAddress: "0x1111111111111111111111111111111111111111",
+        ttlSeconds: 0,
+      })
+    ).toThrow("ttlSeconds must be greater than zero.");
+
+    expect(() =>
+      buildFarcasterX402SigningRequest({
+        payerAddress: "0x1111111111111111111111111111111111111111",
+        validAfter: 20,
+        validBefore: 10,
+      })
+    ).toThrow("validBefore must be greater than or equal to validAfter.");
   });
 
   it("rejects invalid signature and address fields on decode", () => {
