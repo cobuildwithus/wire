@@ -88,8 +88,12 @@ export const baseDefaults = {
   defaultInvalidRoundRewardsSink: "0x000000000000000000000000000000000000dEaD",
 } as const;
 
+export const COBUILD_PROJECT_ID = 138 as const;
+export const COBUILD_PROJECT_ID_BIGINT = 138n as const;
+
 export const baseConfig = {
-  cobuildRevnetId: 138,
+  cobuildProjectId: COBUILD_PROJECT_ID,
+  cobuildRevnetId: COBUILD_PROJECT_ID,
   fakeUmaTreasurySuccessResolver: "0xB6737Fee8A0c49D1A3f23664Df94dcE2EbBE7a12",
   fakeUmaOwner: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
   fakeUmaEscalationManager: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
@@ -146,5 +150,6 @@ export const cobuildSwapAddress = baseEntrypoints.cobuildSwap;
 export const cobuildTerminalAddress = baseEntrypoints.cobuildTerminal;
 export const buybackHookDataHookAddress = baseEntrypoints.buybackHookDataHook;
 export const buybackHookAddress = baseEntrypoints.buybackHook;
+export const COBUILD_TOKEN_ADDRESS = baseEntrypoints.cobuildToken;
 export const WETH_ADDRESS = baseTokens.weth;
 export const USDC_BASE_ADDRESS = baseTokens.usdc;
