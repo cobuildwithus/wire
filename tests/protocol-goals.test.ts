@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { encodeAbiParameters, encodeEventTopics, encodeFunctionData } from "viem";
 import {
   buildGoalCreatePlan,
+  buildGoalCreateProtocolPlan,
   buildGoalCreateTransaction,
   buildGoalCreateWriteContractRequest,
   decodeGoalDeployedEvent,
@@ -284,6 +285,28 @@ describe("protocol goals contract", () => {
       abi: goalFactoryAbi,
       functionName: "deployGoal",
       args: [normalizedDeployParams],
+    });
+
+    expect(buildGoalCreateProtocolPlan({ deployParams: rawDeployParams })).toMatchObject({
+      chainId: 8453,
+      network: "base",
+      action: "goal.create",
+      riskClass: "economic",
+      goalFactory: goalFactoryAddress.toLowerCase(),
+      deployParams: normalizedDeployParams,
+      expectedEvents: ["GoalDeployed"],
+      steps: [
+        {
+          kind: "contract-call",
+          contract: "GoalFactory",
+          functionName: "deployGoal",
+          transaction: {
+            to: goalFactoryAddress.toLowerCase(),
+            data,
+            valueEth: "0",
+          },
+        },
+      ],
     });
   });
 

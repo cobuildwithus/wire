@@ -13,12 +13,14 @@ This package provides canonical wire-contract utilities shared between CLI, chat
 
 - `oauth`: scopes, PKCE, loopback redirect validation, authorize query parsing.
 - `jwt`: CLI JWT claim key mapping/parsers and scope capability derivation.
+- `cli-bearer-auth`: shared bearer-auth verification flow with injected JWT verification and live-session lookup hooks.
 - `evm`: strict EVM address/private-key/network validation and normalization helpers.
 - `wallet`: wallet mode and network/token constants shared by CLI surfaces.
 - `parse-bearer-token`: bearer extraction utility.
 - `idempotency`: UUIDv4/idempotency header contract.
 - `x402`: typed-data domain/types and xPayment payload encode/decode validation.
-- `protocol-goals`: shared GoalFactory deploy-param normalization, goal-create transaction/write-request builders, and `GoalDeployed` receipt decoding helpers.
+- `cli-protocol-exec`: canonical hosted `protocol-step` request builders/validators and protocol-step log-kind helpers for server-side policy enforcement.
+- `protocol-goals`: shared GoalFactory deploy-param normalization, goal-create transaction/write-request builders, hosted goal-create protocol-plan helpers, and `GoalDeployed` receipt decoding helpers.
 - `protocol-governance`: Base-only TCR/arbitrator payload coders, execution planners, commit-hash helpers, and governance receipt decoders.
 - `protocol-stake`: Base-only stake-vault deposit/withdraw/juror planners and stake-vault receipt decoders.
 - `protocol-premium`: Base-only premium-escrow checkpoint/claim planners and receipt decoders.

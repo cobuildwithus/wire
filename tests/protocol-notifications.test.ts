@@ -73,8 +73,8 @@ describe("protocol notification presenter", () => {
           claimable: "11",
         },
         reward: {
-          bucket: "appeal_bonus",
-          bucketLabel: "Appeal bonus",
+          bucket: "goal_slash",
+          bucketLabel: " Goal slash ",
         },
         nested: {
           when: new Date("2026-03-08T12:00:00.000Z"),
@@ -122,8 +122,8 @@ describe("protocol notification presenter", () => {
         slashWeight: null,
       },
       reward: {
-        bucket: "appeal_bonus",
-        bucketLabel: "Appeal bonus",
+        bucket: "goal_slash",
+        bucketLabel: "Goal slash",
       },
       nested: {
         when: "2026-03-08T12:00:00.000Z",
@@ -257,6 +257,38 @@ describe("protocol notification presenter", () => {
         "budget_success_assertion_resolved"
       )
     ).toBe(`/${goalTreasury}/allocate?budgetTreasury=${budgetTreasury}&focus=success_assertion`);
+  });
+
+  it.each([
+    "goal_success_assertion_assertion_disputed",
+    "budget_success_assertion_success_resolved",
+    "budget_success_assertion_treasury_success_resolved",
+    "goal_success_assertion_assertion_settled",
+    "goal_success_assertion_reassert_grace_deadline_soon",
+  ])("does not normalize legacy success assertion alias %s", (reason) => {
+    const payload =
+      reason.startsWith("budget_")
+        ? {
+            labels: { goalName: "Alpha" },
+            resource: { goalTreasury, budgetTreasury },
+          }
+        : {
+            labels: { goalName: "Alpha" },
+            resource: { goalTreasury },
+          };
+
+    expect(buildProtocolNotificationPresentation({
+      reason,
+      actorWalletAddress: null,
+      payload,
+    })).toEqual({
+      title: "Protocol update for Alpha.",
+      excerpt: null,
+      appPath: reason.startsWith("budget_")
+        ? `/${goalTreasury}/events?budgetTreasury=${budgetTreasury}`
+        : `/${goalTreasury}/events`,
+      actorName: null,
+    });
   });
 
   it("routes juror rewards through shared dispute context when dispute refs are present", () => {
@@ -405,10 +437,9 @@ describe("protocol notification presenter", () => {
     });
   });
 
-  it("renders juror reward notifications with shared reward metadata", () => {
+  it("renders juror reward notifications with generic shared copy", () => {
     const payload = {
       labels: { goalName: "Alpha" },
-      reward: { bucketLabel: "appeal bonus" },
       resource: {
         goalTreasury,
         budgetTreasury,
@@ -424,8 +455,37 @@ describe("protocol notification presenter", () => {
         payload,
       })
     ).toEqual({
-      title: "Juror appeal bonus reward ready to claim in Alpha.",
-      excerpt: "A juror reward is now claimable from the appeal bonus bucket.",
+      title: "Juror reward ready to claim in Alpha.",
+      excerpt: "A juror reward is now claimable from this dispute.",
+      appPath: expectedPresentationAppPath("juror_reward_claimable", payload),
+      actorName: null,
+    });
+  });
+
+  it("renders juror reward notifications with reward-bucket copy when present", () => {
+    const payload = {
+      labels: { goalName: "Alpha" },
+      resource: {
+        goalTreasury,
+        budgetTreasury,
+        arbitrator,
+        disputeId: "7",
+      },
+      reward: {
+        bucket: "goal_slash",
+        bucketLabel: "goal slash",
+      },
+    };
+
+    expect(
+      buildProtocolNotificationPresentation({
+        reason: "juror_reward_claimable",
+        actorWalletAddress: null,
+        payload,
+      })
+    ).toEqual({
+      title: "Juror goal slash reward ready to claim in Alpha.",
+      excerpt: "A juror reward is now claimable from the goal slash bucket.",
       appPath: expectedPresentationAppPath("juror_reward_claimable", payload),
       actorName: null,
     });
@@ -466,6 +526,60 @@ describe("protocol notification presenter", () => {
       title: "Juror vote deadline soon in Alpha.",
       excerpt: "Cast your vote before the voting window closes.",
       appPath: expectedPresentationAppPath("juror_vote_deadline_soon", payload),
+      actorName: null,
+    });
+  });
+
+  it.each([
+    "request_challenge_deadline_soon",
+    "mechanism_removal_challenge_deadline_soon",
+  ])("does not normalize legacy reminder alias %s", (reason) => {
+    const payload = {
+      labels: { goalName: "Alpha", reminderContextLabel: "Allocation mechanism removal request" },
+      resource: {
+        kind: "mechanism_request",
+        goalTreasury,
+        budgetTreasury,
+        arbitrator,
+        disputeId: "7",
+      },
+    };
+
+    expect(buildProtocolNotificationPresentation({
+      reason,
+      actorWalletAddress: null,
+      payload,
+    })).toEqual({
+      title: "Protocol update for Alpha.",
+      excerpt: null,
+      appPath:
+        `/${goalTreasury}/events?budgetTreasury=${budgetTreasury}` +
+        `&disputeId=7&arbitrator=${arbitrator}`,
+      actorName: null,
+    });
+  });
+
+  it("does not normalize the legacy juror voting deadline alias", () => {
+    const payload = {
+      labels: { goalName: "Alpha" },
+      resource: {
+        goalTreasury,
+        budgetTreasury,
+        arbitrator,
+        disputeId: "7",
+      },
+    };
+
+    expect(buildProtocolNotificationPresentation({
+      reason: "juror_voting_deadline_soon",
+      actorWalletAddress: null,
+      payload,
+    })).toEqual({
+      title: "Protocol update for Alpha.",
+      excerpt: null,
+      appPath:
+        `/${goalTreasury}/events?budgetTreasury=${budgetTreasury}` +
+        `&disputeId=7&arbitrator=${arbitrator}`,
       actorName: null,
     });
   });
