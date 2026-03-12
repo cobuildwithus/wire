@@ -25,6 +25,11 @@ function toBigIntInteger(value: bigint | number, label: string): bigint {
   return BigInt(value);
 }
 
+function divideCeil(numerator: bigint, denominator: bigint): bigint {
+  if (numerator === 0n) return 0n;
+  return (numerator - 1n) / denominator + 1n;
+}
+
 export function quoteRevnetPurchase(params: {
   paymentAmount?: bigint;
   amount?: bigint;
@@ -61,8 +66,8 @@ export function getRevnetPaymentAmountForTokens(params: {
   if (effectivePercent === 0n) return 0n;
 
   const weightRatio = 10n ** BigInt(NATIVE_TOKEN_DECIMALS);
-  const totalTokens = (params.payerTokens * MAX_RESERVED_PERCENT) / effectivePercent;
-  return (totalTokens * weightRatio) / params.weight;
+  const totalTokens = divideCeil(params.payerTokens * MAX_RESERVED_PERCENT, effectivePercent);
+  return divideCeil(totalTokens * weightRatio, params.weight);
 }
 
 export const quoteRevnetPaymentForTokens = getRevnetPaymentAmountForTokens;
