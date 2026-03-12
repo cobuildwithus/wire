@@ -136,7 +136,7 @@ describe("revnet helpers", () => {
     expect(stageTerms.summary.nextStage).toBe(2);
   });
 
-  it("encodes payable pay intents and keeps borrow plan collateral counts stable", () => {
+  it("encodes native pay intents and keeps borrow plan collateral counts stable", () => {
     const payIntent = buildRevnetPayIntent({
       terminalAddress: TERMINAL,
       paymentAmount: 123n,
@@ -233,5 +233,40 @@ describe("revnet helpers", () => {
     });
     expect(skippedPermissionPlan.steps).toHaveLength(1);
     expect(skippedPermissionPlan.preconditions[0]).toContain("Ensure");
+    expect(() =>
+      buildRevnetBorrowPlanFromContext(
+        {
+          ...context,
+          account: null,
+        },
+        {
+          prepaidFeePercent: 50n,
+        }
+      )
+    ).toThrow("Borrow plan context requires an account.");
+  });
+
+  it("does not attach native value for ERC20 pay intents", () => {
+    const payIntent = buildRevnetPayIntent({
+      terminalAddress: TERMINAL,
+      paymentAmount: 123n,
+      paymentToken: LOAN_TOKEN,
+      beneficiary: BENEFICIARY,
+    });
+
+    expect(payIntent).toMatchObject({
+      functionName: "pay",
+      args: [138n, LOAN_TOKEN, 123n, BENEFICIARY, 0n, "", "0x"],
+    });
+    expect(payIntent.value).toBeUndefined();
+    expect(encodeWriteIntent(payIntent)).toEqual({
+      to: TERMINAL,
+      data: encodeFunctionData({
+        abi: jbMultiTerminalAbi,
+        functionName: "pay",
+        args: [138n, LOAN_TOKEN, 123n, BENEFICIARY, 0n, "", "0x"],
+      }),
+      value: 0n,
+    });
   });
 });

@@ -100,20 +100,21 @@ export function buildRevnetPayIntent(params: {
   metadata?: `0x${string}`;
 }): RevnetPayIntent {
   const amount = params.amount ?? params.paymentAmount ?? 0n;
+  const token = normalizeEvmAddress(params.token ?? params.paymentToken ?? REVNET_NATIVE_TOKEN, "token");
   return {
     address: normalizeEvmAddress(params.terminalAddress, "terminalAddress"),
     abi: jbMultiTerminalAbi,
     functionName: "pay",
     args: [
       params.projectId ?? COBUILD_REVNET_PROJECT_ID,
-      normalizeEvmAddress(params.token ?? params.paymentToken ?? REVNET_NATIVE_TOKEN, "token"),
+      token,
       amount,
       normalizeEvmAddress(params.beneficiary, "beneficiary"),
       params.minReturnedTokens ?? 0n,
       params.memo ?? "",
       params.metadata ?? "0x",
     ],
-    value: amount,
+    ...(token === REVNET_NATIVE_TOKEN ? { value: amount } : {}),
   };
 }
 
@@ -295,9 +296,12 @@ export function buildRevnetBorrowPlanFromContext(
   if (!context.selectedLoanSource) {
     throw new Error("Loan not available for this project.");
   }
+  if (!context.account) {
+    throw new Error("Borrow plan context requires an account.");
+  }
 
   return buildRevnetBorrowPlan({
-    account: normalizeEvmAddress(context.account ?? "0x0000000000000000000000000000000000000000", "account"),
+    account: context.account,
     ...(context.projectId !== undefined ? { projectId: context.projectId } : {}),
     source: context.selectedLoanSource,
     collateralCount: context.collateralCount,

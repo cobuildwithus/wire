@@ -88,6 +88,71 @@ function normalizeLoanSource(raw: { token: string; terminal: string }): RevnetLo
   };
 }
 
+async function readOptionalLoanContext(
+  client: RevnetReadClient,
+  params: {
+    projectId: bigint;
+    preferredLoanToken?: string;
+    selectedAccountingContext: RevnetAccountingContext | null;
+    revLoansAddress: EvmAddress;
+  }
+): Promise<{
+  loanSources: readonly RevnetLoanSource[];
+  selectedLoanSource: RevnetLoanSource | null;
+  selectedLoanAccountingContext: RevnetAccountingContext | null;
+}> {
+  let loanSources: readonly RevnetLoanSource[] = [];
+  try {
+    const loanSourcesRaw = (await client.readContract({
+      address: params.revLoansAddress,
+      abi: revLoansAbi,
+      functionName: "loanSourcesOf",
+      args: [params.projectId],
+    })) as Array<{ token: string; terminal: string }>;
+    loanSources = loanSourcesRaw.map(normalizeLoanSource);
+  } catch {
+    return {
+      loanSources,
+      selectedLoanSource: null,
+      selectedLoanAccountingContext: null,
+    };
+  }
+
+  const selectedLoanSource = selectPreferredLoanSource(
+    loanSources,
+    params.preferredLoanToken ?? params.selectedAccountingContext?.token
+  );
+  if (!selectedLoanSource) {
+    return {
+      loanSources,
+      selectedLoanSource,
+      selectedLoanAccountingContext: null,
+    };
+  }
+
+  try {
+    const selectedLoanAccountingContext = normalizeAccountingContext(
+      (await client.readContract({
+        address: selectedLoanSource.terminal,
+        abi: jbMultiTerminalAbi,
+        functionName: "accountingContextForTokenOf",
+        args: [params.projectId, selectedLoanSource.token],
+      })) as { token: string; decimals: bigint | number; currency: bigint | number }
+    );
+    return {
+      loanSources,
+      selectedLoanSource,
+      selectedLoanAccountingContext,
+    };
+  } catch {
+    return {
+      loanSources,
+      selectedLoanSource,
+      selectedLoanAccountingContext: null,
+    };
+  }
+}
+
 function normalizeCurrentRuleset(result: CurrentRulesetReadResult): RevnetCurrentRuleset {
   const [ruleset, metadata] = result;
   return {
@@ -287,27 +352,15 @@ export async function getRevnetPositionContext(
       })) as string
     ) ?? contracts.revLoans;
   const token = await readProjectTokenContext(client, projectId, account, contracts);
-  const loanSourcesRaw = (await client.readContract({
-    address: revLoansAddress,
-    abi: revLoansAbi,
-    functionName: "loanSourcesOf",
-    args: [projectId],
-  })) as Array<{ token: string; terminal: string }>;
-  const loanSources = loanSourcesRaw.map(normalizeLoanSource);
-  const selectedLoanSource = selectPreferredLoanSource(
-    loanSources,
-    params.preferredLoanToken ?? selectedAccountingContext?.token
-  );
-  const selectedLoanAccountingContext = selectedLoanSource
-    ? normalizeAccountingContext(
-        (await client.readContract({
-          address: selectedLoanSource.terminal,
-          abi: jbMultiTerminalAbi,
-          functionName: "accountingContextForTokenOf",
-          args: [projectId, selectedLoanSource.token],
-        })) as { token: string; decimals: bigint | number; currency: bigint | number }
-      )
-    : null;
+  const { loanSources, selectedLoanSource, selectedLoanAccountingContext } =
+    await readOptionalLoanContext(client, {
+      projectId,
+      ...(params.preferredLoanToken !== undefined
+        ? { preferredLoanToken: params.preferredLoanToken }
+        : {}),
+      selectedAccountingContext,
+      revLoansAddress,
+    });
 
   return {
     projectId,

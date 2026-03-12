@@ -228,6 +228,30 @@ function createAlternateLoanTerminalReadClient(): RevnetReadClient {
   };
 }
 
+function createLoanSourceFailureReadClient(): RevnetReadClient {
+  const base = createReadClient();
+  return {
+    async readContract(params) {
+      if (params.functionName === "loanSourcesOf") {
+        throw new Error("loan source unavailable");
+      }
+      return base.readContract(params);
+    },
+  };
+}
+
+function createLoanAccountingContextFailureReadClient(): RevnetReadClient {
+  const base = createReadClient();
+  return {
+    async readContract(params) {
+      if (params.functionName === "accountingContextForTokenOf") {
+        throw new Error("loan accounting unavailable");
+      }
+      return base.readContract(params);
+    },
+  };
+}
+
 describe("revnet coverage helpers", () => {
   it("covers config aliases, selection helpers, and zero-value math branches", () => {
     expect(
@@ -473,6 +497,39 @@ describe("revnet coverage helpers", () => {
       terminal: ALT_TERMINAL,
     });
     expect(position.selectedLoanAccountingContext).toEqual(altLoanContext);
+  });
+
+  it("keeps cash-out position context when loan-source discovery fails", async () => {
+    const position = await getRevnetPositionContext(createLoanSourceFailureReadClient(), {
+      projectId: PROJECT_ID,
+      account: ACCOUNT,
+      preferredBaseToken: REVNET_PREFERRED_BASE_TOKEN,
+    });
+    expect(position.token.address).toBe(PROJECT_TOKEN);
+    expect(position.selectedAccountingContext?.token).toBe(REVNET_PREFERRED_BASE_TOKEN);
+    expect(position.selectedLoanSource).toBeNull();
+    expect(position.selectedLoanAccountingContext).toBeNull();
+
+    const cashOutContext = await getRevnetCashOutContext(createLoanSourceFailureReadClient(), {
+      projectId: PROJECT_ID,
+      account: ACCOUNT,
+      preferredBaseToken: REVNET_PREFERRED_BASE_TOKEN,
+    });
+    expect(cashOutContext.quoteTerminal).toBe(baseRevnetContracts.multiTerminal);
+    expect(cashOutContext.quoteAccountingContext?.token).toBe(REVNET_PREFERRED_BASE_TOKEN);
+  });
+
+  it("keeps the selected loan source when only loan accounting reads fail", async () => {
+    const position = await getRevnetPositionContext(createLoanAccountingContextFailureReadClient(), {
+      projectId: PROJECT_ID,
+      preferredBaseToken: REVNET_PREFERRED_BASE_TOKEN,
+    });
+
+    expect(position.selectedLoanSource).toEqual({
+      token: REVNET_PREFERRED_BASE_TOKEN,
+      terminal: baseRevnetContracts.multiTerminal,
+    });
+    expect(position.selectedLoanAccountingContext).toBeNull();
   });
 
   it("covers write intents and borrow-plan helpers, including client-derived plans", async () => {
