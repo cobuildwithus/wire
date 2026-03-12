@@ -23,3 +23,4 @@ export * from "./protocol-flow.js";
 export * from "./protocol-notifications.js";
 export * from "./builder-codes.js";
 export * from "./tool-contracts.js";
+export * from "./revnet/index.js";

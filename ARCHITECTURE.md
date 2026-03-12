@@ -28,4 +28,5 @@ This package provides canonical wire-contract utilities shared between CLI, chat
 - `protocol-prize-vault`: Base-only round prize-vault claim/downgrade planners and receipt decoders.
 - `protocol-flow`: Base-only flow allocation/maintenance planners, structural allocation normalizers, and allocation receipt helpers.
 - `protocol-notifications`: shared wallet notification DTOs, protocol payload normalization, route-state/app-path builders, and shared presenter copy for protocol lifecycle notifications.
+- `revnet`: Base revnet config, JB/REV contract ABIs, issuance math/transforms, read helpers, and write-intent builders shared by interface, chat-api, and CLI adapters.
 - `farcaster`: Farcaster signup constants, typed-data contract helpers, preflight status classifier, call-plan builders, executable-call builders, and canonical hosted/signup response builders and validators.
