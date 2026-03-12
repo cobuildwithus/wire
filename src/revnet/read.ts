@@ -294,18 +294,14 @@ export async function getRevnetPositionContext(
     args: [projectId],
   })) as Array<{ token: string; terminal: string }>;
   const loanSources = loanSourcesRaw.map(normalizeLoanSource);
-  const selectedLoanSource =
-    selectPreferredLoanSource(
-      loanSources,
-      params.preferredLoanToken ?? selectedAccountingContext?.token
-    ) ??
-    (selectedAccountingContext && terminal
-      ? { token: selectedAccountingContext.token, terminal }
-      : null);
+  const selectedLoanSource = selectPreferredLoanSource(
+    loanSources,
+    params.preferredLoanToken ?? selectedAccountingContext?.token
+  );
   const selectedLoanAccountingContext = selectedLoanSource
     ? normalizeAccountingContext(
         (await client.readContract({
-          address: contracts.multiTerminal,
+          address: selectedLoanSource.terminal,
           abi: jbMultiTerminalAbi,
           functionName: "accountingContextForTokenOf",
           args: [projectId, selectedLoanSource.token],

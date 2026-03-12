@@ -39,12 +39,19 @@ import {
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const PROJECT_TOKEN = "0x2222222222222222222222222222222222222222";
 const ALT_TOKEN = "0x3333333333333333333333333333333333333333";
+const ALT_TERMINAL = "0x4444444444444444444444444444444444444444";
 const PROJECT_ID = 138n;
 
 const baseContext: RevnetAccountingContext = {
   token: REVNET_PREFERRED_BASE_TOKEN,
   decimals: 6,
   currency: 1,
+};
+
+const altLoanContext: RevnetAccountingContext = {
+  token: ALT_TOKEN,
+  decimals: 18,
+  currency: 2,
 };
 
 function createReadClient(): RevnetReadClient {
@@ -109,6 +116,9 @@ function createReadClient(): RevnetReadClient {
             },
           ];
         case "accountingContextForTokenOf":
+          if (params.address === ALT_TERMINAL) {
+            return altLoanContext;
+          }
           return baseContext;
         case "currentReclaimableSurplusOf":
           return 5000000n;
@@ -197,6 +207,23 @@ function createPositionFallbackReadClient(): RevnetReadClient {
         return baseRevnetContracts.multiTerminal;
       }
       return fallback.readContract(params);
+    },
+  };
+}
+
+function createAlternateLoanTerminalReadClient(): RevnetReadClient {
+  const base = createReadClient();
+  return {
+    async readContract(params) {
+      if (params.functionName === "loanSourcesOf") {
+        return [
+          {
+            token: ALT_TOKEN,
+            terminal: ALT_TERMINAL,
+          },
+        ];
+      }
+      return base.readContract(params);
     },
   };
 }
@@ -430,7 +457,22 @@ describe("revnet coverage helpers", () => {
     expect(fallbackPosition.token.address).toBeNull();
     expect(fallbackPosition.permissionsAddress).toBe(baseRevnetContracts.permissions);
     expect(fallbackPosition.revLoansAddress).toBe(baseRevnetContracts.revLoans);
-    expect(fallbackPosition.selectedLoanSource?.token).toBe(ALT_TOKEN);
+    expect(fallbackPosition.selectedLoanSource).toBeNull();
+    expect(fallbackPosition.selectedLoanAccountingContext).toBeNull();
+  });
+
+  it("resolves loan accounting contexts against the selected loan-source terminal", async () => {
+    const position = await getRevnetPositionContext(createAlternateLoanTerminalReadClient(), {
+      projectId: PROJECT_ID,
+      preferredBaseToken: ALT_TOKEN,
+      preferredLoanToken: ALT_TOKEN,
+    });
+
+    expect(position.selectedLoanSource).toEqual({
+      token: ALT_TOKEN,
+      terminal: ALT_TERMINAL,
+    });
+    expect(position.selectedLoanAccountingContext).toEqual(altLoanContext);
   });
 
   it("covers write intents and borrow-plan helpers, including client-derived plans", async () => {
