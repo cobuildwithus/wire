@@ -29,6 +29,7 @@ import {
 } from "./protocol-plans.js";
 
 export const CLI_PROTOCOL_STEP_KIND = "protocol-step" as const;
+export const CLI_PROTOCOL_PLAN_KIND = "protocol-plan" as const;
 
 type SupportedProtocolActionStep =
   | { kind: "erc20-approval" }
@@ -357,6 +358,15 @@ export type CliProtocolStepRequest<TAction extends string = CliProtocolStepActio
 };
 
 export type CliProtocolStepLogKind = `protocol-step:${string}`;
+export type CliProtocolPlanRequest<TAction extends string = CliProtocolStepAction> = {
+  kind: typeof CLI_PROTOCOL_PLAN_KIND;
+  network: ProtocolNetwork;
+  action: TAction;
+  riskClass: ProtocolRiskClass;
+  steps: readonly ProtocolPlanStep[];
+};
+
+export type CliProtocolPlanLogKind = `protocol-plan:${string}`;
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (typeof value !== "object" || value === null || Array.isArray(value)) {
@@ -577,6 +587,77 @@ function assertActionRiskAndStep(params: {
   }
 }
 
+function parseProtocolPlanSteps(
+  value: unknown,
+  fieldPath: string
+): readonly ProtocolPlanStep[] {
+  if (!Array.isArray(value)) {
+    throw new Error(`${fieldPath} must be an array.`);
+  }
+  if (value.length === 0) {
+    throw new Error(`${fieldPath} must contain at least one step.`);
+  }
+
+  return value.map((step, index) => validateProtocolStep(step, `${fieldPath}[${index}]`));
+}
+
+function assertProtocolPlanShape(steps: readonly ProtocolPlanStep[]): void {
+  const lastStep = steps.at(-1);
+  const contractCallCount = steps.filter((step) => step.kind === "contract-call").length;
+
+  if (!lastStep || lastStep.kind !== "contract-call" || contractCallCount !== 1) {
+    throw new Error('steps must end with exactly one "contract-call" step.');
+  }
+
+  if (steps.slice(0, -1).some((step) => step.kind !== "erc20-approval")) {
+    throw new Error('steps before the final "contract-call" step must all be "erc20-approval".');
+  }
+
+  const finalTarget = lastStep.transaction.to;
+  steps.slice(0, -1).forEach((step, index) => {
+    if (step.kind !== "erc20-approval") {
+      return;
+    }
+    if (step.spenderAddress !== finalTarget) {
+      throw new Error(
+        `steps[${index}].spenderAddress must match the final contract-call target address.`
+      );
+    }
+  });
+}
+
+function assertActionRiskAndPlan(params: {
+  action: string;
+  riskClass: ProtocolRiskClass;
+  steps: readonly ProtocolPlanStep[];
+}): asserts params is {
+  action: CliProtocolStepAction;
+  riskClass: ProtocolRiskClass;
+  steps: readonly ProtocolPlanStep[];
+} {
+  const actionConfig =
+    SUPPORTED_PROTOCOL_ACTIONS[params.action as keyof typeof SUPPORTED_PROTOCOL_ACTIONS];
+  if (!actionConfig) {
+    throw new Error(
+      `action must be one of: ${Object.keys(SUPPORTED_PROTOCOL_ACTIONS).join(", ")}.`
+    );
+  }
+
+  if (params.riskClass !== actionConfig.riskClass) {
+    throw new Error(
+      `riskClass must be "${actionConfig.riskClass}" for action "${params.action}".`
+    );
+  }
+
+  assertProtocolPlanShape(params.steps);
+
+  params.steps.forEach((step, index) => {
+    if (!actionSupportsStep({ action: params.action as CliProtocolStepAction, step })) {
+      throw new Error(`steps[${index}] is not supported for action "${params.action}".`);
+    }
+  });
+}
+
 export function buildCliProtocolStepRequest(params: {
   network?: string;
   action: CliProtocolStepAction;
@@ -632,6 +713,65 @@ export function validateCliProtocolStepRequest(
   };
 }
 
+export function buildCliProtocolPlanRequest(params: {
+  network?: string;
+  action: CliProtocolStepAction;
+  riskClass?: ProtocolRiskClass;
+  steps: readonly ProtocolPlanStep[];
+}): CliProtocolPlanRequest<CliProtocolStepAction> {
+  const request = {
+    kind: CLI_PROTOCOL_PLAN_KIND,
+    network: normalizeProtocolNetwork(params.network ?? "base"),
+    action: params.action,
+    riskClass: params.riskClass ?? SUPPORTED_PROTOCOL_ACTIONS[params.action].riskClass,
+    steps: [...params.steps],
+  } satisfies CliProtocolPlanRequest<CliProtocolStepAction>;
+
+  assertActionRiskAndPlan({
+    action: request.action,
+    riskClass: request.riskClass,
+    steps: request.steps,
+  });
+
+  return request;
+}
+
+export function validateCliProtocolPlanRequest(
+  value: unknown
+): CliProtocolPlanRequest<CliProtocolStepAction> {
+  const record = asRecord(value);
+  if (!record) {
+    throw new Error("protocol-plan request must be an object.");
+  }
+
+  const kind = parseRequiredString(record.kind, "kind");
+  if (kind !== CLI_PROTOCOL_PLAN_KIND) {
+    throw new Error(`kind must be "${CLI_PROTOCOL_PLAN_KIND}".`);
+  }
+
+  const action = parseCliProtocolStepAction(record.action, "action");
+  const riskClass = parseRequiredString(record.riskClass, "riskClass") as ProtocolRiskClass;
+  const steps = parseProtocolPlanSteps(record.steps, "steps");
+
+  assertActionRiskAndPlan({
+    action,
+    riskClass,
+    steps,
+  });
+
+  return {
+    kind: CLI_PROTOCOL_PLAN_KIND,
+    network: normalizeProtocolNetwork(parseRequiredString(record.network, "network")),
+    action,
+    riskClass,
+    steps,
+  };
+}
+
 export function buildCliProtocolStepLogKind(action: string): CliProtocolStepLogKind {
   return `protocol-step:${action}`;
+}
+
+export function buildCliProtocolPlanLogKind(action: string): CliProtocolPlanLogKind {
+  return `protocol-plan:${action}`;
 }

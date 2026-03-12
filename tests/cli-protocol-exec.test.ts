@@ -1,10 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildCliProtocolPlanLogKind,
+  buildCliProtocolPlanRequest,
   buildCliProtocolStepLogKind,
   buildCliProtocolStepRequest,
   buildGoalCreateProtocolPlan,
+  buildGoalStakeDepositPlan,
   buildGoalCreateTransaction,
+  buildProtocolApprovalStep,
   validateCliProtocolStepRequest,
+  validateCliProtocolPlanRequest,
 } from "../src/index.js";
 
 const deployParams = {
@@ -128,6 +133,29 @@ describe("cli protocol-step contract", () => {
     expect(buildCliProtocolStepLogKind(request.action)).toBe("protocol-step:stake.deposit-goal");
   });
 
+  it("builds and validates hosted protocol-plan requests", () => {
+    const plan = buildGoalCreateProtocolPlan({
+      deployParams,
+    });
+    const request = buildCliProtocolPlanRequest({
+      network: plan.network,
+      action: plan.action,
+      riskClass: plan.riskClass,
+      steps: plan.steps,
+    });
+
+    expect(request).toEqual(
+      validateCliProtocolPlanRequest({
+        kind: "protocol-plan",
+        network: "base",
+        action: "goal.create",
+        riskClass: "economic",
+        steps: plan.steps,
+      })
+    );
+    expect(buildCliProtocolPlanLogKind(request.action)).toBe("protocol-plan:goal.create");
+  });
+
   it("rejects requests whose risk class does not match the supported action", () => {
     expect(() =>
       validateCliProtocolStepRequest({
@@ -173,5 +201,76 @@ describe("cli protocol-step contract", () => {
         step: goalCreatePlan.steps[0],
       })
     ).toThrow('step is not supported for action "premium.claim"');
+  });
+
+  it("rejects protocol-plan requests whose steps are not ordered as approvals then one call", () => {
+    const plan = buildGoalCreateProtocolPlan({ deployParams });
+
+    expect(() =>
+      validateCliProtocolPlanRequest({
+        kind: "protocol-plan",
+        network: "base",
+        action: "goal.create",
+        riskClass: "economic",
+        steps: [
+          plan.steps[0],
+          {
+            kind: "erc20-approval",
+            label: "Approve token late",
+            tokenAddress: "0x0000000000000000000000000000000000000011",
+            spenderAddress: "0x0000000000000000000000000000000000000022",
+            amount: "5",
+            transaction: {
+              to: "0x0000000000000000000000000000000000000011",
+              data: "0x095ea7b300000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000005",
+              valueEth: "0",
+            },
+          },
+        ],
+      })
+    ).toThrow('steps must end with exactly one "contract-call" step.');
+  });
+
+  it("rejects protocol-plan requests whose steps are not supported for the declared action", () => {
+    const goalCreatePlan = buildGoalCreateProtocolPlan({ deployParams });
+
+    expect(() =>
+      validateCliProtocolPlanRequest({
+        kind: "protocol-plan",
+        network: "base",
+        action: "premium.claim",
+        riskClass: "claim",
+        steps: goalCreatePlan.steps,
+      })
+    ).toThrow('steps[0] is not supported for action "premium.claim".');
+  });
+
+  it("rejects protocol-plan approvals whose spender does not match the final call target", () => {
+    const plan = buildGoalStakeDepositPlan({
+      network: "base",
+      stakeVaultAddress: "0x0000000000000000000000000000000000000022",
+      goalTokenAddress: "0x0000000000000000000000000000000000000011",
+      amount: "100",
+      approvalMode: "force",
+    });
+    const badApproval = buildProtocolApprovalStep({
+      label: plan.steps[0]!.kind === "erc20-approval" ? plan.steps[0]!.label : "Approve goal token",
+      tokenAddress:
+        plan.steps[0]!.kind === "erc20-approval"
+          ? plan.steps[0]!.tokenAddress
+          : "0x0000000000000000000000000000000000000011",
+      spenderAddress: "0x00000000000000000000000000000000000000ff",
+      amount: plan.steps[0]!.kind === "erc20-approval" ? plan.steps[0]!.amount : "100",
+    });
+
+    expect(() =>
+      validateCliProtocolPlanRequest({
+        kind: "protocol-plan",
+        network: "base",
+        action: plan.action,
+        riskClass: plan.riskClass,
+        steps: [badApproval, plan.steps[1]!],
+      })
+    ).toThrow("steps[0].spenderAddress must match the final contract-call target address.");
   });
 });
