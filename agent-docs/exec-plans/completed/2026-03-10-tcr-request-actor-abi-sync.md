@@ -27,3 +27,6 @@ Regenerate the published wire ABI surface after the TCR event payload cutover so
 ## Next
 
 - Remove this plan from the active set after downstream consumer publication/cleanup if it is no longer needed.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

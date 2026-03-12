@@ -57,5 +57,6 @@ Close the remaining `wire` helper gaps for participant-owned protocol writes so 
 - `bash scripts/check-agent-docs-drift.sh`
 - `bash scripts/doc-gardening.sh --fail-on-issues`
 
-Status: in_progress
-Updated: 2026-03-10
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

@@ -27,4 +27,5 @@ Finish the shared protocol notification contract for the remaining lifecycle rea
 - `pnpm docs:gardening`
 
 Status: completed
-Updated: 2026-03-10
+Updated: 2026-03-12
+Completed: 2026-03-12

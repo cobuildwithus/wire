@@ -27,3 +27,6 @@ Remove the last compatibility-only shared-surface exports in `wire` so downstrea
 ## Status
 
 completed
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

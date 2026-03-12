@@ -54,3 +54,6 @@ Add a wire-level Farcaster signup contract module that captures shared constants
 ## Next
 
 - Publish a wire release containing these contracts, then move this plan into `agent-docs/exec-plans/completed/`.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

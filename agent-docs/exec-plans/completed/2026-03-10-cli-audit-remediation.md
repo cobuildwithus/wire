@@ -25,3 +25,6 @@ Remove the `base-sepolia` alias from Base-only configured-network helpers so dow
 ## Status
 
 In progress.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

@@ -32,3 +32,6 @@ Move canonical CLI OAuth and `/v1/tools*` HTTP DTO validators/helpers into `wire
 - `pnpm test:coverage` failed on unrelated existing threshold misses in `src/protocol-participant-preflights.ts`.
 - `bash scripts/check-agent-docs-drift.sh` passed.
 - `bash scripts/doc-gardening.sh --fail-on-issues` passed.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

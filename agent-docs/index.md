@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-11 (Farcaster x402 signing-request cutover)
+Last verified: 2026-03-12 (active execution plan cleanup)
 
 ## Purpose
 
@@ -34,18 +34,6 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/exec-plans/active/` | Active execution plan workspace. |
 | `agent-docs/exec-plans/active/README.md` | Active execution plan conventions. |
 | `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` | Cross-agent ownership ledger. |
-| `agent-docs/exec-plans/active/2026-03-11-farcaster-x402-canonical-signing-request.md` | Active execution plan for canonical Farcaster/Neynar x402 signing-request extraction. |
-| `agent-docs/exec-plans/active/2026-03-10-farcaster-hosted-contracts.md` | Active execution plan for shared Farcaster hosted/signup contract hard cutover. |
-| `agent-docs/exec-plans/active/2026-03-10-final-hard-cutover-sweep.md` | Active execution plan for removing final compatibility-only shared-surface aliases. |
-| `agent-docs/exec-plans/active/2026-03-10-protocol-notification-hard-cutover.md` | Active execution plan for removing legacy protocol-notification reason aliases from the shared presenter surface. |
-| `agent-docs/exec-plans/active/2026-03-03-farcaster-wire-contract.md` | Active execution plan for Farcaster wire contract additions. |
-| `agent-docs/exec-plans/active/2026-03-03-release-docs-drift-fix.md` | Active execution plan to restore docs drift gate compliance for release patch verification. |
-| `agent-docs/exec-plans/active/2026-03-04-abi-etherscan-docs-drift-fix.md` | Active execution plan to restore docs drift compliance after migrating ABI generation to Wagmi Etherscan plugin fetches. |
-| `agent-docs/exec-plans/active/2026-03-05-base-implementation-address-sync.md` | Active execution plan for syncing Base implementation + factory entrypoint addresses and regenerated ABI outputs to latest v1-core deployments. |
-| `agent-docs/exec-plans/active/2026-03-10-protocol-governance-phase1.md` | Active execution plan for shared Base-only TCR/vote/dispute planners, payload coders, and receipt decoders. |
-| `agent-docs/exec-plans/active/2026-03-10-protocol-address-helper-surface.md` | Active execution plan for shared Base token/ecosystem address exports and pure indexed-inspect helper extraction. |
-| `agent-docs/exec-plans/active/2026-03-10-protocol-notification-completeness.md` | Active execution plan for expanding the shared notification presenter across the remaining protocol lifecycle reasons. |
-| `agent-docs/exec-plans/active/2026-03-10-tcr-request-actor-abi-sync.md` | Active execution plan for regenerating wire ABIs after the TCR requester/challenger event payload cutover. |
 | `agent-docs/exec-plans/completed/` | Completed execution plan archive. |
 | `agent-docs/exec-plans/completed/2026-03-10-protocol-phase1-foundation.md` | Completed execution record for Base-only goal-create helper extraction and shared protocol utility cleanup. |
 | `agent-docs/exec-plans/completed/2026-03-10-protocol-stake-premium-phase1.md` | Completed execution record for shared Base-only stake/premium planner and receipt-decoder helpers. |

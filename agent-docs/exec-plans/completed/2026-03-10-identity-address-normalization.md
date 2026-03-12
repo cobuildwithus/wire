@@ -48,3 +48,6 @@ Centralize nullable EVM address parsing, address equality, Base-only CLI/web net
 2. Add shared Base-only network canonicalization/explorer helpers.
 3. Add verified CLI claim -> normalized principal derivation helpers.
 4. Update tests and exports for downstream cutover.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

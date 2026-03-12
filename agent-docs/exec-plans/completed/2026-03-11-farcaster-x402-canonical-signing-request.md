@@ -32,3 +32,6 @@ Move the canonical Farcaster/Neynar x402 signing request shape into `@cobuild/wi
 ## Status
 
 - Blocked on release sequencing: the shared helper is implemented and verified locally, but downstream published-package verification must wait for a `wire` release that includes this helper and the separate Farcaster signup planner exports already in flight.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

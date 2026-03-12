@@ -30,3 +30,6 @@ Sync wire’s canonical Base protocol address exports and regenerated ABIs to th
 ## Next
 
 - Move this plan to `agent-docs/exec-plans/completed/` when release/branch finalization occurs.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

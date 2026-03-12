@@ -30,3 +30,6 @@ Restore docs drift-gate compliance for commit `ff248bd` by recording the ABI gen
 ## Next
 
 - Optionally move this plan to `agent-docs/exec-plans/completed/` after the branch is finalized.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

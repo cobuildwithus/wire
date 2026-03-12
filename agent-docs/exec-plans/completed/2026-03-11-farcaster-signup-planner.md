@@ -1,8 +1,8 @@
 # Extract shared Farcaster signup planner
 
-Status: complete
+Status: completed
 Created: 2026-03-11
-Updated: 2026-03-11
+Updated: 2026-03-12
 
 ## Goal
 
@@ -61,3 +61,4 @@ Updated: 2026-03-11
   - All commands pass with the new planner surface exported and covered by tests.
 - Result:
   - All listed commands passed on 2026-03-11.
+Completed: 2026-03-12

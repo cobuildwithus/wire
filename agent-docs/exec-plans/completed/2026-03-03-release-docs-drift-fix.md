@@ -28,3 +28,6 @@ Unblock release patch verification by adding the required non-generated docs art
 ## Next
 
 - If checks pass, land the docs patch and then move this plan to completed when broader Farcaster wire work is finalized.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

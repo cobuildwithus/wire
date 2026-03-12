@@ -27,3 +27,6 @@ Create a canonical revnet helper surface in `@cobuild/wire` so `interface` can s
 ## Status
 
 - In progress.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

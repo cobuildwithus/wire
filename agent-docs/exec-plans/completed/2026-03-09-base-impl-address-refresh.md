@@ -34,3 +34,6 @@ Refresh `@cobuild/wire` so its canonical Base deployment exports and generated A
 ## Next
 
 - Publish/release `@cobuild/wire` only if explicitly requested, then bump committed downstream semver ranges to the released version.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

@@ -32,3 +32,6 @@ Publish a new `@cobuild/wire` release with the refreshed Base implementation add
 ## Next
 
 - Keep downstream consumers on published semver-only `@cobuild/wire` specs for future ABI/address refreshes.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12

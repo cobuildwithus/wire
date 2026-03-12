@@ -27,3 +27,6 @@ Expose one canonical COBUILD project identifier from `@cobuild/wire` so downstre
 
 - Implemented and locally verified on 2026-03-11.
 - Pending patch release publication and downstream consumer normalization back to the published semver.
+Status: completed
+Updated: 2026-03-12
+Completed: 2026-03-12
