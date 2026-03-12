@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-03-12
+
+### Added
+- add shared planners and simplify helpers
+- add hosted protocol-plan exec contract
+- add canonical wire helpers
+
+### Fixed
+- harden read and write helpers
+- ceil reverse payment quotes
+- canonicalize loan source resolution
+
 ## [0.2.2] - 2026-03-11
 
 ### Added
