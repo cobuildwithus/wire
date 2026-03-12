@@ -45,6 +45,18 @@ If instructions still conflict after applying this order, ask the user before ac
 - When a `wire` release changes consumed addresses, ABIs, helpers, or runtime contracts, update the affected sibling repos after publish or record why a downstream bump is intentionally deferred.
 - For multi-file or high-risk work, add an execution plan in `agent-docs/exec-plans/active/`.
 
+## Commit and Handoff
+
+- Same-turn task completion = acceptance, unless the user explicitly says `review first` or `do not commit`.
+- If you changed files, run the required checks defined below before handoff. If they pass, run `scripts/committer "type(scope): summary" path/to/file1 path/to/file2`.
+- If a required check fails for a credibly unrelated pre-existing reason, do not leave your scoped work uncommitted solely because the repo is red. Commit your exact touched files after recording the failing command, the failing target, and why your diff did not cause it. If you cannot defend that causal separation, treat the failure as blocking.
+- Use `scripts/committer` only (no manual `git commit`).
+- Agent-authored commit messages should use Conventional Commits (`feat|fix|refactor|build|ci|chore|docs|style|perf|test`).
+- If no files changed, do not create a commit.
+- Commit only exact file paths touched in the current turn.
+- Do not skip commit just because the tree is already dirty.
+- If a touched file already had edits, still commit and explicitly note that in handoff.
+
 ## Required Checks
 
 - Always run:

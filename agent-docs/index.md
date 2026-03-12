@@ -27,7 +27,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/prompts/simplify.md` | Simplification audit prompt. |
 | `agent-docs/prompts/test-coverage-audit.md` | Coverage audit prompt. |
 | `agent-docs/prompts/task-finish-review.md` | Completion review prompt. |
-| `agent-docs/operations/completion-workflow.md` | Completion workflow definition. |
+| `agent-docs/operations/completion-workflow.md` | Completion workflow definition, including unrelated required-check failure commit handling. |
 | `agent-docs/generated/README.md` | Generated-doc artifact guide. |
 | `agent-docs/generated/doc-inventory.md` | Generated inventory artifact. |
 | `agent-docs/generated/doc-gardening-report.md` | Generated doc-gardening report. |
