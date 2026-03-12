@@ -12,6 +12,7 @@ import {
   X402_USDC_CONTRACT,
   X402_VALUE_MICRO_USDC,
 } from "../x402.js";
+import { asRecord, requireInteger, requireTrimmedString } from "../parse.js";
 import { FARCASTER_SIGNUP_NETWORK } from "./constants.js";
 import type {
   FarcasterHostedX402PaymentResponse,
@@ -25,18 +26,8 @@ import type {
   FarcasterSignupResult,
 } from "./types.js";
 
-function asRecord(value: unknown): Record<string, unknown> | null {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return null;
-  }
-  return value as Record<string, unknown>;
-}
-
 function parseRequiredString(value: unknown, fieldPath: string): string {
-  if (typeof value !== "string" || value.trim().length === 0) {
-    throw new Error(`${fieldPath} must be a non-empty string.`);
-  }
-  return value.trim();
+  return requireTrimmedString(value, { fieldPath });
 }
 
 function parseAddress(value: unknown, fieldPath: string): EvmAddress {
@@ -67,10 +58,10 @@ function parseDisplayAmount(value: unknown, fieldPath: string): string {
 }
 
 function parseUnixSeconds(value: unknown, fieldPath: string): number {
-  if (typeof value !== "number" || !Number.isInteger(value) || value < 0) {
-    throw new Error(`${fieldPath} must be a non-negative integer.`);
-  }
-  return value;
+  return requireInteger(value, fieldPath, {
+    allowZero: true,
+    integerMessage: `${fieldPath} must be a non-negative integer.`,
+  });
 }
 
 function parseFarcasterSignupNetwork(value: unknown, fieldPath: string): typeof FARCASTER_SIGNUP_NETWORK {

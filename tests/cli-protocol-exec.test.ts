@@ -4,6 +4,8 @@ import {
   buildCliProtocolPlanRequest,
   buildCliProtocolStepLogKind,
   buildCliProtocolStepRequest,
+  buildFlowClearStaleAllocationPlan,
+  buildFlowSyncAllocationPlan,
   buildGoalCreateProtocolPlan,
   buildGoalStakeDepositPlan,
   buildGoalCreateTransaction,
@@ -133,6 +135,50 @@ describe("cli protocol-step contract", () => {
     expect(buildCliProtocolStepLogKind(request.action)).toBe("protocol-step:stake.deposit-goal");
   });
 
+  it("builds and validates flow maintenance protocol-step requests", () => {
+    const syncPlan = buildFlowSyncAllocationPlan({
+      flowAddress: "0x00000000000000000000000000000000000000aa",
+      allocationKey: 12n,
+    });
+    const syncRequest = buildCliProtocolStepRequest({
+      network: syncPlan.network,
+      action: syncPlan.action,
+      riskClass: syncPlan.riskClass,
+      step: syncPlan.steps[0]!,
+    });
+
+    expect(syncRequest).toEqual(
+      validateCliProtocolStepRequest({
+        kind: "protocol-step",
+        network: "base",
+        action: "flow.sync-allocation",
+        riskClass: "maintenance",
+        step: syncPlan.steps[0],
+      })
+    );
+    expect(buildCliProtocolStepLogKind(syncRequest.action)).toBe(
+      "protocol-step:flow.sync-allocation"
+    );
+
+    const clearPlan = buildFlowClearStaleAllocationPlan({
+      flowAddress: "0x00000000000000000000000000000000000000bb",
+      allocationKey: 18n,
+    });
+
+    expect(
+      validateCliProtocolStepRequest({
+        kind: "protocol-step",
+        network: "base",
+        action: "flow.clear-stale-allocation",
+        riskClass: "maintenance",
+        step: clearPlan.steps[0]!,
+      })
+    ).toMatchObject({
+      action: "flow.clear-stale-allocation",
+      riskClass: "maintenance",
+    });
+  });
+
   it("builds and validates hosted protocol-plan requests", () => {
     const plan = buildGoalCreateProtocolPlan({
       deployParams,
@@ -156,6 +202,39 @@ describe("cli protocol-step contract", () => {
     expect(buildCliProtocolPlanLogKind(request.action)).toBe("protocol-plan:goal.create");
   });
 
+  it("preserves nonzero valueEth when validating protocol-plan contract calls", () => {
+    const plan = buildGoalCreateProtocolPlan({
+      deployParams,
+    });
+    const contractCallStep = plan.steps[0];
+    if (!contractCallStep || contractCallStep.kind !== "contract-call") {
+      throw new Error("missing goal-create contract-call step");
+    }
+
+    const request = validateCliProtocolPlanRequest({
+      kind: "protocol-plan",
+      network: "base",
+      action: "goal.create",
+      riskClass: "economic",
+      steps: [
+        {
+          ...contractCallStep,
+          transaction: {
+            ...contractCallStep.transaction,
+            valueEth: "1.25",
+          },
+        },
+      ],
+    });
+
+    const validatedStep = request.steps[0];
+    if (!validatedStep || validatedStep.kind !== "contract-call") {
+      throw new Error("missing validated contract-call step");
+    }
+
+    expect(validatedStep.transaction.valueEth).toBe("1.25");
+  });
+
   it("rejects requests whose risk class does not match the supported action", () => {
     expect(() =>
       validateCliProtocolStepRequest({
@@ -166,6 +245,32 @@ describe("cli protocol-step contract", () => {
         step: buildGoalCreateProtocolPlan({ deployParams }).steps[0],
       })
     ).toThrow('riskClass must be "economic" for action "goal.create"');
+  });
+
+  it("rejects nonzero valueEth for protocol-step execution requests", () => {
+    const plan = buildGoalCreateProtocolPlan({
+      deployParams,
+    });
+    const contractCallStep = plan.steps[0];
+    if (!contractCallStep || contractCallStep.kind !== "contract-call") {
+      throw new Error("missing goal-create contract-call step");
+    }
+
+    expect(() =>
+      validateCliProtocolStepRequest({
+        kind: "protocol-step",
+        network: "base",
+        action: "goal.create",
+        riskClass: "economic",
+        step: {
+          ...contractCallStep,
+          transaction: {
+            ...contractCallStep.transaction,
+            valueEth: "1",
+          },
+        },
+      })
+    ).toThrow('step.transaction.valueEth must be "0" for protocol-step execution.');
   });
 
   it("rejects contract-call payloads that do not decode to the declared function", () => {
@@ -232,7 +337,10 @@ describe("cli protocol-step contract", () => {
   });
 
   it("rejects protocol-plan requests whose steps are not supported for the declared action", () => {
-    const goalCreatePlan = buildGoalCreateProtocolPlan({ deployParams });
+    const plan = buildFlowSyncAllocationPlan({
+      flowAddress: "0x00000000000000000000000000000000000000aa",
+      allocationKey: 12n,
+    });
 
     expect(() =>
       validateCliProtocolPlanRequest({
@@ -240,7 +348,7 @@ describe("cli protocol-step contract", () => {
         network: "base",
         action: "premium.claim",
         riskClass: "claim",
-        steps: goalCreatePlan.steps,
+        steps: plan.steps,
       })
     ).toThrow('steps[0] is not supported for action "premium.claim".');
   });

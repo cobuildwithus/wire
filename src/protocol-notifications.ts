@@ -182,10 +182,6 @@ export type ListWalletNotificationsOutput = {
 
 type RawSearchParams = Record<string, string | string[] | undefined>;
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
 function isDtoRecord(value: NotificationDtoValue | undefined): value is NotificationDtoRecord {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
@@ -263,7 +259,7 @@ function normalizeNotificationDtoRecord(value: unknown): NotificationDtoRecord |
   return isDtoRecord(normalized) ? normalized : null;
 }
 
-function shortenAddress(value: string | null): string | null {
+function shortenIdentifier(value: string | null): string | null {
   if (!value) return null;
   return `${value.slice(0, 6)}...${value.slice(-4)}`;
 }
@@ -424,6 +420,35 @@ type RequestChallengeReminderContext =
   | "mechanism_request"
   | "mechanism_removal";
 
+const CHALLENGE_WINDOW_REMINDER_SUFFIX = "challenge_window_ending_soon";
+
+const REQUEST_CHALLENGE_REMINDER_COPY: Record<
+  RequestChallengeReminderContext,
+  { title: string; excerpt: string }
+> = {
+  budget_request: {
+    title: "Budget challenge window ending soon",
+    excerpt: "The current challenge window for this budget request is ending soon.",
+  },
+  budget_removal: {
+    title: "Budget removal challenge window ending soon",
+    excerpt: "The current challenge window for this budget removal request is ending soon.",
+  },
+  mechanism_request: {
+    title: "Allocation mechanism challenge window ending soon",
+    excerpt: "The current challenge window for this allocation mechanism request is ending soon.",
+  },
+  mechanism_removal: {
+    title: "Allocation mechanism removal challenge window ending soon",
+    excerpt:
+      "The current challenge window for this allocation mechanism removal request is ending soon.",
+  },
+};
+
+function isChallengeWindowReminderReason(reason: string): boolean {
+  return reason.endsWith(CHALLENGE_WINDOW_REMINDER_SUFFIX);
+}
+
 function normalizeSuccessAssertionState(rawState: string): SuccessAssertionState | null {
   switch (rawState) {
     case "registered":
@@ -481,9 +506,7 @@ function parseChallengeWindowReminderContext(
   reason: string,
   payload: ProtocolNotificationPayload | null
 ): RequestChallengeReminderContext | null {
-  if (
-    !reason.endsWith("challenge_window_ending_soon")
-  ) {
+  if (!isChallengeWindowReminderReason(reason)) {
     return null;
   }
 
@@ -517,11 +540,693 @@ function isJurorRewardReason(reason: string): boolean {
   return reason === "juror_reward_claimable" || reason === "juror_reward_claimed";
 }
 
+type NotificationCopyContext = {
+  goalName: string | null;
+  actorLabel: string | null;
+  payload: ProtocolNotificationPayload | null;
+};
+
+type StandardProtocolNotificationDescriptor = {
+  focus:
+    | ProtocolRouteFocus
+    | ((payload: ProtocolNotificationPayload | null) => ProtocolRouteFocus | null);
+  page: "events" | "allocate";
+  title: (context: NotificationCopyContext) => string;
+  excerpt: (context: NotificationCopyContext) => string | null;
+};
+
+type RoleAwareProtocolNotificationCopy = {
+  title: (context: NotificationCopyContext) => string;
+  excerpt: (context: NotificationCopyContext) => string | null;
+};
+
+type RoleAwareProtocolNotificationRole = "requester" | "proposer" | "challenger";
+
+function withGoalName(
+  goalName: string | null,
+  withName: (goalName: string) => string,
+  withoutName: string
+): string {
+  return goalName ? withName(goalName) : withoutName;
+}
+
+function withActorLabel(
+  actorLabel: string | null,
+  withActor: (actorLabel: string) => string,
+  withoutActor: string
+): string {
+  return actorLabel ? withActor(actorLabel) : withoutActor;
+}
+
+function focusDisputeOrRequest(
+  payload: ProtocolNotificationPayload | null
+): ProtocolRouteFocus {
+  const resource = payload?.resource ?? null;
+  return resource?.disputeId || resource?.arbitrator ? "dispute" : "request";
+}
+
+const STANDARD_PROTOCOL_NOTIFICATION_DESCRIPTORS = {
+  budget_proposed: {
+    focus: "request",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `New budget proposed in ${name}.`, "New budget proposed."),
+    excerpt: ({ actorLabel }) =>
+      withActorLabel(
+        actorLabel,
+        (label) => `${label} opened a new budget request.`,
+        "A new budget request entered governance."
+      ),
+  },
+  budget_proposal_challenged: {
+    focus: focusDisputeOrRequest,
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Budget proposal challenged in ${name}.`,
+        "Budget proposal challenged."
+      ),
+    excerpt: ({ actorLabel }) =>
+      withActorLabel(
+        actorLabel,
+        (label) => `${label} challenged a budget request.`,
+        "A budget request moved into dispute."
+      ),
+  },
+  budget_accepted: {
+    focus: "request",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Budget accepted in ${name}.`, "Budget accepted by governance."),
+    excerpt: () => "The proposal cleared governance and is queued for activation.",
+  },
+  budget_activated: {
+    focus: "budget",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Budget activated in ${name}.`, "Budget activated."),
+    excerpt: () => "The budget is now active for funding.",
+  },
+  budget_removal_requested: {
+    focus: "request",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Budget removal requested in ${name}.`,
+        "Budget removal requested."
+      ),
+    excerpt: ({ actorLabel }) =>
+      withActorLabel(
+        actorLabel,
+        (label) => `${label} requested budget removal.`,
+        "A removal request was submitted for this budget."
+      ),
+  },
+  budget_removal_challenged: {
+    focus: focusDisputeOrRequest,
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Budget removal challenged in ${name}.`,
+        "Budget removal challenged."
+      ),
+    excerpt: ({ actorLabel }) =>
+      withActorLabel(
+        actorLabel,
+        (label) => `${label} challenged a budget removal request.`,
+        "The removal request moved into dispute."
+      ),
+  },
+  budget_removal_accepted: {
+    focus: "request",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Budget removal accepted in ${name}.`,
+        "Budget removal accepted."
+      ),
+    excerpt: () => "The removal request cleared governance and is queued for final removal.",
+  },
+  budget_removed: {
+    focus: "budget",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Budget removed in ${name}.`, "Budget removed."),
+    excerpt: () => "The budget was detached from active funding.",
+  },
+  budget_active: {
+    focus: "budget",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Budget in ${name} is now active.`, "Budget is now active."),
+    excerpt: () => "This budget entered the active funding phase.",
+  },
+  budget_succeeded: {
+    focus: "budget",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Budget in ${name} succeeded.`, "Budget succeeded."),
+    excerpt: () => "This budget reached a succeeded terminal state.",
+  },
+  budget_failed: {
+    focus: "budget",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Budget in ${name} failed.`, "Budget failed."),
+    excerpt: () => "This budget reached a failed terminal state.",
+  },
+  budget_expired: {
+    focus: "budget",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Budget in ${name} expired.`, "Budget expired."),
+    excerpt: () => "This budget reached an expired terminal state.",
+  },
+  goal_success_assertion_registered: {
+    focus: "success_assertion",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Goal success assertion registered in ${name}.`,
+        "Goal success assertion registered."
+      ),
+    excerpt: () => "A goal success assertion was registered and is awaiting resolution.",
+  },
+  goal_success_assertion_cleared: {
+    focus: "success_assertion",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Goal success assertion cleared in ${name}.`,
+        "Goal success assertion cleared."
+      ),
+    excerpt: () => "The pending goal success assertion was cleared.",
+  },
+  goal_success_assertion_resolution_fail_closed: {
+    focus: "success_assertion",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Goal success assertion failed closed in ${name}.`,
+        "Goal success assertion failed closed."
+      ),
+    excerpt: () => "The goal success assertion closed without a successful resolution.",
+  },
+  goal_success_assertion_reassert_grace_activated: {
+    focus: "success_assertion",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Goal reassert grace activated in ${name}.`,
+        "Goal reassert grace activated."
+      ),
+    excerpt: () => "A reassert grace window opened for the cleared goal assertion.",
+  },
+  budget_success_assertion_registered: {
+    focus: "success_assertion",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Budget success assertion registered in ${name}.`,
+        "Budget success assertion registered."
+      ),
+    excerpt: () => "A budget success assertion was registered and is awaiting resolution.",
+  },
+  budget_success_assertion_cleared: {
+    focus: "success_assertion",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Budget success assertion cleared in ${name}.`,
+        "Budget success assertion cleared."
+      ),
+    excerpt: () => "The pending budget success assertion was cleared.",
+  },
+  budget_success_assertion_resolution_fail_closed: {
+    focus: "success_assertion",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Budget success assertion failed closed in ${name}.`,
+        "Budget success assertion failed closed."
+      ),
+    excerpt: () => "The budget success assertion closed without a successful resolution.",
+  },
+  budget_success_assertion_reassert_grace_activated: {
+    focus: "success_assertion",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Budget reassert grace activated in ${name}.`,
+        "Budget reassert grace activated."
+      ),
+    excerpt: () => "A reassert grace window opened for the cleared budget assertion.",
+  },
+  budget_success_resolution_disabled: {
+    focus: "success_assertion",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Budget success resolution disabled in ${name}.`,
+        "Budget success resolution disabled."
+      ),
+    excerpt: () => "Success assertions were disabled for this budget.",
+  },
+  underwriter_slashed: {
+    focus: "underwriter",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Underwriter slash applied in ${name}.`,
+        "Underwriter slash applied."
+      ),
+    excerpt: () => "A slash was applied to your underwriting position.",
+  },
+  underwriter_withdrawal_prep_required: {
+    focus: "underwriter",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Withdrawal prep required in ${name}.`,
+        "Withdrawal prep required."
+      ),
+    excerpt: () => "This goal is resolved. Prepare your withdrawal before withdrawing stake.",
+  },
+  underwriter_withdrawal_prep_complete: {
+    focus: "underwriter",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Withdrawal prep complete in ${name}.`,
+        "Withdrawal prep complete."
+      ),
+    excerpt: () =>
+      "Your withdrawal is prepared. You can now withdraw stake from this resolved goal.",
+  },
+  premium_claimable: {
+    focus: "premium",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Premium ready to claim in ${name}.`, "Premium ready to claim."),
+    excerpt: () => "Premium is now claimable on this underwriting position.",
+  },
+  premium_claimed: {
+    focus: "premium",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Premium claimed in ${name}.`, "Premium claimed."),
+    excerpt: () => "A premium claim was completed for this underwriting position.",
+  },
+  mechanism_proposed: {
+    focus: "request",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `New allocation mechanism proposed in ${name}.`,
+        "New allocation mechanism proposed."
+      ),
+    excerpt: ({ actorLabel }) =>
+      withActorLabel(
+        actorLabel,
+        (label) => `${label} opened a new allocation mechanism request.`,
+        "A new allocation mechanism request entered governance."
+      ),
+  },
+  mechanism_challenged: {
+    focus: focusDisputeOrRequest,
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Allocation mechanism request challenged in ${name}.`,
+        "Allocation mechanism request challenged."
+      ),
+    excerpt: ({ actorLabel }) =>
+      withActorLabel(
+        actorLabel,
+        (label) => `${label} challenged an allocation mechanism request.`,
+        "An allocation mechanism request moved into dispute."
+      ),
+  },
+  mechanism_accepted: {
+    focus: "request",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Allocation mechanism accepted in ${name}.`,
+        "Allocation mechanism accepted by governance."
+      ),
+    excerpt: () => "The allocation mechanism request cleared governance and is queued for activation.",
+  },
+  mechanism_activated: {
+    focus: "mechanism",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Allocation mechanism activated in ${name}.`,
+        "Allocation mechanism activated."
+      ),
+    excerpt: () => "The allocation mechanism is now active for allocations.",
+  },
+  mechanism_removal_requested: {
+    focus: "request",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Allocation mechanism removal requested in ${name}.`,
+        "Allocation mechanism removal requested."
+      ),
+    excerpt: ({ actorLabel }) =>
+      withActorLabel(
+        actorLabel,
+        (label) => `${label} requested allocation mechanism removal.`,
+        "A removal request was submitted for this allocation mechanism."
+      ),
+  },
+  mechanism_removal_accepted: {
+    focus: "request",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Allocation mechanism removal accepted in ${name}.`,
+        "Allocation mechanism removal accepted."
+      ),
+    excerpt: () =>
+      "The allocation mechanism removal request cleared governance and is queued for final removal.",
+  },
+  mechanism_removed: {
+    focus: "mechanism",
+    page: "allocate",
+    title: ({ goalName }) =>
+      withGoalName(
+        goalName,
+        (name) => `Allocation mechanism removed in ${name}.`,
+        "Allocation mechanism removed."
+      ),
+    excerpt: () => "The allocation mechanism was detached from active allocation.",
+  },
+  goal_active: {
+    focus: "goal",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `${name} is now active.`, "Goal is now active."),
+    excerpt: () => "The goal has moved from funding into the active phase.",
+  },
+  goal_succeeded: {
+    focus: "goal",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `${name} succeeded.`, "Goal succeeded."),
+    excerpt: () => "The goal reached a succeeded terminal state.",
+  },
+  goal_expired: {
+    focus: "goal",
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `${name} expired.`, "Goal expired."),
+    excerpt: () => "The goal reached an expired terminal state.",
+  },
+  juror_dispute_created: {
+    focus: focusDisputeOrRequest,
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `New juror dispute in ${name}.`, "New juror dispute."),
+    excerpt: () => "A new dispute is waiting for juror attention.",
+  },
+  juror_voting_open: {
+    focus: focusDisputeOrRequest,
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Juror voting opened in ${name}.`, "Juror voting is open."),
+    excerpt: () => "Voting is now open on this dispute.",
+  },
+  juror_reveal_open: {
+    focus: focusDisputeOrRequest,
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Juror reveal opened in ${name}.`, "Juror reveal is open."),
+    excerpt: () => "Reveal is now open for your committed vote.",
+  },
+  juror_ruling_final: {
+    focus: focusDisputeOrRequest,
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Juror ruling finalized in ${name}.`, "Juror ruling finalized."),
+    excerpt: () => "The dispute finished with a final ruling.",
+  },
+  juror_slashable: {
+    focus: focusDisputeOrRequest,
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Juror slash risk in ${name}.`, "Juror slash risk."),
+    excerpt: () => "The dispute resolved in a way that may leave your juror stake slashable.",
+  },
+  juror_slashed: {
+    focus: focusDisputeOrRequest,
+    page: "events",
+    title: ({ goalName }) =>
+      withGoalName(goalName, (name) => `Juror slashed in ${name}.`, "Juror slashed."),
+    excerpt: () => "A slash was applied to your juror stake.",
+  },
+} as const satisfies Record<string, StandardProtocolNotificationDescriptor>;
+
+const ROLE_AWARE_PROTOCOL_NOTIFICATION_COPY = {
+  requester: {
+    budget_proposed: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `You proposed a new budget in ${name}.`, "You proposed a new budget."),
+      excerpt: () => "Your budget request entered governance.",
+    },
+    budget_proposal_challenged: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your budget proposal was challenged in ${name}.`, "Your budget proposal was challenged."),
+      excerpt: ({ actorLabel }) =>
+        withActorLabel(actorLabel, (label) => `${label} challenged your budget proposal.`, "Your budget proposal moved into dispute."),
+    },
+    budget_accepted: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your budget proposal was accepted in ${name}.`, "Your budget proposal was accepted."),
+      excerpt: () => "Governance accepted your proposal and queued it for activation.",
+    },
+    budget_activated: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your budget was activated in ${name}.`, "Your budget was activated."),
+      excerpt: () => "Your budget is now active for funding.",
+    },
+    budget_removal_requested: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `You requested budget removal in ${name}.`, "You requested budget removal."),
+      excerpt: () => "Your removal request entered governance.",
+    },
+    budget_removal_challenged: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your removal request was challenged in ${name}.`, "Your removal request was challenged."),
+      excerpt: ({ actorLabel }) =>
+        withActorLabel(actorLabel, (label) => `${label} challenged your removal request.`, "Your removal request moved into dispute."),
+    },
+    budget_removal_accepted: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your removal request was accepted in ${name}.`, "Your removal request was accepted."),
+      excerpt: () => "Governance accepted your removal request and queued final removal.",
+    },
+    budget_removed: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your removal request completed in ${name}.`, "Your removal request completed."),
+      excerpt: () => "Your removal request completed and the budget was detached from active funding.",
+    },
+    mechanism_proposed: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `You proposed a new allocation mechanism in ${name}.`, "You proposed a new allocation mechanism."),
+      excerpt: () => "Your allocation mechanism request entered governance.",
+    },
+    mechanism_challenged: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your allocation mechanism request was challenged in ${name}.`, "Your allocation mechanism request was challenged."),
+      excerpt: ({ actorLabel }) =>
+        withActorLabel(actorLabel, (label) => `${label} challenged your allocation mechanism request.`, "Your allocation mechanism request moved into dispute."),
+    },
+    mechanism_accepted: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your allocation mechanism request was accepted in ${name}.`, "Your allocation mechanism request was accepted."),
+      excerpt: () => "Governance accepted your allocation mechanism request and queued it for activation.",
+    },
+    mechanism_activated: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your allocation mechanism was activated in ${name}.`, "Your allocation mechanism was activated."),
+      excerpt: () => "Your allocation mechanism is now active for allocations.",
+    },
+    mechanism_removal_requested: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `You requested allocation mechanism removal in ${name}.`, "You requested allocation mechanism removal."),
+      excerpt: () => "Your allocation mechanism removal request entered governance.",
+    },
+    mechanism_removal_accepted: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your allocation mechanism removal request was accepted in ${name}.`, "Your allocation mechanism removal request was accepted."),
+      excerpt: () => "Governance accepted your allocation mechanism removal request and queued final removal.",
+    },
+    mechanism_removed: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your removal request completed in ${name}.`, "Your removal request completed."),
+      excerpt: () => "Your removal request completed and the allocation mechanism was detached from active allocation.",
+    },
+  },
+  proposer: {
+    budget_proposed: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `You proposed a new budget in ${name}.`, "You proposed a new budget."),
+      excerpt: () => "Your budget request entered governance.",
+    },
+    budget_proposal_challenged: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your budget proposal was challenged in ${name}.`, "Your budget proposal was challenged."),
+      excerpt: ({ actorLabel }) =>
+        withActorLabel(actorLabel, (label) => `${label} challenged your budget proposal.`, "Your budget proposal moved into dispute."),
+    },
+    budget_accepted: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your budget proposal was accepted in ${name}.`, "Your budget proposal was accepted."),
+      excerpt: () => "Governance accepted your proposal and queued it for activation.",
+    },
+    budget_activated: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your budget was activated in ${name}.`, "Your budget was activated."),
+      excerpt: () => "Your budget is now active for funding.",
+    },
+    budget_removal_requested: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Removal requested for your budget in ${name}.`, "Removal requested for your budget."),
+      excerpt: ({ actorLabel }) =>
+        withActorLabel(actorLabel, (label) => `${label} requested removal of your budget.`, "A removal request was submitted for your budget."),
+    },
+    budget_removal_challenged: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Removal request challenged for your budget in ${name}.`, "Removal request challenged for your budget."),
+      excerpt: ({ actorLabel }) =>
+        withActorLabel(actorLabel, (label) => `${label} challenged a removal request for your budget.`, "A removal request for your budget moved into dispute."),
+    },
+    budget_removal_accepted: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Removal accepted for your budget in ${name}.`, "Removal accepted for your budget."),
+      excerpt: () => "The removal request for your budget cleared governance and is queued for final removal.",
+    },
+    budget_removed: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your budget was removed in ${name}.`, "Your budget was removed."),
+      excerpt: () => "Your budget was detached from active funding.",
+    },
+    mechanism_proposed: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `You proposed a new allocation mechanism in ${name}.`, "You proposed a new allocation mechanism."),
+      excerpt: () => "Your allocation mechanism request entered governance.",
+    },
+    mechanism_challenged: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your allocation mechanism request was challenged in ${name}.`, "Your allocation mechanism request was challenged."),
+      excerpt: ({ actorLabel }) =>
+        withActorLabel(actorLabel, (label) => `${label} challenged your allocation mechanism request.`, "Your allocation mechanism request moved into dispute."),
+    },
+    mechanism_accepted: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your allocation mechanism request was accepted in ${name}.`, "Your allocation mechanism request was accepted."),
+      excerpt: () => "Governance accepted your allocation mechanism request and queued it for activation.",
+    },
+    mechanism_activated: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your allocation mechanism was activated in ${name}.`, "Your allocation mechanism was activated."),
+      excerpt: () => "Your allocation mechanism is now active for allocations.",
+    },
+    mechanism_removal_requested: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Removal requested for your allocation mechanism in ${name}.`, "Removal requested for your allocation mechanism."),
+      excerpt: ({ actorLabel }) =>
+        withActorLabel(actorLabel, (label) => `${label} requested removal of your allocation mechanism.`, "A removal request was submitted for your allocation mechanism."),
+    },
+    mechanism_removal_accepted: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Removal accepted for your allocation mechanism in ${name}.`, "Removal accepted for your allocation mechanism."),
+      excerpt: () => "The removal request for your allocation mechanism cleared governance and is queued for final removal.",
+    },
+    mechanism_removed: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `Your allocation mechanism was removed in ${name}.`, "Your allocation mechanism was removed."),
+      excerpt: () => "Your allocation mechanism was detached from active allocation.",
+    },
+  },
+  challenger: {
+    budget_proposal_challenged: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `You challenged a budget proposal in ${name}.`, "You challenged a budget proposal."),
+      excerpt: () => "The budget proposal is now in dispute.",
+    },
+    budget_removal_challenged: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `You challenged a budget removal request in ${name}.`, "You challenged a budget removal request."),
+      excerpt: () => "The removal request is now in dispute.",
+    },
+    mechanism_challenged: {
+      title: ({ goalName }) =>
+        withGoalName(goalName, (name) => `You challenged an allocation mechanism request in ${name}.`, "You challenged an allocation mechanism request."),
+      excerpt: () => "The allocation mechanism request is now in dispute.",
+    },
+  },
+} as const satisfies Record<
+  RoleAwareProtocolNotificationRole,
+  Partial<Record<string, RoleAwareProtocolNotificationCopy>>
+>;
+
+function resolveRoleAwareProtocolNotificationCopy(
+  role: ProtocolNotificationRole | null,
+  reason: string
+): RoleAwareProtocolNotificationCopy | null {
+  if (role !== "requester" && role !== "proposer" && role !== "challenger") {
+    return null;
+  }
+
+  return (
+    (
+      ROLE_AWARE_PROTOCOL_NOTIFICATION_COPY[role] as Partial<
+        Record<string, RoleAwareProtocolNotificationCopy>
+      >
+    )[reason] ?? null
+  );
+}
+
+function resolveStandardProtocolNotificationDescriptor(
+  reason: string
+): StandardProtocolNotificationDescriptor | null {
+  return (
+    STANDARD_PROTOCOL_NOTIFICATION_DESCRIPTORS[
+      reason as keyof typeof STANDARD_PROTOCOL_NOTIFICATION_DESCRIPTORS
+    ] ?? null
+  );
+}
+
 function focusForProtocolNotification(
   reason: string,
   payload: ProtocolNotificationPayload | null
 ): ProtocolRouteFocus | null {
-  const resource = payload?.resource ?? null;
   if (parseSuccessAssertionReason(reason)) {
     return "success_assertion";
   }
@@ -535,55 +1240,16 @@ function focusForProtocolNotification(
   }
 
   if (isJurorRewardReason(reason)) {
+    const resource = payload?.resource ?? null;
     return resource?.disputeId || resource?.arbitrator ? "dispute" : null;
   }
 
-  switch (reason) {
-    case "budget_proposed":
-    case "budget_accepted":
-    case "budget_removal_requested":
-    case "budget_removal_accepted":
-    case "mechanism_proposed":
-    case "mechanism_accepted":
-    case "mechanism_removal_requested":
-    case "mechanism_removal_accepted":
-      return "request";
-    case "budget_proposal_challenged":
-    case "budget_removal_challenged":
-    case "mechanism_challenged":
-    case "juror_dispute_created":
-    case "juror_voting_open":
-    case "juror_reveal_open":
-    case "juror_ruling_final":
-    case "juror_slashable":
-    case "juror_slashed":
-      return resource?.disputeId || resource?.arbitrator ? "dispute" : "request";
-    case "budget_activated":
-    case "budget_removed":
-    case "budget_active":
-    case "budget_succeeded":
-    case "budget_failed":
-    case "budget_expired":
-      return "budget";
-    case "budget_success_resolution_disabled":
-      return "success_assertion";
-    case "mechanism_activated":
-    case "mechanism_removed":
-      return "mechanism";
-    case "underwriter_slashed":
-    case "underwriter_withdrawal_prep_required":
-    case "underwriter_withdrawal_prep_complete":
-      return "underwriter";
-    case "premium_claimable":
-    case "premium_claimed":
-      return "premium";
-    case "goal_active":
-    case "goal_succeeded":
-    case "goal_expired":
-      return "goal";
-    default:
-      return null;
+  const descriptor = resolveStandardProtocolNotificationDescriptor(reason);
+  if (!descriptor) {
+    return null;
   }
+
+  return typeof descriptor.focus === "function" ? descriptor.focus(payload) : descriptor.focus;
 }
 
 export function pageForProtocolNotification(
@@ -600,30 +1266,7 @@ export function pageForProtocolNotification(
     return requestChallengeReminderContext.startsWith("mechanism") ? "allocate" : "events";
   }
 
-  switch (reason) {
-    case "budget_activated":
-    case "budget_removed":
-    case "budget_active":
-    case "budget_succeeded":
-    case "budget_failed":
-    case "budget_expired":
-    case "budget_success_resolution_disabled":
-    case "underwriter_slashed":
-    case "underwriter_withdrawal_prep_required":
-    case "underwriter_withdrawal_prep_complete":
-    case "premium_claimable":
-    case "premium_claimed":
-    case "mechanism_proposed":
-    case "mechanism_challenged":
-    case "mechanism_accepted":
-    case "mechanism_activated":
-    case "mechanism_removal_requested":
-    case "mechanism_removal_accepted":
-    case "mechanism_removed":
-      return "allocate";
-    default:
-      return "events";
-  }
+  return resolveStandardProtocolNotificationDescriptor(reason)?.page ?? "events";
 }
 
 function takeFirst(value: string | string[] | undefined): string | null {
@@ -651,11 +1294,6 @@ function normalizeFocus(value: string | null): ProtocolRouteFocus | null {
     default:
       return null;
   }
-}
-
-function shortenHex(value: string | null): string | null {
-  if (!value) return null;
-  return `${value.slice(0, 6)}...${value.slice(-4)}`;
 }
 
 function buildHintCopy(
@@ -751,13 +1389,13 @@ export function buildProtocolRouteHint(
     state.budgetTreasury
       ? {
           label: "Budget",
-          value: shortenHex(state.budgetTreasury) ?? state.budgetTreasury,
+          value: shortenIdentifier(state.budgetTreasury) ?? state.budgetTreasury,
         }
       : null,
     state.itemId
       ? {
           label: "Item",
-          value: shortenHex(state.itemId) ?? state.itemId,
+          value: shortenIdentifier(state.itemId) ?? state.itemId,
         }
       : null,
     state.requestIndex
@@ -775,7 +1413,7 @@ export function buildProtocolRouteHint(
     state.arbitrator
       ? {
           label: "Arbitrator",
-          value: shortenHex(state.arbitrator) ?? state.arbitrator,
+          value: shortenIdentifier(state.arbitrator) ?? state.arbitrator,
         }
       : null,
   ].filter((value): value is { label: string; value: string } => value !== null);
@@ -848,158 +1486,13 @@ function roleAwareTitle(
   goalName: string | null,
   role: ProtocolNotificationRole | null
 ): string | null {
-  if (role === "requester") {
-    switch (reason) {
-      case "budget_proposed":
-        return goalName
-          ? `You proposed a new budget in ${goalName}.`
-          : "You proposed a new budget.";
-      case "budget_proposal_challenged":
-        return goalName
-          ? `Your budget proposal was challenged in ${goalName}.`
-          : "Your budget proposal was challenged.";
-      case "budget_accepted":
-        return goalName
-          ? `Your budget proposal was accepted in ${goalName}.`
-          : "Your budget proposal was accepted.";
-      case "budget_activated":
-        return goalName
-          ? `Your budget was activated in ${goalName}.`
-          : "Your budget was activated.";
-      case "budget_removal_requested":
-        return goalName
-          ? `You requested budget removal in ${goalName}.`
-          : "You requested budget removal.";
-      case "budget_removal_challenged":
-        return goalName
-          ? `Your removal request was challenged in ${goalName}.`
-          : "Your removal request was challenged.";
-      case "budget_removal_accepted":
-        return goalName
-          ? `Your removal request was accepted in ${goalName}.`
-          : "Your removal request was accepted.";
-      case "budget_removed":
-        return goalName
-          ? `Your removal request completed in ${goalName}.`
-          : "Your removal request completed.";
-      case "mechanism_proposed":
-        return goalName
-          ? `You proposed a new allocation mechanism in ${goalName}.`
-          : "You proposed a new allocation mechanism.";
-      case "mechanism_challenged":
-        return goalName
-          ? `Your allocation mechanism request was challenged in ${goalName}.`
-          : "Your allocation mechanism request was challenged.";
-      case "mechanism_accepted":
-        return goalName
-          ? `Your allocation mechanism request was accepted in ${goalName}.`
-          : "Your allocation mechanism request was accepted.";
-      case "mechanism_activated":
-        return goalName
-          ? `Your allocation mechanism was activated in ${goalName}.`
-          : "Your allocation mechanism was activated.";
-      case "mechanism_removal_requested":
-        return goalName
-          ? `You requested allocation mechanism removal in ${goalName}.`
-          : "You requested allocation mechanism removal.";
-      case "mechanism_removal_accepted":
-        return goalName
-          ? `Your allocation mechanism removal request was accepted in ${goalName}.`
-          : "Your allocation mechanism removal request was accepted.";
-      case "mechanism_removed":
-        return goalName
-          ? `Your removal request completed in ${goalName}.`
-          : "Your removal request completed.";
-      default:
-        return null;
-    }
-  }
-
-  if (role === "proposer") {
-    switch (reason) {
-      case "budget_proposed":
-        return goalName
-          ? `You proposed a new budget in ${goalName}.`
-          : "You proposed a new budget.";
-      case "budget_proposal_challenged":
-        return goalName
-          ? `Your budget proposal was challenged in ${goalName}.`
-          : "Your budget proposal was challenged.";
-      case "budget_accepted":
-        return goalName
-          ? `Your budget proposal was accepted in ${goalName}.`
-          : "Your budget proposal was accepted.";
-      case "budget_activated":
-        return goalName
-          ? `Your budget was activated in ${goalName}.`
-          : "Your budget was activated.";
-      case "budget_removal_requested":
-        return goalName
-          ? `Removal requested for your budget in ${goalName}.`
-          : "Removal requested for your budget.";
-      case "budget_removal_challenged":
-        return goalName
-          ? `Removal request challenged for your budget in ${goalName}.`
-          : "Removal request challenged for your budget.";
-      case "budget_removal_accepted":
-        return goalName
-          ? `Removal accepted for your budget in ${goalName}.`
-          : "Removal accepted for your budget.";
-      case "budget_removed":
-        return goalName ? `Your budget was removed in ${goalName}.` : "Your budget was removed.";
-      case "mechanism_proposed":
-        return goalName
-          ? `You proposed a new allocation mechanism in ${goalName}.`
-          : "You proposed a new allocation mechanism.";
-      case "mechanism_challenged":
-        return goalName
-          ? `Your allocation mechanism request was challenged in ${goalName}.`
-          : "Your allocation mechanism request was challenged.";
-      case "mechanism_accepted":
-        return goalName
-          ? `Your allocation mechanism request was accepted in ${goalName}.`
-          : "Your allocation mechanism request was accepted.";
-      case "mechanism_activated":
-        return goalName
-          ? `Your allocation mechanism was activated in ${goalName}.`
-          : "Your allocation mechanism was activated.";
-      case "mechanism_removal_requested":
-        return goalName
-          ? `Removal requested for your allocation mechanism in ${goalName}.`
-          : "Removal requested for your allocation mechanism.";
-      case "mechanism_removal_accepted":
-        return goalName
-          ? `Removal accepted for your allocation mechanism in ${goalName}.`
-          : "Removal accepted for your allocation mechanism.";
-      case "mechanism_removed":
-        return goalName
-          ? `Your allocation mechanism was removed in ${goalName}.`
-          : "Your allocation mechanism was removed.";
-      default:
-        return null;
-    }
-  }
-
-  if (role === "challenger") {
-    switch (reason) {
-      case "budget_proposal_challenged":
-        return goalName
-          ? `You challenged a budget proposal in ${goalName}.`
-          : "You challenged a budget proposal.";
-      case "budget_removal_challenged":
-        return goalName
-          ? `You challenged a budget removal request in ${goalName}.`
-          : "You challenged a budget removal request.";
-      case "mechanism_challenged":
-        return goalName
-          ? `You challenged an allocation mechanism request in ${goalName}.`
-          : "You challenged an allocation mechanism request.";
-      default:
-        return null;
-    }
-  }
-
-  return null;
+  return (
+    resolveRoleAwareProtocolNotificationCopy(role, reason)?.title({
+      goalName,
+      actorLabel: null,
+      payload: null,
+    }) ?? null
+  );
 }
 
 function successAssertionScopeLabel(scope: SuccessAssertionScope): string {
@@ -1128,29 +1621,11 @@ function buildReminderTitle(
 ): string | null {
   const requestContext = parseChallengeWindowReminderContext(reason, payload);
   if (requestContext) {
-    switch (requestContext) {
-      case "budget_request":
-        return goalName
-          ? `Budget challenge window ending soon in ${goalName}.`
-          : "Budget challenge window ending soon.";
-      case "budget_removal":
-        return goalName
-          ? `Budget removal challenge window ending soon in ${goalName}.`
-          : "Budget removal challenge window ending soon.";
-      case "mechanism_request":
-        return goalName
-          ? `Allocation mechanism challenge window ending soon in ${goalName}.`
-          : "Allocation mechanism challenge window ending soon.";
-      case "mechanism_removal":
-        return goalName
-          ? `Allocation mechanism removal challenge window ending soon in ${goalName}.`
-          : "Allocation mechanism removal challenge window ending soon.";
-    }
+    const copy = REQUEST_CHALLENGE_REMINDER_COPY[requestContext];
+    return goalName ? `${copy.title} in ${goalName}.` : `${copy.title}.`;
   }
 
-  if (
-    reason.endsWith("challenge_window_ending_soon")
-  ) {
+  if (isChallengeWindowReminderReason(reason)) {
     return goalName ? `Challenge window ending soon in ${goalName}.` : "Challenge window ending soon.";
   }
 
@@ -1171,21 +1646,10 @@ function buildReminderExcerpt(
 ): string | null {
   const requestContext = parseChallengeWindowReminderContext(reason, payload);
   if (requestContext) {
-    switch (requestContext) {
-      case "budget_request":
-        return "The current challenge window for this budget request is ending soon.";
-      case "budget_removal":
-        return "The current challenge window for this budget removal request is ending soon.";
-      case "mechanism_request":
-        return "The current challenge window for this allocation mechanism request is ending soon.";
-      case "mechanism_removal":
-        return "The current challenge window for this allocation mechanism removal request is ending soon.";
-    }
+    return REQUEST_CHALLENGE_REMINDER_COPY[requestContext].excerpt;
   }
 
-  if (
-    reason.endsWith("challenge_window_ending_soon")
-  ) {
+  if (isChallengeWindowReminderReason(reason)) {
     return "The current challenge window is ending soon.";
   }
 
@@ -1218,130 +1682,16 @@ function buildTitle(
   const reminderTitle = buildReminderTitle(reason, goalName, payload);
   if (reminderTitle) return reminderTitle;
 
-  switch (reason) {
-    case "budget_proposed":
-      return goalName ? `New budget proposed in ${goalName}.` : "New budget proposed.";
-    case "budget_proposal_challenged":
-      return goalName
-        ? `Budget proposal challenged in ${goalName}.`
-        : "Budget proposal challenged.";
-    case "budget_accepted":
-      return goalName ? `Budget accepted in ${goalName}.` : "Budget accepted by governance.";
-    case "budget_activated":
-      return goalName ? `Budget activated in ${goalName}.` : "Budget activated.";
-    case "budget_removal_requested":
-      return goalName ? `Budget removal requested in ${goalName}.` : "Budget removal requested.";
-    case "budget_removal_challenged":
-      return goalName
-        ? `Budget removal challenged in ${goalName}.`
-        : "Budget removal challenged.";
-    case "budget_removal_accepted":
-      return goalName ? `Budget removal accepted in ${goalName}.` : "Budget removal accepted.";
-    case "budget_removed":
-      return goalName ? `Budget removed in ${goalName}.` : "Budget removed.";
-    case "budget_active":
-      return goalName ? `Budget in ${goalName} is now active.` : "Budget is now active.";
-    case "budget_succeeded":
-      return goalName ? `Budget in ${goalName} succeeded.` : "Budget succeeded.";
-    case "budget_failed":
-      return goalName ? `Budget in ${goalName} failed.` : "Budget failed.";
-    case "budget_expired":
-      return goalName ? `Budget in ${goalName} expired.` : "Budget expired.";
-    case "underwriter_slashed":
-      return goalName ? `Underwriter slash applied in ${goalName}.` : "Underwriter slash applied.";
-    case "underwriter_withdrawal_prep_required":
-      return goalName ? `Withdrawal prep required in ${goalName}.` : "Withdrawal prep required.";
-    case "underwriter_withdrawal_prep_complete":
-      return goalName ? `Withdrawal prep complete in ${goalName}.` : "Withdrawal prep complete.";
-    case "premium_claimable":
-      return goalName ? `Premium ready to claim in ${goalName}.` : "Premium ready to claim.";
-    case "premium_claimed":
-      return goalName ? `Premium claimed in ${goalName}.` : "Premium claimed.";
-    case "mechanism_proposed":
-      return goalName
-        ? `New allocation mechanism proposed in ${goalName}.`
-        : "New allocation mechanism proposed.";
-    case "mechanism_challenged":
-      return goalName
-        ? `Allocation mechanism request challenged in ${goalName}.`
-        : "Allocation mechanism request challenged.";
-    case "mechanism_accepted":
-      return goalName
-        ? `Allocation mechanism accepted in ${goalName}.`
-        : "Allocation mechanism accepted by governance.";
-    case "mechanism_activated":
-      return goalName
-        ? `Allocation mechanism activated in ${goalName}.`
-        : "Allocation mechanism activated.";
-    case "mechanism_removal_requested":
-      return goalName
-        ? `Allocation mechanism removal requested in ${goalName}.`
-        : "Allocation mechanism removal requested.";
-    case "mechanism_removal_accepted":
-      return goalName
-        ? `Allocation mechanism removal accepted in ${goalName}.`
-        : "Allocation mechanism removal accepted.";
-    case "mechanism_removed":
-      return goalName
-        ? `Allocation mechanism removed in ${goalName}.`
-        : "Allocation mechanism removed.";
-    case "goal_active":
-      return goalName ? `${goalName} is now active.` : "Goal is now active.";
-    case "goal_succeeded":
-      return goalName ? `${goalName} succeeded.` : "Goal succeeded.";
-    case "goal_expired":
-      return goalName ? `${goalName} expired.` : "Goal expired.";
-    case "goal_success_assertion_registered":
-      return goalName
-        ? `Goal success assertion registered in ${goalName}.`
-        : "Goal success assertion registered.";
-    case "goal_success_assertion_cleared":
-      return goalName
-        ? `Goal success assertion cleared in ${goalName}.`
-        : "Goal success assertion cleared.";
-    case "goal_success_assertion_resolution_fail_closed":
-      return goalName
-        ? `Goal success assertion failed closed in ${goalName}.`
-        : "Goal success assertion failed closed.";
-    case "goal_success_assertion_reassert_grace_activated":
-      return goalName
-        ? `Goal reassert grace activated in ${goalName}.`
-        : "Goal reassert grace activated.";
-    case "budget_success_assertion_registered":
-      return goalName
-        ? `Budget success assertion registered in ${goalName}.`
-        : "Budget success assertion registered.";
-    case "budget_success_assertion_cleared":
-      return goalName
-        ? `Budget success assertion cleared in ${goalName}.`
-        : "Budget success assertion cleared.";
-    case "budget_success_assertion_resolution_fail_closed":
-      return goalName
-        ? `Budget success assertion failed closed in ${goalName}.`
-        : "Budget success assertion failed closed.";
-    case "budget_success_assertion_reassert_grace_activated":
-      return goalName
-        ? `Budget reassert grace activated in ${goalName}.`
-        : "Budget reassert grace activated.";
-    case "budget_success_resolution_disabled":
-      return goalName
-        ? `Budget success resolution disabled in ${goalName}.`
-        : "Budget success resolution disabled.";
-    case "juror_dispute_created":
-      return goalName ? `New juror dispute in ${goalName}.` : "New juror dispute.";
-    case "juror_voting_open":
-      return goalName ? `Juror voting opened in ${goalName}.` : "Juror voting is open.";
-    case "juror_reveal_open":
-      return goalName ? `Juror reveal opened in ${goalName}.` : "Juror reveal is open.";
-    case "juror_ruling_final":
-      return goalName ? `Juror ruling finalized in ${goalName}.` : "Juror ruling finalized.";
-    case "juror_slashable":
-      return goalName ? `Juror slash risk in ${goalName}.` : "Juror slash risk.";
-    case "juror_slashed":
-      return goalName ? `Juror slashed in ${goalName}.` : "Juror slashed.";
-    default:
-      return goalName ? `Protocol update for ${goalName}.` : "Protocol update.";
+  const descriptor = resolveStandardProtocolNotificationDescriptor(reason);
+  if (descriptor) {
+    return descriptor.title({
+      goalName,
+      actorLabel: null,
+      payload,
+    });
   }
+
+  return goalName ? `Protocol update for ${goalName}.` : "Protocol update.";
 }
 
 function roleAwareExcerpt(
@@ -1349,112 +1699,14 @@ function roleAwareExcerpt(
   actorWalletAddress: string | null,
   role: ProtocolNotificationRole | null
 ): string | null {
-  const actorLabel = shortenAddress(actorWalletAddress);
-
-  if (role === "requester") {
-    switch (reason) {
-      case "budget_proposed":
-        return "Your budget request entered governance.";
-      case "budget_proposal_challenged":
-        return actorLabel
-          ? `${actorLabel} challenged your budget proposal.`
-          : "Your budget proposal moved into dispute.";
-      case "budget_accepted":
-        return "Governance accepted your proposal and queued it for activation.";
-      case "budget_activated":
-        return "Your budget is now active for funding.";
-      case "budget_removal_requested":
-        return "Your removal request entered governance.";
-      case "budget_removal_challenged":
-        return actorLabel
-          ? `${actorLabel} challenged your removal request.`
-          : "Your removal request moved into dispute.";
-      case "budget_removal_accepted":
-        return "Governance accepted your removal request and queued final removal.";
-      case "budget_removed":
-        return "Your removal request completed and the budget was detached from active funding.";
-      case "mechanism_proposed":
-        return "Your allocation mechanism request entered governance.";
-      case "mechanism_challenged":
-        return actorLabel
-          ? `${actorLabel} challenged your allocation mechanism request.`
-          : "Your allocation mechanism request moved into dispute.";
-      case "mechanism_accepted":
-        return "Governance accepted your allocation mechanism request and queued it for activation.";
-      case "mechanism_activated":
-        return "Your allocation mechanism is now active for allocations.";
-      case "mechanism_removal_requested":
-        return "Your allocation mechanism removal request entered governance.";
-      case "mechanism_removal_accepted":
-        return "Governance accepted your allocation mechanism removal request and queued final removal.";
-      case "mechanism_removed":
-        return "Your removal request completed and the allocation mechanism was detached from active allocation.";
-      default:
-        return null;
-    }
-  }
-
-  if (role === "proposer") {
-    switch (reason) {
-      case "budget_proposed":
-        return "Your budget request entered governance.";
-      case "budget_proposal_challenged":
-        return actorLabel
-          ? `${actorLabel} challenged your budget proposal.`
-          : "Your budget proposal moved into dispute.";
-      case "budget_accepted":
-        return "Governance accepted your proposal and queued it for activation.";
-      case "budget_activated":
-        return "Your budget is now active for funding.";
-      case "budget_removal_requested":
-        return actorLabel
-          ? `${actorLabel} requested removal of your budget.`
-          : "A removal request was submitted for your budget.";
-      case "budget_removal_challenged":
-        return actorLabel
-          ? `${actorLabel} challenged a removal request for your budget.`
-          : "A removal request for your budget moved into dispute.";
-      case "budget_removal_accepted":
-        return "The removal request for your budget cleared governance and is queued for final removal.";
-      case "budget_removed":
-        return "Your budget was detached from active funding.";
-      case "mechanism_proposed":
-        return "Your allocation mechanism request entered governance.";
-      case "mechanism_challenged":
-        return actorLabel
-          ? `${actorLabel} challenged your allocation mechanism request.`
-          : "Your allocation mechanism request moved into dispute.";
-      case "mechanism_accepted":
-        return "Governance accepted your allocation mechanism request and queued it for activation.";
-      case "mechanism_activated":
-        return "Your allocation mechanism is now active for allocations.";
-      case "mechanism_removal_requested":
-        return actorLabel
-          ? `${actorLabel} requested removal of your allocation mechanism.`
-          : "A removal request was submitted for your allocation mechanism.";
-      case "mechanism_removal_accepted":
-        return "The removal request for your allocation mechanism cleared governance and is queued for final removal.";
-      case "mechanism_removed":
-        return "Your allocation mechanism was detached from active allocation.";
-      default:
-        return null;
-    }
-  }
-
-  if (role === "challenger") {
-    switch (reason) {
-      case "budget_proposal_challenged":
-        return "The budget proposal is now in dispute.";
-      case "budget_removal_challenged":
-        return "The removal request is now in dispute.";
-      case "mechanism_challenged":
-        return "The allocation mechanism request is now in dispute.";
-      default:
-        return null;
-    }
-  }
-
-  return null;
+  const actorLabel = shortenIdentifier(actorWalletAddress);
+  return (
+    resolveRoleAwareProtocolNotificationCopy(role, reason)?.excerpt({
+      goalName: null,
+      actorLabel,
+      payload: null,
+    }) ?? null
+  );
 }
 
 function buildExcerpt(
@@ -1475,110 +1727,17 @@ function buildExcerpt(
   const reminderExcerpt = buildReminderExcerpt(reason, payload);
   if (reminderExcerpt) return reminderExcerpt;
 
-  const actorLabel = shortenAddress(actorWalletAddress);
-
-  switch (reason) {
-    case "budget_proposed":
-      return actorLabel
-        ? `${actorLabel} opened a new budget request.`
-        : "A new budget request entered governance.";
-    case "budget_proposal_challenged":
-      return actorLabel
-        ? `${actorLabel} challenged a budget request.`
-        : "A budget request moved into dispute.";
-    case "budget_accepted":
-      return "The proposal cleared governance and is queued for activation.";
-    case "budget_activated":
-      return "The budget is now active for funding.";
-    case "budget_removal_requested":
-      return actorLabel
-        ? `${actorLabel} requested budget removal.`
-        : "A removal request was submitted for this budget.";
-    case "budget_removal_challenged":
-      return actorLabel
-        ? `${actorLabel} challenged a budget removal request.`
-        : "The removal request moved into dispute.";
-    case "budget_removal_accepted":
-      return "The removal request cleared governance and is queued for final removal.";
-    case "budget_removed":
-      return "The budget was detached from active funding.";
-    case "budget_active":
-      return "This budget entered the active funding phase.";
-    case "budget_succeeded":
-      return "This budget reached a succeeded terminal state.";
-    case "budget_failed":
-      return "This budget reached a failed terminal state.";
-    case "budget_expired":
-      return "This budget reached an expired terminal state.";
-    case "underwriter_slashed":
-      return "A slash was applied to your underwriting position.";
-    case "underwriter_withdrawal_prep_required":
-      return "This goal is resolved. Prepare your withdrawal before withdrawing stake.";
-    case "underwriter_withdrawal_prep_complete":
-      return "Your withdrawal is prepared. You can now withdraw stake from this resolved goal.";
-    case "premium_claimable":
-      return "Premium is now claimable on this underwriting position.";
-    case "premium_claimed":
-      return "A premium claim was completed for this underwriting position.";
-    case "mechanism_proposed":
-      return actorLabel
-        ? `${actorLabel} opened a new allocation mechanism request.`
-        : "A new allocation mechanism request entered governance.";
-    case "mechanism_challenged":
-      return actorLabel
-        ? `${actorLabel} challenged an allocation mechanism request.`
-        : "An allocation mechanism request moved into dispute.";
-    case "mechanism_accepted":
-      return "The allocation mechanism request cleared governance and is queued for activation.";
-    case "mechanism_activated":
-      return "The allocation mechanism is now active for allocations.";
-    case "mechanism_removal_requested":
-      return actorLabel
-        ? `${actorLabel} requested allocation mechanism removal.`
-        : "A removal request was submitted for this allocation mechanism.";
-    case "mechanism_removal_accepted":
-      return "The allocation mechanism removal request cleared governance and is queued for final removal.";
-    case "mechanism_removed":
-      return "The allocation mechanism was detached from active allocation.";
-    case "goal_active":
-      return "The goal has moved from funding into the active phase.";
-    case "goal_succeeded":
-      return "The goal reached a succeeded terminal state.";
-    case "goal_expired":
-      return "The goal reached an expired terminal state.";
-    case "goal_success_assertion_registered":
-      return "A goal success assertion was registered and is awaiting resolution.";
-    case "goal_success_assertion_cleared":
-      return "The pending goal success assertion was cleared.";
-    case "goal_success_assertion_resolution_fail_closed":
-      return "The goal success assertion closed without a successful resolution.";
-    case "goal_success_assertion_reassert_grace_activated":
-      return "A reassert grace window opened for the cleared goal assertion.";
-    case "budget_success_assertion_registered":
-      return "A budget success assertion was registered and is awaiting resolution.";
-    case "budget_success_assertion_cleared":
-      return "The pending budget success assertion was cleared.";
-    case "budget_success_assertion_resolution_fail_closed":
-      return "The budget success assertion closed without a successful resolution.";
-    case "budget_success_assertion_reassert_grace_activated":
-      return "A reassert grace window opened for the cleared budget assertion.";
-    case "budget_success_resolution_disabled":
-      return "Success assertions were disabled for this budget.";
-    case "juror_dispute_created":
-      return "A new dispute is waiting for juror attention.";
-    case "juror_voting_open":
-      return "Voting is now open on this dispute.";
-    case "juror_reveal_open":
-      return "Reveal is now open for your committed vote.";
-    case "juror_ruling_final":
-      return "The dispute finished with a final ruling.";
-    case "juror_slashable":
-      return "The dispute resolved in a way that may leave your juror stake slashable.";
-    case "juror_slashed":
-      return "A slash was applied to your juror stake.";
-    default:
-      return null;
+  const actorLabel = shortenIdentifier(actorWalletAddress);
+  const descriptor = resolveStandardProtocolNotificationDescriptor(reason);
+  if (descriptor) {
+    return descriptor.excerpt({
+      goalName: null,
+      actorLabel,
+      payload,
+    });
   }
+
+  return null;
 }
 
 export function buildProtocolNotificationPresentation(args: {
@@ -1596,6 +1755,6 @@ export function buildProtocolNotificationPresentation(args: {
     title: buildTitle(args.reason, goalName, role, payload),
     excerpt: buildExcerpt(args.reason, actorWalletAddress, role, payload),
     appPath: buildProtocolNotificationAppPath(payload, args.reason),
-    actorName: shortenAddress(actorWalletAddress),
+    actorName: shortenIdentifier(actorWalletAddress),
   };
 }

@@ -1,3 +1,13 @@
+import {
+  asJsonRecord,
+  assertKnownKeys,
+  optionalTrimmedString,
+  requireBoolean,
+  requireInteger,
+  requireTrimmedString,
+  type JsonRecord as ParsedJsonRecord,
+} from "./parse.js";
+
 const LOOPBACK_HOSTS = new Set(["127.0.0.1", "localhost", "::1", "[::1]"]);
 const AGENT_KEY_PATTERN = /^[A-Za-z0-9._-]{1,64}$/;
 const PKCE_VERIFIER_PATTERN = /^[A-Za-z0-9._~-]{43,128}$/;
@@ -373,8 +383,6 @@ export function parseCliOAuthAuthorizeQuery(
   }
 }
 
-type JsonRecord = Record<string, unknown>;
-
 export type CliOAuthAuthorizeCodeRequestBody = {
   clientId: string;
   redirectUri: string;
@@ -455,79 +463,37 @@ export const cliOAuthTokenRequestBodyJsonSchema = {
   },
 } as const;
 
-function asJsonRecord(input: unknown, errorMessage: string): JsonRecord {
-  if (typeof input !== "object" || input === null || Array.isArray(input)) {
-    throw new Error(errorMessage);
-  }
-
-  return input as JsonRecord;
-}
-
-function assertKnownKeys(record: JsonRecord, allowedKeys: readonly string[], label: string): void {
-  const allowed = new Set(allowedKeys);
-  for (const key of Object.keys(record)) {
-    if (!allowed.has(key)) {
-      throw new Error(`${label} includes unsupported field "${key}"`);
-    }
-  }
-}
-
 function parseRequiredStringField(
-  record: JsonRecord,
+  record: ParsedJsonRecord,
   key: string,
   options: {
     maxLength: number;
     requiredMessage: string;
   }
 ): string {
-  const value = record[key];
-  if (typeof value !== "string") {
-    throw new Error(options.requiredMessage);
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    throw new Error(options.requiredMessage);
-  }
-  if (trimmed.length > options.maxLength) {
-    throw new Error(`${key} must be at most ${options.maxLength} characters`);
-  }
-
-  return trimmed;
+  return requireTrimmedString(record[key], {
+    fieldPath: key,
+    maxLength: options.maxLength,
+    requiredMessage: options.requiredMessage,
+    invalidTypeMessage: options.requiredMessage,
+  });
 }
 
 function parseOptionalStringField(
-  record: JsonRecord,
+  record: ParsedJsonRecord,
   key: string,
   options: {
     maxLength: number;
   }
 ): string | undefined {
-  const value = record[key];
-  if (value === undefined) {
-    return undefined;
-  }
-  if (typeof value !== "string") {
-    throw new Error(`${key} must be a string`);
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return undefined;
-  }
-  if (trimmed.length > options.maxLength) {
-    throw new Error(`${key} must be at most ${options.maxLength} characters`);
-  }
-
-  return trimmed;
+  return optionalTrimmedString(record[key], {
+    fieldPath: key,
+    maxLength: options.maxLength,
+  });
 }
 
-function parseRequiredBooleanField(record: JsonRecord, key: string): boolean {
-  if (typeof record[key] !== "boolean") {
-    throw new Error(`${key} must be a boolean`);
-  }
-
-  return record[key] as boolean;
+function parseRequiredBooleanField(record: ParsedJsonRecord, key: string): boolean {
+  return requireBoolean(record[key], key);
 }
 
 function parseIntegerField(
@@ -537,14 +503,9 @@ function parseIntegerField(
     allowZero?: boolean;
   } = {}
 ): number {
-  if (typeof value !== "number" || !Number.isInteger(value)) {
-    throw new Error(`${key} must be an integer`);
-  }
-  if (options.allowZero ? value < 0 : value <= 0) {
-    throw new Error(`${key} must be ${options.allowZero ? "zero or greater" : "greater than zero"}`);
-  }
-
-  return value;
+  return requireInteger(value, key, {
+    ...(options.allowZero !== undefined ? { allowZero: options.allowZero } : {}),
+  });
 }
 
 export function parseCliOAuthAuthorizeCodeRequestBody(

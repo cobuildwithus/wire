@@ -1,4 +1,11 @@
-import { encodeFunctionData, erc20Abi, type Abi, type Hex } from "viem";
+import {
+  encodeFunctionData,
+  erc20Abi,
+  formatEther,
+  parseEther,
+  type Abi,
+  type Hex,
+} from "viem";
 import type { EvmAddress } from "./evm.js";
 import { normalizeEvmAddress } from "./evm.js";
 import { normalizeProtocolNetwork, type ProtocolNetwork } from "./protocol-addresses.js";
@@ -15,7 +22,7 @@ export type ProtocolRiskClass =
 export type ProtocolTransaction = {
   to: EvmAddress;
   data: Hex;
-  valueEth: "0";
+  valueEth: string;
 };
 
 export type ProtocolContractCallStep = {
@@ -75,6 +82,27 @@ export function normalizeProtocolBigInt(value: BigintLike, label: string): bigin
   return BigInt(normalized);
 }
 
+export function normalizeProtocolValueEth(value: string, label: string): string {
+  const normalized = value.trim();
+  if (normalized.length === 0) {
+    throw new Error(`${label} must be a non-negative ETH amount string.`);
+  }
+
+  try {
+    const wei = parseEther(normalized);
+    if (wei < 0n) {
+      throw new Error("negative");
+    }
+    return formatEther(wei);
+  } catch {
+    throw new Error(`${label} must be a non-negative ETH amount string.`);
+  }
+}
+
+export function formatProtocolValueEthFromWei(value: BigintLike, label: string): string {
+  return formatEther(normalizeProtocolBigInt(value, label));
+}
+
 export function normalizeOptionalProtocolBigInt(
   value: BigintLike | null | undefined,
   label: string
@@ -92,6 +120,7 @@ export function buildProtocolCallStep(params: {
   to: string;
   abi: Abi;
   args?: readonly unknown[];
+  valueEth?: string;
 }): ProtocolContractCallStep {
   return {
     kind: "contract-call",
@@ -105,7 +134,10 @@ export function buildProtocolCallStep(params: {
         functionName: params.functionName,
         ...(params.args ? { args: params.args } : {}),
       }),
-      valueEth: "0",
+      valueEth:
+        params.valueEth === undefined
+          ? "0"
+          : normalizeProtocolValueEth(params.valueEth, `${params.contract}.${params.functionName} valueEth`),
     },
   };
 }
@@ -208,7 +240,8 @@ export function buildApprovalPlan(params: {
 }
 
 export function resolveProtocolPlanNetwork(network?: ProtocolNetwork | string): ProtocolNetwork {
-  return normalizeProtocolNetwork(network ?? "base");
+  const normalized = (network ?? "base").trim().toLowerCase();
+  return normalizeProtocolNetwork(normalized === "base-mainnet" ? "base" : normalized);
 }
 
 export function serializeProtocolBigInts(value: unknown): unknown {

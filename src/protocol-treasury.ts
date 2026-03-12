@@ -1,4 +1,4 @@
-import { parseEventLogs, type Abi } from "viem";
+import type { Abi } from "viem";
 import type { EvmAddress } from "./evm.js";
 import { normalizeEvmAddress } from "./evm.js";
 import { budgetTreasuryAbi, goalTreasuryAbi } from "./protocol-abis.js";
@@ -12,6 +12,12 @@ import {
   type ProtocolApprovalMode,
   type ProtocolExecutionPlan,
 } from "./protocol-plans.js";
+import {
+  decodeLatestReceiptEvent,
+  requireReceiptAddress,
+  requireReceiptBigInt,
+  requireReceiptRecord,
+} from "./protocol-receipts.js";
 
 export type GoalTreasuryDonationPlan = ProtocolExecutionPlan<"treasury.donate-goal"> & {
   treasuryAddress: EvmAddress;
@@ -50,42 +56,12 @@ export type BudgetTreasuryReceiptSummary = {
   donationRecorded: BudgetTreasuryDonationRecordedEvent | null;
 };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function requireAddress(value: Record<string, unknown>, key: string, label: string): EvmAddress {
-  const rawValue = value[key];
-  if (typeof rawValue !== "string") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return normalizeEvmAddress(rawValue, `${label}.${key}`);
-}
-
-function requireBigInt(value: Record<string, unknown>, key: string, label: string): bigint {
-  const rawValue = value[key];
-  if (typeof rawValue !== "bigint") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return rawValue;
-}
-
 function decodeLatestGoalTreasuryEvent(logs: readonly unknown[], eventName: string) {
-  return parseEventLogs({
-    abi: goalTreasuryAbi as Abi,
-    logs: logs as any[],
-    eventName,
-    strict: false,
-  }).at(-1);
+  return decodeLatestReceiptEvent(goalTreasuryAbi as Abi, logs, eventName);
 }
 
 function decodeLatestBudgetTreasuryEvent(logs: readonly unknown[], eventName: string) {
-  return parseEventLogs({
-    abi: budgetTreasuryAbi as Abi,
-    logs: logs as any[],
-    eventName,
-    strict: false,
-  }).at(-1);
+  return decodeLatestReceiptEvent(budgetTreasuryAbi as Abi, logs, eventName);
 }
 
 function buildTreasuryDonationPlan(params: {
@@ -189,18 +165,15 @@ export function decodeGoalTreasuryReceipt(
     };
   }
 
-  const args = latest.args as unknown;
-  if (!isRecord(args)) {
-    throw new Error("DonationRecorded event args are missing.");
-  }
+  const args = requireReceiptRecord(latest.args as unknown, "DonationRecorded event args are missing.");
 
   return {
     donationRecorded: {
-      donor: requireAddress(args, "donor", "DonationRecorded"),
-      sourceToken: requireAddress(args, "sourceToken", "DonationRecorded"),
-      sourceAmount: requireBigInt(args, "sourceAmount", "DonationRecorded"),
-      superTokenAmount: requireBigInt(args, "superTokenAmount", "DonationRecorded"),
-      totalRaised: requireBigInt(args, "totalRaised", "DonationRecorded"),
+      donor: requireReceiptAddress(args, "donor", "DonationRecorded"),
+      sourceToken: requireReceiptAddress(args, "sourceToken", "DonationRecorded"),
+      sourceAmount: requireReceiptBigInt(args, "sourceAmount", "DonationRecorded"),
+      superTokenAmount: requireReceiptBigInt(args, "superTokenAmount", "DonationRecorded"),
+      totalRaised: requireReceiptBigInt(args, "totalRaised", "DonationRecorded"),
     },
   };
 }
@@ -215,17 +188,14 @@ export function decodeBudgetTreasuryReceipt(
     };
   }
 
-  const args = latest.args as unknown;
-  if (!isRecord(args)) {
-    throw new Error("DonationRecorded event args are missing.");
-  }
+  const args = requireReceiptRecord(latest.args as unknown, "DonationRecorded event args are missing.");
 
   return {
     donationRecorded: {
-      donor: requireAddress(args, "donor", "DonationRecorded"),
-      sourceToken: requireAddress(args, "sourceToken", "DonationRecorded"),
-      sourceAmount: requireBigInt(args, "sourceAmount", "DonationRecorded"),
-      superTokenAmount: requireBigInt(args, "superTokenAmount", "DonationRecorded"),
+      donor: requireReceiptAddress(args, "donor", "DonationRecorded"),
+      sourceToken: requireReceiptAddress(args, "sourceToken", "DonationRecorded"),
+      sourceAmount: requireReceiptBigInt(args, "sourceAmount", "DonationRecorded"),
+      superTokenAmount: requireReceiptBigInt(args, "superTokenAmount", "DonationRecorded"),
     },
   };
 }

@@ -33,6 +33,7 @@ import {
   type TcrRequestPhase,
 } from "./protocol-governance.js";
 import {
+  normalizeOptionalProtocolBigInt,
   normalizeProtocolBigInt,
   serializeProtocolBigInts,
   type BigintLike,
@@ -597,6 +598,17 @@ type FlowChildSyncDebtTuple = readonly [boolean, string, string, bigint, HexByte
 type FlowChildSyncRequirementTuple = readonly [string, string, string, bigint, HexBytes32];
 type BudgetInfoTuple = readonly [boolean, bigint, bigint, bigint];
 type BudgetCheckpointTuple = readonly [bigint, bigint];
+type TcrRegistryContext = {
+  depositTokenAddress: EvmAddress;
+  totalCosts: GeneralizedTcrTotalCosts;
+};
+type TcrRoundSubmissionContext = {
+  startAt: bigint;
+  endAt: bigint;
+  prizeVaultAddress: EvmAddress;
+  currentTimestamp?: bigint;
+  roundOpen?: boolean;
+};
 
 function buildBase(): ProtocolPreflightBase {
   return {
@@ -710,14 +722,15 @@ function normalizeStrategyKind(value?: string): ProtocolAllocationStrategyKind {
   return normalized as ProtocolAllocationStrategyKind;
 }
 
+function normalizeOptionalAccountAddress(value?: string | null): EvmAddress | null {
+  return value ? normalizeEvmAddress(value, "accountAddress") : null;
+}
+
 function normalizeNullableAmount(
   value: BigintLike | null | undefined,
   label: string
 ): bigint | null {
-  if (value === null || value === undefined) {
-    return null;
-  }
-  return normalizeProtocolBigInt(value, label);
+  return normalizeOptionalProtocolBigInt(value, label) ?? null;
 }
 
 function normalizeCallBytes(value: string | undefined, label: string): HexBytes {
@@ -735,6 +748,87 @@ function toTcrCosts(value: TcrCostsTuple): GeneralizedTcrTotalCosts {
     challengeSubmissionCost: value[2],
     challengeRemovalCost: value[3],
     arbitrationCost: value[4],
+  };
+}
+
+async function readTcrRegistryContext(params: {
+  client: ProtocolParticipantReadClient;
+  registryAddress: EvmAddress;
+}): Promise<TcrRegistryContext> {
+  const [depositTokenAddressRaw, totalCostsTuple] = await Promise.all([
+    params.client.readContract({
+      address: params.registryAddress,
+      abi: generalizedTcrReadAbi,
+      functionName: "erc20",
+    }) as Promise<string>,
+    params.client.readContract({
+      address: params.registryAddress,
+      abi: generalizedTcrReadAbi,
+      functionName: "getTotalCosts",
+    }) as Promise<TcrCostsTuple>,
+  ]);
+
+  return {
+    depositTokenAddress: normalizeEvmAddress(depositTokenAddressRaw, "depositTokenAddress"),
+    totalCosts: toTcrCosts(totalCostsTuple),
+  };
+}
+
+async function readTcrRoundSubmissionContext(params: {
+  client: ProtocolParticipantReadClient;
+  registryAddress: EvmAddress;
+  includeCurrentTimestamp?: boolean;
+}): Promise<TcrRoundSubmissionContext> {
+  const [startAt, endAt, prizeVaultAddressRaw, currentTimestamp] = await Promise.all([
+    params.client.readContract({
+      address: params.registryAddress,
+      abi: roundSubmissionTcrAbi,
+      functionName: "startAt",
+    }) as Promise<bigint>,
+    params.client.readContract({
+      address: params.registryAddress,
+      abi: roundSubmissionTcrAbi,
+      functionName: "endAt",
+    }) as Promise<bigint>,
+    params.client.readContract({
+      address: params.registryAddress,
+      abi: roundSubmissionTcrAbi,
+      functionName: "prizeVault",
+    }) as Promise<string>,
+    params.includeCurrentTimestamp
+      ? readCurrentTimestamp(params.client)
+      : Promise.resolve(undefined),
+  ]);
+
+  return {
+    startAt,
+    endAt,
+    prizeVaultAddress: normalizeEvmAddress(prizeVaultAddressRaw, "prizeVaultAddress"),
+    ...(currentTimestamp === undefined
+      ? {}
+      : {
+          currentTimestamp,
+          roundOpen: currentTimestamp >= startAt && currentTimestamp < endAt,
+        }),
+  };
+}
+
+async function readTcrRoundSubmissionStatusContext(params: {
+  client: ProtocolParticipantReadClient;
+  registryAddress: EvmAddress;
+}): Promise<NonNullable<TcrSubmissionPreflight["roundSubmissionContext"]>> {
+  const context = await readTcrRoundSubmissionContext({
+    ...params,
+    includeCurrentTimestamp: true,
+  });
+  const { currentTimestamp, roundOpen, ...baseContext } = context;
+  if (currentTimestamp === undefined || roundOpen === undefined) {
+    throw new Error("Round submission status context is incomplete.");
+  }
+  return {
+    ...baseContext,
+    currentTimestamp,
+    roundOpen,
   };
 }
 
@@ -817,6 +911,82 @@ async function readUnderlyingTokenAddress(
     })) as string,
     "underlyingTokenAddress"
   );
+}
+
+async function readDonationPreflightContext<TLifecycle extends readonly unknown[]>(params: {
+  client: ProtocolParticipantReadClient;
+  treasuryAddress: string;
+  treasuryLabel: "goalTreasuryAddress" | "budgetTreasuryAddress";
+  treasuryAbi: Abi;
+  accountAddress?: string | null;
+  amount?: BigintLike | null;
+}): Promise<{
+  treasuryAddress: EvmAddress;
+  accountAddress: EvmAddress | null;
+  amount: bigint | null;
+  state: number;
+  lifecycleStatus: TLifecycle;
+  superTokenAddress: EvmAddress;
+  underlyingTokenAddress: EvmAddress;
+  approval: ProtocolTokenAllowanceHint | null;
+}> {
+  const treasuryAddress = normalizeEvmAddress(params.treasuryAddress, params.treasuryLabel);
+  const accountAddress = normalizeOptionalAccountAddress(params.accountAddress);
+  const amount = normalizeOptionalProtocolBigInt(params.amount, "amount");
+
+  const [state, lifecycleStatus, superTokenAddressRaw] = await Promise.all([
+    params.client.readContract({
+      address: treasuryAddress,
+      abi: params.treasuryAbi,
+      functionName: "state",
+    }) as Promise<number>,
+    params.client.readContract({
+      address: treasuryAddress,
+      abi: params.treasuryAbi,
+      functionName: "lifecycleStatus",
+    }) as unknown as Promise<TLifecycle>,
+    params.client.readContract({
+      address: treasuryAddress,
+      abi: params.treasuryAbi,
+      functionName: "superToken",
+    }) as Promise<string>,
+  ]);
+
+  const superTokenAddress = normalizeEvmAddress(superTokenAddressRaw, "superTokenAddress");
+  const underlyingTokenAddress = await readUnderlyingTokenAddress(
+    params.client,
+    superTokenAddress
+  );
+  const approval = await readAllowanceHint({
+    client: params.client,
+    tokenAddress: underlyingTokenAddress,
+    spenderAddress: treasuryAddress,
+    ownerAddress: accountAddress,
+    requiredAmount: amount,
+  });
+
+  return {
+    treasuryAddress,
+    accountAddress,
+    amount,
+    state,
+    lifecycleStatus,
+    superTokenAddress,
+    underlyingTokenAddress,
+    approval,
+  };
+}
+
+function donationBlockedReason(params: {
+  canDonate: boolean;
+  isResolved: boolean;
+  resolvedReason: string;
+  unavailableReason: string;
+}): string | null {
+  if (params.canDonate) {
+    return null;
+  }
+  return params.isResolved ? params.resolvedReason : params.unavailableReason;
 }
 
 async function readCurrentTimestamp(client: ProtocolParticipantReadClient): Promise<bigint> {
@@ -954,48 +1124,33 @@ export async function readTcrSubmissionPreflight(params: {
     ? normalizeEvmAddress(params.actorAddress, "actorAddress")
     : null;
 
-  const [depositTokenAddressRaw, totalCostsTuple, roundSubmissionContext] = await Promise.all([
-    params.client.readContract({
-      address: registryAddress,
-      abi: generalizedTcrReadAbi,
-      functionName: "erc20",
-    }) as Promise<string>,
-    params.client.readContract({
-      address: registryAddress,
-      abi: generalizedTcrReadAbi,
-      functionName: "getTotalCosts",
-    }) as Promise<TcrCostsTuple>,
+  const registryContextPromise = readTcrRegistryContext({
+    client: params.client,
+    registryAddress,
+  });
+  const roundSubmissionContextPromise =
     flavor === "round-submission"
-      ? Promise.all([
-          params.client.readContract({
-            address: registryAddress,
-            abi: roundSubmissionTcrAbi,
-            functionName: "startAt",
-          }) as Promise<bigint>,
-          params.client.readContract({
-            address: registryAddress,
-            abi: roundSubmissionTcrAbi,
-            functionName: "endAt",
-          }) as Promise<bigint>,
-          params.client.readContract({
-            address: registryAddress,
-            abi: roundSubmissionTcrAbi,
-            functionName: "prizeVault",
-          }) as Promise<string>,
-          readCurrentTimestamp(params.client),
-        ])
-      : Promise.resolve(null),
-  ]);
+      ? readTcrRoundSubmissionStatusContext({
+          client: params.client,
+          registryAddress,
+        })
+      : Promise.resolve(null);
+  const { depositTokenAddress, totalCosts } = await registryContextPromise;
 
-  const depositTokenAddress = normalizeEvmAddress(
-    depositTokenAddressRaw,
-    "depositTokenAddress"
-  );
-  const totalCosts = toTcrCosts(totalCostsTuple);
   const requiredAmount = getTcrRequiredApprovalAmount({
     action: "addItem",
     costs: totalCosts,
   });
+  const [addItemApproval, roundSubmissionContext] = await Promise.all([
+    readAllowanceHint({
+      client: params.client,
+      tokenAddress: depositTokenAddress,
+      spenderAddress: registryAddress,
+      ownerAddress: actorAddress,
+      requiredAmount,
+    }),
+    roundSubmissionContextPromise,
+  ]);
 
   return {
     ...buildBase(),
@@ -1006,29 +1161,9 @@ export async function readTcrSubmissionPreflight(params: {
     totalCosts,
     addItem: {
       requiredAmount,
-      approval: await readAllowanceHint({
-        client: params.client,
-        tokenAddress: depositTokenAddress,
-        spenderAddress: registryAddress,
-        ownerAddress: actorAddress,
-        requiredAmount,
-      }),
+      approval: addItemApproval,
     },
-    roundSubmissionContext:
-      roundSubmissionContext === null
-        ? null
-        : {
-            startAt: roundSubmissionContext[0],
-            endAt: roundSubmissionContext[1],
-            prizeVaultAddress: normalizeEvmAddress(
-              roundSubmissionContext[2],
-              "prizeVaultAddress"
-            ),
-            currentTimestamp: roundSubmissionContext[3],
-            roundOpen:
-              roundSubmissionContext[3] >= roundSubmissionContext[0] &&
-              roundSubmissionContext[3] < roundSubmissionContext[1],
-          },
+    roundSubmissionContext,
   };
 }
 
@@ -1046,18 +1181,12 @@ export async function readTcrRequestPreflight(params: {
     ? normalizeEvmAddress(params.actorAddress, "actorAddress")
     : null;
 
-  const [depositTokenAddressRaw, totalCostsTuple, itemInfo, latestRequest, submissionDeposit] =
+  const [{ depositTokenAddress, totalCosts }, itemInfo, latestRequest, submissionDeposit] =
     await Promise.all([
-      params.client.readContract({
-        address: registryAddress,
-        abi: generalizedTcrReadAbi,
-        functionName: "erc20",
-      }) as Promise<string>,
-      params.client.readContract({
-        address: registryAddress,
-        abi: generalizedTcrReadAbi,
-        functionName: "getTotalCosts",
-      }) as Promise<TcrCostsTuple>,
+      readTcrRegistryContext({
+        client: params.client,
+        registryAddress,
+      }),
       params.client.readContract({
         address: registryAddress,
         abi: generalizedTcrReadAbi,
@@ -1078,11 +1207,6 @@ export async function readTcrRequestPreflight(params: {
       }) as Promise<bigint>,
     ]);
 
-  const totalCosts = toTcrCosts(totalCostsTuple);
-  const depositTokenAddress = normalizeEvmAddress(
-    depositTokenAddressRaw,
-    "depositTokenAddress"
-  );
   const itemStatus = itemInfo[1] as TcrItemStatus;
   const removeRequiredAmount = getTcrRequiredApprovalAmount({
     action: "removeItem",
@@ -1210,47 +1334,40 @@ export async function readTcrRequestPreflight(params: {
       })()
     : null;
 
-  const allocationMechanismContext =
+  const [removeApproval, allocationMechanismContext, roundSubmissionContext] = await Promise.all([
+    readAllowanceHint({
+      client: params.client,
+      tokenAddress: depositTokenAddress,
+      spenderAddress: registryAddress,
+      ownerAddress: actorAddress,
+      requiredAmount: removeRequiredAmount,
+    }),
     flavor === "allocation-mechanism"
-      ? {
-          activationQueued: (await params.client.readContract({
+      ? Promise.all([
+          params.client.readContract({
             address: registryAddress,
             abi: allocationMechanismTcrAbi,
             functionName: "activationQueued",
             args: [itemId],
-          })) as boolean,
-          removalQueued: (await params.client.readContract({
+          }) as Promise<boolean>,
+          params.client.readContract({
             address: registryAddress,
             abi: allocationMechanismTcrAbi,
             functionName: "removalQueued",
             args: [itemId],
-          })) as boolean,
-        }
-      : null;
-
-  const roundSubmissionContext =
+          }) as Promise<boolean>,
+        ]).then(([activationQueued, removalQueued]) => ({
+          activationQueued,
+          removalQueued,
+        }))
+      : Promise.resolve(null),
     flavor === "round-submission"
-      ? {
-          startAt: (await params.client.readContract({
-            address: registryAddress,
-            abi: roundSubmissionTcrAbi,
-            functionName: "startAt",
-          })) as bigint,
-          endAt: (await params.client.readContract({
-            address: registryAddress,
-            abi: roundSubmissionTcrAbi,
-            functionName: "endAt",
-          })) as bigint,
-          prizeVaultAddress: normalizeEvmAddress(
-            (await params.client.readContract({
-              address: registryAddress,
-              abi: roundSubmissionTcrAbi,
-              functionName: "prizeVault",
-            })) as string,
-            "prizeVaultAddress"
-          ),
-        }
-      : null;
+      ? readTcrRoundSubmissionContext({
+          client: params.client,
+          registryAddress,
+        })
+      : Promise.resolve(null),
+  ]);
 
   return {
     ...buildBase(),
@@ -1268,13 +1385,7 @@ export async function readTcrRequestPreflight(params: {
     removeItem: {
       canRemove: itemStatus === TCR_ITEM_STATUS.registered,
       requiredAmount: removeRequiredAmount,
-      approval: await readAllowanceHint({
-        client: params.client,
-        tokenAddress: depositTokenAddress,
-        spenderAddress: registryAddress,
-        ownerAddress: actorAddress,
-        requiredAmount: removeRequiredAmount,
-      }),
+      approval: removeApproval,
     },
     request: requestPreflight,
     allocationMechanismContext,
@@ -2012,38 +2123,23 @@ export async function readGoalDonationPreflight(params: {
   accountAddress?: string | null;
   amount?: BigintLike | null;
 }): Promise<GoalDonationPreflight> {
-  const goalTreasuryAddress = normalizeEvmAddress(
-    params.goalTreasuryAddress,
-    "goalTreasuryAddress"
-  );
-  const accountAddress = params.accountAddress
-    ? normalizeEvmAddress(params.accountAddress, "accountAddress")
-    : null;
-  const amount = normalizeNullableAmount(params.amount, "amount");
-
-  const [state, lifecycleStatus, superTokenAddressRaw] = await Promise.all([
-    params.client.readContract({
-      address: goalTreasuryAddress,
-      abi: goalTreasuryAbi,
-      functionName: "state",
-    }) as Promise<number>,
-    params.client.readContract({
-      address: goalTreasuryAddress,
-      abi: goalTreasuryAbi,
-      functionName: "lifecycleStatus",
-    }) as unknown as Promise<GoalLifecycleStatusTuple>,
-    params.client.readContract({
-      address: goalTreasuryAddress,
-      abi: goalTreasuryAbi,
-      functionName: "superToken",
-    }) as Promise<string>,
-  ]);
-
-  const superTokenAddress = normalizeEvmAddress(superTokenAddressRaw, "superTokenAddress");
-  const underlyingTokenAddress = await readUnderlyingTokenAddress(
-    params.client,
-    superTokenAddress
-  );
+  const {
+    treasuryAddress: goalTreasuryAddress,
+    accountAddress,
+    amount,
+    state,
+    lifecycleStatus,
+    superTokenAddress,
+    underlyingTokenAddress,
+    approval,
+  } = await readDonationPreflightContext<GoalLifecycleStatusTuple>({
+    client: params.client,
+    treasuryAddress: params.goalTreasuryAddress,
+    treasuryLabel: "goalTreasuryAddress",
+    treasuryAbi: goalTreasuryAbi,
+    ...(params.accountAddress !== undefined ? { accountAddress: params.accountAddress } : {}),
+    ...(params.amount !== undefined ? { amount: params.amount } : {}),
+  });
 
   return {
     ...buildBase(),
@@ -2070,19 +2166,14 @@ export async function readGoalDonationPreflight(params: {
     superTokenAddress,
     underlyingTokenAddress,
     amount,
-    approval: await readAllowanceHint({
-      client: params.client,
-      tokenAddress: underlyingTokenAddress,
-      spenderAddress: goalTreasuryAddress,
-      ownerAddress: accountAddress,
-      requiredAmount: amount,
-    }),
+    approval,
     canDonate: lifecycleStatus[2],
-    blockedReason: lifecycleStatus[2]
-      ? null
-      : lifecycleStatus[1]
-        ? "goal-resolved"
-        : "goal-not-accepting-hook-funding",
+    blockedReason: donationBlockedReason({
+      canDonate: lifecycleStatus[2],
+      isResolved: lifecycleStatus[1],
+      resolvedReason: "goal-resolved",
+      unavailableReason: "goal-not-accepting-hook-funding",
+    }),
   };
 }
 
@@ -2092,38 +2183,23 @@ export async function readBudgetDonationPreflight(params: {
   accountAddress?: string | null;
   amount?: BigintLike | null;
 }): Promise<BudgetDonationPreflight> {
-  const budgetTreasuryAddress = normalizeEvmAddress(
-    params.budgetTreasuryAddress,
-    "budgetTreasuryAddress"
-  );
-  const accountAddress = params.accountAddress
-    ? normalizeEvmAddress(params.accountAddress, "accountAddress")
-    : null;
-  const amount = normalizeNullableAmount(params.amount, "amount");
-
-  const [state, lifecycleStatus, superTokenAddressRaw] = await Promise.all([
-    params.client.readContract({
-      address: budgetTreasuryAddress,
-      abi: budgetTreasuryAbi,
-      functionName: "state",
-    }) as Promise<number>,
-    params.client.readContract({
-      address: budgetTreasuryAddress,
-      abi: budgetTreasuryAbi,
-      functionName: "lifecycleStatus",
-    }) as unknown as Promise<BudgetLifecycleStatusTuple>,
-    params.client.readContract({
-      address: budgetTreasuryAddress,
-      abi: budgetTreasuryAbi,
-      functionName: "superToken",
-    }) as Promise<string>,
-  ]);
-
-  const superTokenAddress = normalizeEvmAddress(superTokenAddressRaw, "superTokenAddress");
-  const underlyingTokenAddress = await readUnderlyingTokenAddress(
-    params.client,
-    superTokenAddress
-  );
+  const {
+    treasuryAddress: budgetTreasuryAddress,
+    accountAddress,
+    amount,
+    state,
+    lifecycleStatus,
+    superTokenAddress,
+    underlyingTokenAddress,
+    approval,
+  } = await readDonationPreflightContext<BudgetLifecycleStatusTuple>({
+    client: params.client,
+    treasuryAddress: params.budgetTreasuryAddress,
+    treasuryLabel: "budgetTreasuryAddress",
+    treasuryAbi: budgetTreasuryAbi,
+    ...(params.accountAddress !== undefined ? { accountAddress: params.accountAddress } : {}),
+    ...(params.amount !== undefined ? { amount: params.amount } : {}),
+  });
 
   return {
     ...buildBase(),
@@ -2153,19 +2229,14 @@ export async function readBudgetDonationPreflight(params: {
     superTokenAddress,
     underlyingTokenAddress,
     amount,
-    approval: await readAllowanceHint({
-      client: params.client,
-      tokenAddress: underlyingTokenAddress,
-      spenderAddress: budgetTreasuryAddress,
-      ownerAddress: accountAddress,
-      requiredAmount: amount,
-    }),
+    approval,
     canDonate: lifecycleStatus[2],
-    blockedReason: lifecycleStatus[2]
-      ? null
-      : lifecycleStatus[1]
-        ? "budget-resolved"
-        : "budget-not-accepting-funding",
+    blockedReason: donationBlockedReason({
+      canDonate: lifecycleStatus[2],
+      isResolved: lifecycleStatus[1],
+      resolvedReason: "budget-resolved",
+      unavailableReason: "budget-not-accepting-funding",
+    }),
   };
 }
 

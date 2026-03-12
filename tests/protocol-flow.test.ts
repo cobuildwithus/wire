@@ -4,6 +4,7 @@ import {
   budgetStakeLedgerAbi,
   buildFlowAllocatePlan,
   buildFlowClearStaleAllocationPlan,
+  buildFlowSyncAllocationPlan,
   buildFlowSyncAllocationForAccountPlan,
   decodeFlowReceipt,
   decodeFlowReceiptEvents,
@@ -144,26 +145,71 @@ describe("protocol flow contract", () => {
       })
     );
 
-    expect(
-      buildFlowSyncAllocationForAccountPlan({
-        flowAddress: FLOW,
-        account: ACCOUNT,
-      }).steps[0]
-    ).toMatchObject({
+    const syncAllocationStep = buildFlowSyncAllocationPlan({
+      flowAddress: FLOW,
+      allocationKey: 11n,
+    }).steps[0];
+    expect(syncAllocationStep).toMatchObject({
+      kind: "contract-call",
+      functionName: "syncAllocation",
+    });
+    if (!syncAllocationStep || syncAllocationStep.kind !== "contract-call") {
+      throw new Error("missing sync allocation step");
+    }
+    expect(syncAllocationStep.transaction.data).toBe(
+      encodeFunctionData({
+        abi: flowParticipantAbi,
+        functionName: "syncAllocation",
+        args: [11n],
+      })
+    );
+
+    const syncAllocationForAccountStep = buildFlowSyncAllocationForAccountPlan({
+      flowAddress: FLOW,
+      account: ACCOUNT,
+    }).steps[0];
+    expect(syncAllocationForAccountStep).toMatchObject({
       kind: "contract-call",
       functionName: "syncAllocationForAccount",
     });
+    if (
+      !syncAllocationForAccountStep ||
+      syncAllocationForAccountStep.kind !== "contract-call"
+    ) {
+      throw new Error("missing sync allocation for account step");
+    }
+    expect(syncAllocationForAccountStep.transaction.data).toBe(
+      encodeFunctionData({
+        abi: flowParticipantAbi,
+        functionName: "syncAllocationForAccount",
+        args: [ACCOUNT],
+      })
+    );
 
     expect(
       buildFlowClearStaleAllocationPlan({
         flowAddress: FLOW,
-        strategyAddress: STRATEGY,
         allocationKey: 12n,
       }).steps[0]
     ).toMatchObject({
       kind: "contract-call",
       functionName: "clearStaleAllocation",
     });
+
+    const clearStaleStep = buildFlowClearStaleAllocationPlan({
+      flowAddress: FLOW,
+      allocationKey: 12n,
+    }).steps[0];
+    if (!clearStaleStep || clearStaleStep.kind !== "contract-call") {
+      throw new Error("missing clear stale step");
+    }
+    expect(clearStaleStep.transaction.data).toBe(
+      encodeFunctionData({
+        abi: flowParticipantAbi,
+        functionName: "clearStaleAllocation",
+        args: [12n],
+      })
+    );
   });
 
   it("decodes flow allocation receipts and serializes bigint fields", () => {

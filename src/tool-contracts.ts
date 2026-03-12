@@ -1,4 +1,12 @@
-type JsonRecord = Record<string, unknown>;
+import {
+  asJsonRecord,
+  assertKnownKeys,
+  optionalTrimmedString,
+  requireBoolean,
+  requireInteger,
+  requireTrimmedString,
+  type JsonRecord,
+} from "./parse.js";
 
 export type CliToolsAuthHeaders = {
   authorization: string;
@@ -86,35 +94,13 @@ export const cliToolMetadataParamsJsonSchema = {
   },
 } as const;
 
-function asJsonRecord(input: unknown, errorMessage: string): JsonRecord {
-  if (typeof input !== "object" || input === null || Array.isArray(input)) {
-    throw new Error(errorMessage);
-  }
-
-  return input as JsonRecord;
-}
-
-function assertKnownKeys(record: JsonRecord, allowedKeys: readonly string[], label: string): void {
-  const allowed = new Set(allowedKeys);
-  for (const key of Object.keys(record)) {
-    if (!allowed.has(key)) {
-      throw new Error(`${label} includes unsupported field "${key}"`);
-    }
-  }
-}
-
 function parseRequiredString(record: JsonRecord, key: string, maxLength: number): string {
-  const value = record[key];
-  if (typeof value !== "string" || !value.trim()) {
-    throw new Error(`${key} is required`);
-  }
-
-  const trimmed = value.trim();
-  if (trimmed.length > maxLength) {
-    throw new Error(`${key} must be at most ${maxLength} characters`);
-  }
-
-  return trimmed;
+  return requireTrimmedString(record[key], {
+    fieldPath: key,
+    maxLength,
+    requiredMessage: `${key} is required`,
+    invalidTypeMessage: `${key} is required`,
+  });
 }
 
 function parseOptionalStringArray(record: JsonRecord, key: string): string[] | undefined {
@@ -127,10 +113,11 @@ function parseOptionalStringArray(record: JsonRecord, key: string): string[] | u
   }
 
   return value.map((entry) => {
-    if (typeof entry !== "string" || !entry.trim()) {
-      throw new Error(`${key} must be an array of strings`);
-    }
-    return entry.trim();
+    return requireTrimmedString(entry, {
+      fieldPath: key,
+      requiredMessage: `${key} must be an array of strings`,
+      invalidTypeMessage: `${key} must be an array of strings`,
+    });
   });
 }
 
@@ -143,10 +130,7 @@ function parseRequiredStringArray(record: JsonRecord, key: string): string[] {
 }
 
 function parseBoolean(record: JsonRecord, key: string): boolean {
-  if (typeof record[key] !== "boolean") {
-    throw new Error(`${key} must be a boolean`);
-  }
-  return record[key] as boolean;
+  return requireBoolean(record[key], key);
 }
 
 function parseJsonObject(record: JsonRecord, key: string): JsonRecord {
@@ -154,16 +138,18 @@ function parseJsonObject(record: JsonRecord, key: string): JsonRecord {
 }
 
 function parseOptionalJsonObject(record: JsonRecord, key: string): JsonRecord | undefined {
-  const value = record[key];
-  if (value === undefined) {
+  if (record[key] === undefined) {
     return undefined;
   }
-  return asJsonRecord(value, `${key} must be an object`);
+  return asJsonRecord(record[key], `${key} must be an object`);
 }
 
 function parseStatusCode(record: JsonRecord, key: string): number {
-  const value = record[key];
-  if (typeof value !== "number" || !Number.isInteger(value) || value < 400 || value > 599) {
+  const value = requireInteger(record[key], key, {
+    allowZero: true,
+    integerMessage: `${key} must be an HTTP status code`,
+  });
+  if (value < 400 || value > 599) {
     throw new Error(`${key} must be an HTTP status code`);
   }
   return value;

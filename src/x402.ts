@@ -5,6 +5,7 @@ import {
   normalizeUnsignedDecimal,
 } from "./evm.js";
 import { BASE_CHAIN_ID } from "./chains.js";
+import { asRecord, requireInteger, requireTrimmedString } from "./parse.js";
 import { USDC_BASE_ADDRESS } from "./protocol-addresses.js";
 
 export { BASE_CHAIN_ID } from "./chains.js";
@@ -107,18 +108,12 @@ function toHex(bytes: Uint8Array): string {
   return output;
 }
 
-function asRecord(value: unknown): Record<string, unknown> | null {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    return null;
-  }
-  return value as Record<string, unknown>;
-}
-
 function parseRequiredStringField(value: unknown, fieldPath: string): string {
-  if (typeof value !== "string" || value.trim().length === 0) {
-    throw new Error(`x402 payment header is missing ${fieldPath}`);
-  }
-  return value.trim();
+  return requireTrimmedString(value, {
+    fieldPath,
+    requiredMessage: `x402 payment header is missing ${fieldPath}`,
+    invalidTypeMessage: `x402 payment header is missing ${fieldPath}`,
+  });
 }
 
 function parseAddressField(value: unknown, fieldPath: string): string {
@@ -182,10 +177,10 @@ function parseAuthorizationPayload(value: unknown): X402AuthorizationPayload {
 }
 
 function parseX402Version(value: unknown): number {
-  if (typeof value !== "number" || !Number.isInteger(value)) {
-    throw new Error(`x402 payment header has invalid x402Version (${String(value)}).`);
-  }
-  return value;
+  return requireInteger(value, "x402Version", {
+    allowZero: true,
+    integerMessage: `x402 payment header has invalid x402Version (${String(value)}).`,
+  });
 }
 
 function parseScheme(value: unknown): string {

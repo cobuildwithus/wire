@@ -262,7 +262,7 @@ export function buildRevnetBorrowPlan(params: {
             : {}),
         });
 
-  return {
+  const plan = {
     chainId: REVNET_CHAIN_ID,
     projectId: params.projectId ?? COBUILD_REVNET_PROJECT_ID,
     account: normalizeEvmAddress(params.account, "account"),
@@ -272,7 +272,6 @@ export function buildRevnetBorrowPlan(params: {
     borrowableAmount: params.borrowableAmount ?? null,
     quote,
     permissionRequired,
-    requiresPermission: permissionRequired,
     preconditions:
       permissionMode === "skip" && params.needsPermission
         ? [
@@ -281,6 +280,11 @@ export function buildRevnetBorrowPlan(params: {
           ]
         : [],
     steps,
+  } satisfies Omit<RevnetBorrowPlan<RevnetWriteIntent>, "requiresPermission">;
+
+  return {
+    ...plan,
+    requiresPermission: plan.permissionRequired,
   };
 }
 

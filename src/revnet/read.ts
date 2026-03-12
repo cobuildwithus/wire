@@ -225,8 +225,10 @@ async function readProjectTokenContext(
   };
 }
 
-export const selectRevnetAccountingContext = selectPreferredAccountingContext;
-export const selectRevnetLoanSource = selectPreferredLoanSource;
+export {
+  selectPreferredAccountingContext as selectRevnetAccountingContext,
+  selectPreferredLoanSource as selectRevnetLoanSource,
+};
 
 export async function getRevnetPaymentContext(
   client: RevnetReadClient,

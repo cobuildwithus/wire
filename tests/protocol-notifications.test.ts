@@ -437,6 +437,97 @@ describe("protocol notification presenter", () => {
     });
   });
 
+  it.each([
+    [
+      "goal_success_assertion_registered",
+      {
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury },
+      },
+      "Goal success assertion registered in Alpha.",
+      "A goal success assertion was registered and is awaiting resolution.",
+    ],
+    [
+      "goal_success_assertion_cleared",
+      {
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury },
+      },
+      "Goal success assertion cleared in Alpha.",
+      "The pending goal success assertion was cleared.",
+    ],
+    [
+      "goal_success_assertion_resolution_fail_closed",
+      {
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury },
+      },
+      "Goal success assertion failed closed in Alpha.",
+      "The goal success assertion closed without a successful resolution.",
+    ],
+    [
+      "goal_success_assertion_reassert_grace_activated",
+      {
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury },
+      },
+      "Goal reassert grace activated in Alpha.",
+      "A reassert grace window opened for the cleared goal assertion.",
+    ],
+    [
+      "budget_success_assertion_cleared",
+      {
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury, budgetTreasury },
+      },
+      "Budget success assertion cleared in Alpha.",
+      "The pending budget success assertion was cleared.",
+    ],
+    [
+      "budget_success_assertion_resolution_fail_closed",
+      {
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury, budgetTreasury },
+      },
+      "Budget success assertion failed closed in Alpha.",
+      "The budget success assertion closed without a successful resolution.",
+    ],
+    [
+      "budget_success_assertion_reassert_grace_activated",
+      {
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury, budgetTreasury },
+      },
+      "Budget reassert grace activated in Alpha.",
+      "A reassert grace window opened for the cleared budget assertion.",
+    ],
+    [
+      "budget_success_resolution_disabled",
+      {
+        labels: { goalName: "Alpha" },
+        resource: { goalTreasury, budgetTreasury },
+      },
+      "Budget success resolution disabled in Alpha.",
+      "Success assertions were disabled for this budget.",
+    ],
+  ])(
+    "renders descriptor-backed success assertion copy for %s",
+    (reason, payload, title, excerpt) => {
+      expect(
+        buildProtocolNotificationPresentation({
+          reason,
+          actorWalletAddress: null,
+          payload,
+        })
+      ).toEqual({
+        title,
+        excerpt,
+        appPath: expectedPresentationAppPath(reason, payload),
+        actorName: null,
+      });
+    }
+  );
+
   it("renders juror reward notifications with generic shared copy", () => {
     const payload = {
       labels: { goalName: "Alpha" },
@@ -487,6 +578,32 @@ describe("protocol notification presenter", () => {
       title: "Juror goal slash reward ready to claim in Alpha.",
       excerpt: "A juror reward is now claimable from the goal slash bucket.",
       appPath: expectedPresentationAppPath("juror_reward_claimable", payload),
+      actorName: null,
+    });
+  });
+
+  it("renders reveal-deadline reminders through the shared presenter", () => {
+    const payload = {
+      labels: { goalName: "Alpha" },
+      resource: {
+        kind: "mechanism_request",
+        goalTreasury,
+        budgetTreasury,
+        arbitrator,
+        disputeId: "7",
+      },
+    };
+
+    expect(
+      buildProtocolNotificationPresentation({
+        reason: "juror_reveal_deadline_soon",
+        actorWalletAddress: null,
+        payload,
+      })
+    ).toEqual({
+      title: "Juror reveal deadline soon in Alpha.",
+      excerpt: "Reveal your vote before the reveal window closes.",
+      appPath: expectedPresentationAppPath("juror_reveal_deadline_soon", payload),
       actorName: null,
     });
   });

@@ -4,8 +4,10 @@ import {
   buildApprovalPlan,
   buildProtocolApprovalStep,
   buildProtocolCallStep,
+  formatProtocolValueEthFromWei,
   normalizeOptionalProtocolBigInt,
   normalizeProtocolBigInt,
+  normalizeProtocolValueEth,
   resolveProtocolPlanNetwork,
   serializeProtocolBigInts,
 } from "../src/index.js";
@@ -64,6 +66,32 @@ describe("protocol plans helpers", () => {
         valueEth: "0",
       },
     });
+  });
+
+  it("normalizes payable protocol call values", () => {
+    expect(normalizeProtocolValueEth(" 1.5000 ", "valueEth")).toBe("1.5");
+    expect(formatProtocolValueEthFromWei("1000000000000000", "amount")).toBe("0.001");
+
+    expect(
+      buildProtocolCallStep({
+        contract: "ERC20",
+        functionName: "transfer",
+        label: "Transfer tokens",
+        to: TOKEN,
+        abi: erc20Abi,
+        args: [RECIPIENT, 8n],
+        valueEth: "2.000",
+      }).transaction.valueEth
+    ).toBe("2");
+  });
+
+  it("rejects invalid payable protocol call values", () => {
+    expect(() => normalizeProtocolValueEth("", "valueEth")).toThrow(
+      "valueEth must be a non-negative ETH amount string."
+    );
+    expect(() => normalizeProtocolValueEth("-1", "valueEth")).toThrow(
+      "valueEth must be a non-negative ETH amount string."
+    );
   });
 
   it("builds an approval step with normalized addresses and amount", () => {

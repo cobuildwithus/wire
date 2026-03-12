@@ -1,10 +1,6 @@
-import { parseEventLogs, type Abi } from "viem";
+import type { Abi } from "viem";
 import type { EvmAddress, HexBytes, HexBytes32 } from "./evm.js";
-import {
-  normalizeBytes32,
-  normalizeEvmAddress,
-  normalizeHexByteString,
-} from "./evm.js";
+import { normalizeBytes32, normalizeEvmAddress } from "./evm.js";
 import {
   budgetStakeLedgerAbi,
   goalFlowAllocationLedgerPipelineAbi,
@@ -17,6 +13,19 @@ import {
   type BigintLike,
   type ProtocolExecutionPlan,
 } from "./protocol-plans.js";
+import {
+  buildReceiptEventBase,
+  mapLatestReceiptEvent,
+  mapReceiptEvents,
+  requireReceiptAddress,
+  requireReceiptBigInt,
+  requireReceiptBoolean,
+  requireReceiptBytes,
+  requireReceiptBytes32,
+  requireReceiptNumericBigInt,
+  sortReceiptEventsByLogIndex,
+  type ReceiptEventBase,
+} from "./protocol-receipts.js";
 
 const FLOW_ALLOCATION_PPM_SCALE = 1_000_000n;
 const MAX_UINT32 = 4_294_967_295n;
@@ -34,6 +43,13 @@ export const flowParticipantAbi = [
   },
   {
     type: "function",
+    inputs: [{ name: "allocationKey", internalType: "uint256", type: "uint256" }],
+    name: "syncAllocation",
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+  {
+    type: "function",
     inputs: [{ name: "account", internalType: "address", type: "address" }],
     name: "syncAllocationForAccount",
     outputs: [],
@@ -41,10 +57,7 @@ export const flowParticipantAbi = [
   },
   {
     type: "function",
-    inputs: [
-      { name: "strategy", internalType: "address", type: "address" },
-      { name: "allocationKey", internalType: "uint256", type: "uint256" },
-    ],
+    inputs: [{ name: "allocationKey", internalType: "uint256", type: "uint256" }],
     name: "clearStaleAllocation",
     outputs: [],
     stateMutability: "nonpayable",
@@ -91,6 +104,11 @@ export type FlowAllocatePlan = ProtocolExecutionPlan<"flow.allocate"> & {
   allocationsPpm: readonly number[];
 };
 
+export type FlowSyncAllocationPlan = ProtocolExecutionPlan<"flow.sync-allocation"> & {
+  flowAddress: EvmAddress;
+  allocationKey: string;
+};
+
 export type FlowSyncAllocationForAccountPlan =
   ProtocolExecutionPlan<"flow.sync-allocation-for-account"> & {
     flowAddress: EvmAddress;
@@ -100,7 +118,6 @@ export type FlowSyncAllocationForAccountPlan =
 export type FlowClearStaleAllocationPlan =
   ProtocolExecutionPlan<"flow.clear-stale-allocation"> & {
     flowAddress: EvmAddress;
-    strategyAddress: EvmAddress;
     allocationKey: string;
   };
 
@@ -119,11 +136,6 @@ export type FlowAllocationSnapshotUpdatedEvent = FlowAllocationCommittedEvent & 
 export type FlowReceiptSummary = {
   allocationCommitted: FlowAllocationCommittedEvent | null;
   allocationSnapshotUpdated: FlowAllocationSnapshotUpdatedEvent | null;
-};
-
-type ReceiptEventBase = {
-  contractAddress: EvmAddress;
-  logIndex: number | null;
 };
 
 export type FlowReceiptEvent =
@@ -206,90 +218,6 @@ export type FlowReceiptEvent =
       reason: HexBytes32;
     });
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function requireAddress(value: Record<string, unknown>, key: string, label: string): EvmAddress {
-  const rawValue = value[key];
-  if (typeof rawValue !== "string") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return normalizeEvmAddress(rawValue, `${label}.${key}`);
-}
-
-function requireBytes(value: Record<string, unknown>, key: string, label: string): HexBytes {
-  const rawValue = value[key];
-  if (typeof rawValue !== "string") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return normalizeHexByteString(rawValue, `${label}.${key}`);
-}
-
-function requireBytes32(value: Record<string, unknown>, key: string, label: string): HexBytes32 {
-  const rawValue = value[key];
-  if (typeof rawValue !== "string") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return normalizeBytes32(rawValue, `${label}.${key}`);
-}
-
-function requireBigInt(value: Record<string, unknown>, key: string, label: string): bigint {
-  const rawValue = value[key];
-  if (typeof rawValue !== "bigint") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return rawValue;
-}
-
-function requireBoolean(value: Record<string, unknown>, key: string, label: string): boolean {
-  const rawValue = value[key];
-  if (typeof rawValue !== "boolean") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return rawValue;
-}
-
-function buildReceiptBase(log: { address?: string; logIndex?: number }): ReceiptEventBase {
-  if (typeof log.address !== "string") {
-    throw new Error("receipt log address is missing.");
-  }
-
-  return {
-    contractAddress: normalizeEvmAddress(log.address, "receiptLog.address"),
-    logIndex:
-      typeof log.logIndex === "number" && Number.isInteger(log.logIndex) ? log.logIndex : null,
-  };
-}
-
-function sortReceiptEvents(events: readonly FlowReceiptEvent[]): FlowReceiptEvent[] {
-  return [...events].sort((left, right) => {
-    const leftIndex = left.logIndex ?? Number.MAX_SAFE_INTEGER;
-    const rightIndex = right.logIndex ?? Number.MAX_SAFE_INTEGER;
-    return leftIndex - rightIndex;
-  });
-}
-
-function requireNumericBigInt(value: Record<string, unknown>, key: string, label: string): bigint {
-  const rawValue = value[key];
-  if (typeof rawValue === "bigint") {
-    return rawValue;
-  }
-  if (typeof rawValue === "number" && Number.isInteger(rawValue) && rawValue >= 0) {
-    return BigInt(rawValue);
-  }
-  throw new Error(`${label} field "${key}" is missing.`);
-}
-
-function decodeLatestEvent(logs: readonly unknown[], eventName: string) {
-  return parseEventLogs({
-    abi: flowParticipantAbi as Abi,
-    logs: logs as any[],
-    eventName,
-    strict: false,
-  }).at(-1);
-}
-
 export function normalizeFlowAllocationVector(
   input: FlowAllocationVectorInput
 ): FlowAllocationVector {
@@ -368,111 +296,139 @@ export function buildFlowAllocatePlan(params: {
   };
 }
 
+function buildFlowMaintenanceCall(params: {
+  network?: string;
+  flowAddress: string;
+  functionName: "syncAllocation" | "syncAllocationForAccount" | "clearStaleAllocation";
+  label: string;
+  args: readonly unknown[];
+}) {
+  const flowAddress = normalizeEvmAddress(params.flowAddress, "flowAddress");
+
+  return {
+    network: resolveProtocolPlanNetwork(params.network),
+    flowAddress,
+    steps: [
+      buildProtocolCallStep({
+        contract: "Flow",
+        functionName: params.functionName,
+        label: params.label,
+        to: flowAddress,
+        abi: flowParticipantAbi as Abi,
+        args: params.args,
+      }),
+    ],
+  };
+}
+
 export function buildFlowSyncAllocationForAccountPlan(params: {
   network?: string;
   flowAddress: string;
   account: string;
 }): FlowSyncAllocationForAccountPlan {
-  const flowAddress = normalizeEvmAddress(params.flowAddress, "flowAddress");
   const account = normalizeEvmAddress(params.account, "account");
+  const execution = buildFlowMaintenanceCall({
+    ...(params.network !== undefined ? { network: params.network } : {}),
+    flowAddress: params.flowAddress,
+    functionName: "syncAllocationForAccount",
+    label: "Sync flow allocation for account",
+    args: [account],
+  });
 
   return {
-    network: resolveProtocolPlanNetwork(params.network),
+    network: execution.network,
     action: "flow.sync-allocation-for-account",
     riskClass: "maintenance",
-    summary: `Permissionlessly resync ${account}'s default allocation on flow ${flowAddress}.`,
-    flowAddress,
+    summary: `Permissionlessly resync ${account}'s default allocation on flow ${execution.flowAddress}.`,
+    flowAddress: execution.flowAddress,
     account,
     preconditions: [],
-    steps: [
-      buildProtocolCallStep({
-        contract: "Flow",
-        functionName: "syncAllocationForAccount",
-        label: "Sync flow allocation for account",
-        to: flowAddress,
-        abi: flowParticipantAbi as Abi,
-        args: [account],
-      }),
-    ],
+    steps: execution.steps,
+  };
+}
+
+export function buildFlowSyncAllocationPlan(params: {
+  network?: string;
+  flowAddress: string;
+  allocationKey: BigintLike;
+}): FlowSyncAllocationPlan {
+  const allocationKey = normalizeProtocolBigInt(params.allocationKey, "allocationKey");
+  const execution = buildFlowMaintenanceCall({
+    ...(params.network !== undefined ? { network: params.network } : {}),
+    flowAddress: params.flowAddress,
+    functionName: "syncAllocation",
+    label: "Sync flow allocation",
+    args: [allocationKey],
+  });
+
+  return {
+    network: execution.network,
+    action: "flow.sync-allocation",
+    riskClass: "maintenance",
+    summary: `Permissionlessly resync allocation ${allocationKey.toString()} on flow ${execution.flowAddress}.`,
+    flowAddress: execution.flowAddress,
+    allocationKey: allocationKey.toString(),
+    preconditions: [],
+    steps: execution.steps,
   };
 }
 
 export function buildFlowClearStaleAllocationPlan(params: {
   network?: string;
   flowAddress: string;
-  strategyAddress: string;
   allocationKey: BigintLike;
 }): FlowClearStaleAllocationPlan {
-  const flowAddress = normalizeEvmAddress(params.flowAddress, "flowAddress");
-  const strategyAddress = normalizeEvmAddress(params.strategyAddress, "strategyAddress");
   const allocationKey = normalizeProtocolBigInt(params.allocationKey, "allocationKey");
+  const execution = buildFlowMaintenanceCall({
+    ...(params.network !== undefined ? { network: params.network } : {}),
+    flowAddress: params.flowAddress,
+    functionName: "clearStaleAllocation",
+    label: "Clear stale flow allocation",
+    args: [allocationKey],
+  });
 
   return {
-    network: resolveProtocolPlanNetwork(params.network),
+    network: execution.network,
     action: "flow.clear-stale-allocation",
     riskClass: "maintenance",
-    summary: `Clear stale allocation ${allocationKey.toString()} on flow ${flowAddress}.`,
-    flowAddress,
-    strategyAddress,
+    summary: `Clear stale allocation ${allocationKey.toString()} on flow ${execution.flowAddress}.`,
+    flowAddress: execution.flowAddress,
     allocationKey: allocationKey.toString(),
     preconditions: [],
-    steps: [
-      buildProtocolCallStep({
-        contract: "Flow",
-        functionName: "clearStaleAllocation",
-        label: "Clear stale flow allocation",
-        to: flowAddress,
-        abi: flowParticipantAbi as Abi,
-        args: [strategyAddress, allocationKey],
-      }),
-    ],
+    steps: execution.steps,
   };
 }
 
 export function decodeFlowReceipt(logs: readonly unknown[]): FlowReceiptSummary {
-  const allocationCommitted = (() => {
-    const latest = decodeLatestEvent(logs, "AllocationCommitted");
-    if (!latest) {
-      return null;
-    }
+  const allocationCommitted = mapLatestReceiptEvent(
+    flowParticipantAbi as Abi,
+    logs,
+    "AllocationCommitted",
+    (args) => ({
+      strategy: requireReceiptAddress(args, "strategy", "AllocationCommitted"),
+      allocationKey: requireReceiptBigInt(args, "allocationKey", "AllocationCommitted"),
+      commit: requireReceiptBytes32(args, "commit", "AllocationCommitted"),
+      weight: requireReceiptBigInt(args, "weight", "AllocationCommitted"),
+    })
+  );
 
-    const args = latest.args as unknown;
-    if (!isRecord(args)) {
-      throw new Error("AllocationCommitted event args are missing.");
-    }
-
-    return {
-      strategy: requireAddress(args, "strategy", "AllocationCommitted"),
-      allocationKey: requireBigInt(args, "allocationKey", "AllocationCommitted"),
-      commit: requireBytes32(args, "commit", "AllocationCommitted"),
-      weight: requireBigInt(args, "weight", "AllocationCommitted"),
-    };
-  })();
-
-  const allocationSnapshotUpdated = (() => {
-    const latest = decodeLatestEvent(logs, "AllocationSnapshotUpdated");
-    if (!latest) {
-      return null;
-    }
-
-    const args = latest.args as unknown;
-    if (!isRecord(args)) {
-      throw new Error("AllocationSnapshotUpdated event args are missing.");
-    }
-
-    return {
-      strategy: requireAddress(args, "strategy", "AllocationSnapshotUpdated"),
-      allocationKey: requireBigInt(args, "allocationKey", "AllocationSnapshotUpdated"),
-      commit: requireBytes32(args, "commit", "AllocationSnapshotUpdated"),
-      weight: requireBigInt(args, "weight", "AllocationSnapshotUpdated"),
-      snapshotVersion: requireNumericBigInt(
+  const allocationSnapshotUpdated = mapLatestReceiptEvent(
+    flowParticipantAbi as Abi,
+    logs,
+    "AllocationSnapshotUpdated",
+    (args) => ({
+      strategy: requireReceiptAddress(args, "strategy", "AllocationSnapshotUpdated"),
+      allocationKey: requireReceiptBigInt(args, "allocationKey", "AllocationSnapshotUpdated"),
+      commit: requireReceiptBytes32(args, "commit", "AllocationSnapshotUpdated"),
+      weight: requireReceiptBigInt(args, "weight", "AllocationSnapshotUpdated"),
+      snapshotVersion: requireReceiptNumericBigInt(
         args,
         "snapshotVersion",
         "AllocationSnapshotUpdated"
       ),
-      packedSnapshot: requireBytes(args, "packedSnapshot", "AllocationSnapshotUpdated"),
-    };
-  })();
+      packedSnapshot: requireReceiptBytes(args, "packedSnapshot", "AllocationSnapshotUpdated"),
+    })
+  );
 
   return {
     allocationCommitted,
@@ -486,207 +442,145 @@ export function serializeFlowReceipt(summary: FlowReceiptSummary): Record<string
 
 export function decodeFlowReceiptEvents(logs: readonly unknown[]): FlowReceiptEvent[] {
   const flowEvents: FlowReceiptEvent[] = [
-    ...parseEventLogs({
-      abi: flowParticipantAbi as Abi,
-      logs: logs as any[],
-      eventName: "AllocationCommitted",
-      strict: false,
-    }).map((log) => {
-      const args = log.args as unknown;
-      if (!isRecord(args)) {
-        throw new Error("AllocationCommitted event args are missing.");
-      }
-
-      return {
-        ...buildReceiptBase(log),
+    ...mapReceiptEvents(flowParticipantAbi as Abi, logs, "AllocationCommitted", (args, log) => ({
+        ...buildReceiptEventBase(log),
         family: "flow" as const,
         eventName: "AllocationCommitted" as const,
-        strategy: requireAddress(args, "strategy", "AllocationCommitted"),
-        allocationKey: requireBigInt(args, "allocationKey", "AllocationCommitted"),
-        commit: requireBytes32(args, "commit", "AllocationCommitted"),
-        weight: requireBigInt(args, "weight", "AllocationCommitted"),
-      };
-    }),
-    ...parseEventLogs({
-      abi: flowParticipantAbi as Abi,
-      logs: logs as any[],
-      eventName: "AllocationSnapshotUpdated",
-      strict: false,
-    }).map((log) => {
-      const args = log.args as unknown;
-      if (!isRecord(args)) {
-        throw new Error("AllocationSnapshotUpdated event args are missing.");
-      }
-
-      return {
-        ...buildReceiptBase(log),
+        strategy: requireReceiptAddress(args, "strategy", "AllocationCommitted"),
+        allocationKey: requireReceiptBigInt(args, "allocationKey", "AllocationCommitted"),
+        commit: requireReceiptBytes32(args, "commit", "AllocationCommitted"),
+        weight: requireReceiptBigInt(args, "weight", "AllocationCommitted"),
+      })),
+    ...mapReceiptEvents(flowParticipantAbi as Abi, logs, "AllocationSnapshotUpdated", (args, log) => ({
+        ...buildReceiptEventBase(log),
         family: "flow" as const,
         eventName: "AllocationSnapshotUpdated" as const,
-        strategy: requireAddress(args, "strategy", "AllocationSnapshotUpdated"),
-        allocationKey: requireBigInt(args, "allocationKey", "AllocationSnapshotUpdated"),
-        commit: requireBytes32(args, "commit", "AllocationSnapshotUpdated"),
-        weight: requireBigInt(args, "weight", "AllocationSnapshotUpdated"),
-        snapshotVersion: requireBigInt(args, "snapshotVersion", "AllocationSnapshotUpdated"),
-        packedSnapshot: requireBytes(args, "packedSnapshot", "AllocationSnapshotUpdated"),
-      };
-    }),
+        strategy: requireReceiptAddress(args, "strategy", "AllocationSnapshotUpdated"),
+        allocationKey: requireReceiptBigInt(args, "allocationKey", "AllocationSnapshotUpdated"),
+        commit: requireReceiptBytes32(args, "commit", "AllocationSnapshotUpdated"),
+        weight: requireReceiptBigInt(args, "weight", "AllocationSnapshotUpdated"),
+        snapshotVersion: requireReceiptNumericBigInt(
+          args,
+          "snapshotVersion",
+          "AllocationSnapshotUpdated"
+        ),
+        packedSnapshot: requireReceiptBytes(args, "packedSnapshot", "AllocationSnapshotUpdated"),
+      })),
   ];
 
-  const ledgerEvents = parseEventLogs({
-    abi: budgetStakeLedgerAbi as Abi,
-    logs: logs as any[],
-    eventName: "AllocationCheckpointed",
-    strict: false,
-  }).map((log) => {
-    const args = log.args as unknown;
-    if (!isRecord(args)) {
-      throw new Error("AllocationCheckpointed event args are missing.");
-    }
-
-    return {
-      ...buildReceiptBase(log),
+  const ledgerEvents = mapReceiptEvents(
+    budgetStakeLedgerAbi as Abi,
+    logs,
+    "AllocationCheckpointed",
+    (args, log) => ({
+      ...buildReceiptEventBase(log),
       family: "ledger" as const,
       eventName: "AllocationCheckpointed" as const,
-      account: requireAddress(args, "account", "AllocationCheckpointed"),
-      budget: requireAddress(args, "budget", "AllocationCheckpointed"),
-      allocatedStake: requireBigInt(args, "allocatedStake", "AllocationCheckpointed"),
-      checkpointTime: requireBigInt(args, "checkpointTime", "AllocationCheckpointed"),
-    };
-  });
+      account: requireReceiptAddress(args, "account", "AllocationCheckpointed"),
+      budget: requireReceiptAddress(args, "budget", "AllocationCheckpointed"),
+      allocatedStake: requireReceiptBigInt(args, "allocatedStake", "AllocationCheckpointed"),
+      checkpointTime: requireReceiptBigInt(args, "checkpointTime", "AllocationCheckpointed"),
+    })
+  );
 
   const pipelineEvents: FlowReceiptEvent[] = [
-    ...parseEventLogs({
-      abi: goalFlowAllocationLedgerPipelineAbi as Abi,
-      logs: logs as any[],
-      eventName: "ChildAllocationSyncAttempted",
-      strict: false,
-    }).map((log) => {
-      const args = log.args as unknown;
-      if (!isRecord(args)) {
-        throw new Error("ChildAllocationSyncAttempted event args are missing.");
-      }
-
-      return {
-        ...buildReceiptBase(log),
+    ...mapReceiptEvents(
+      goalFlowAllocationLedgerPipelineAbi as Abi,
+      logs,
+      "ChildAllocationSyncAttempted",
+      (args, log) => ({
+        ...buildReceiptEventBase(log),
         family: "pipeline" as const,
         eventName: "ChildAllocationSyncAttempted" as const,
-        budgetTreasury: requireAddress(args, "budgetTreasury", "ChildAllocationSyncAttempted"),
-        childFlow: requireAddress(args, "childFlow", "ChildAllocationSyncAttempted"),
-        strategy: requireAddress(args, "strategy", "ChildAllocationSyncAttempted"),
-        allocationKey: requireBigInt(args, "allocationKey", "ChildAllocationSyncAttempted"),
-        parentFlow: requireAddress(args, "parentFlow", "ChildAllocationSyncAttempted"),
-        parentStrategy: requireAddress(args, "parentStrategy", "ChildAllocationSyncAttempted"),
-        parentAllocationKey: requireBigInt(
+        budgetTreasury: requireReceiptAddress(args, "budgetTreasury", "ChildAllocationSyncAttempted"),
+        childFlow: requireReceiptAddress(args, "childFlow", "ChildAllocationSyncAttempted"),
+        strategy: requireReceiptAddress(args, "strategy", "ChildAllocationSyncAttempted"),
+        allocationKey: requireReceiptBigInt(args, "allocationKey", "ChildAllocationSyncAttempted"),
+        parentFlow: requireReceiptAddress(args, "parentFlow", "ChildAllocationSyncAttempted"),
+        parentStrategy: requireReceiptAddress(args, "parentStrategy", "ChildAllocationSyncAttempted"),
+        parentAllocationKey: requireReceiptBigInt(
           args,
           "parentAllocationKey",
           "ChildAllocationSyncAttempted"
         ),
-        success: requireBoolean(args, "success", "ChildAllocationSyncAttempted"),
-      };
-    }),
-    ...parseEventLogs({
-      abi: goalFlowAllocationLedgerPipelineAbi as Abi,
-      logs: logs as any[],
-      eventName: "ChildAllocationSyncFailed",
-      strict: false,
-    }).map((log) => {
-      const args = log.args as unknown;
-      if (!isRecord(args)) {
-        throw new Error("ChildAllocationSyncFailed event args are missing.");
-      }
-
-      return {
-        ...buildReceiptBase(log),
+        success: requireReceiptBoolean(args, "success", "ChildAllocationSyncAttempted"),
+      })
+    ),
+    ...mapReceiptEvents(
+      goalFlowAllocationLedgerPipelineAbi as Abi,
+      logs,
+      "ChildAllocationSyncFailed",
+      (args, log) => ({
+        ...buildReceiptEventBase(log),
         family: "pipeline" as const,
         eventName: "ChildAllocationSyncFailed" as const,
-        budgetTreasury: requireAddress(args, "budgetTreasury", "ChildAllocationSyncFailed"),
-        childFlow: requireAddress(args, "childFlow", "ChildAllocationSyncFailed"),
-        strategy: requireAddress(args, "strategy", "ChildAllocationSyncFailed"),
-        allocationKey: requireBigInt(args, "allocationKey", "ChildAllocationSyncFailed"),
-        parentFlow: requireAddress(args, "parentFlow", "ChildAllocationSyncFailed"),
-        parentStrategy: requireAddress(args, "parentStrategy", "ChildAllocationSyncFailed"),
-        parentAllocationKey: requireBigInt(
+        budgetTreasury: requireReceiptAddress(args, "budgetTreasury", "ChildAllocationSyncFailed"),
+        childFlow: requireReceiptAddress(args, "childFlow", "ChildAllocationSyncFailed"),
+        strategy: requireReceiptAddress(args, "strategy", "ChildAllocationSyncFailed"),
+        allocationKey: requireReceiptBigInt(args, "allocationKey", "ChildAllocationSyncFailed"),
+        parentFlow: requireReceiptAddress(args, "parentFlow", "ChildAllocationSyncFailed"),
+        parentStrategy: requireReceiptAddress(args, "parentStrategy", "ChildAllocationSyncFailed"),
+        parentAllocationKey: requireReceiptBigInt(
           args,
           "parentAllocationKey",
           "ChildAllocationSyncFailed"
         ),
-        reason: requireBytes(args, "reason", "ChildAllocationSyncFailed"),
-      };
-    }),
-    ...parseEventLogs({
-      abi: goalFlowAllocationLedgerPipelineAbi as Abi,
-      logs: logs as any[],
-      eventName: "ChildAllocationSyncSkipped",
-      strict: false,
-    }).map((log) => {
-      const args = log.args as unknown;
-      if (!isRecord(args)) {
-        throw new Error("ChildAllocationSyncSkipped event args are missing.");
-      }
-
-      return {
-        ...buildReceiptBase(log),
+        reason: requireReceiptBytes(args, "reason", "ChildAllocationSyncFailed"),
+      })
+    ),
+    ...mapReceiptEvents(
+      goalFlowAllocationLedgerPipelineAbi as Abi,
+      logs,
+      "ChildAllocationSyncSkipped",
+      (args, log) => ({
+        ...buildReceiptEventBase(log),
         family: "pipeline" as const,
         eventName: "ChildAllocationSyncSkipped" as const,
-        budgetTreasury: requireAddress(args, "budgetTreasury", "ChildAllocationSyncSkipped"),
-        childFlow: requireAddress(args, "childFlow", "ChildAllocationSyncSkipped"),
-        parentFlow: requireAddress(args, "parentFlow", "ChildAllocationSyncSkipped"),
-        parentStrategy: requireAddress(args, "parentStrategy", "ChildAllocationSyncSkipped"),
-        parentAllocationKey: requireBigInt(
+        budgetTreasury: requireReceiptAddress(args, "budgetTreasury", "ChildAllocationSyncSkipped"),
+        childFlow: requireReceiptAddress(args, "childFlow", "ChildAllocationSyncSkipped"),
+        parentFlow: requireReceiptAddress(args, "parentFlow", "ChildAllocationSyncSkipped"),
+        parentStrategy: requireReceiptAddress(args, "parentStrategy", "ChildAllocationSyncSkipped"),
+        parentAllocationKey: requireReceiptBigInt(
           args,
           "parentAllocationKey",
           "ChildAllocationSyncSkipped"
         ),
-        reason: requireBytes32(args, "reason", "ChildAllocationSyncSkipped"),
-      };
-    }),
-    ...parseEventLogs({
-      abi: goalFlowAllocationLedgerPipelineAbi as Abi,
-      logs: logs as any[],
-      eventName: "ChildSyncDebtCleared",
-      strict: false,
-    }).map((log) => {
-      const args = log.args as unknown;
-      if (!isRecord(args)) {
-        throw new Error("ChildSyncDebtCleared event args are missing.");
-      }
-
-      return {
-        ...buildReceiptBase(log),
+        reason: requireReceiptBytes32(args, "reason", "ChildAllocationSyncSkipped"),
+      })
+    ),
+    ...mapReceiptEvents(
+      goalFlowAllocationLedgerPipelineAbi as Abi,
+      logs,
+      "ChildSyncDebtCleared",
+      (args, log) => ({
+        ...buildReceiptEventBase(log),
         family: "pipeline" as const,
         eventName: "ChildSyncDebtCleared" as const,
-        account: requireAddress(args, "account", "ChildSyncDebtCleared"),
-        budgetTreasury: requireAddress(args, "budgetTreasury", "ChildSyncDebtCleared"),
-        childFlow: requireAddress(args, "childFlow", "ChildSyncDebtCleared"),
-        reason: requireBytes32(args, "reason", "ChildSyncDebtCleared"),
-      };
-    }),
-    ...parseEventLogs({
-      abi: goalFlowAllocationLedgerPipelineAbi as Abi,
-      logs: logs as any[],
-      eventName: "ChildSyncDebtOpened",
-      strict: false,
-    }).map((log) => {
-      const args = log.args as unknown;
-      if (!isRecord(args)) {
-        throw new Error("ChildSyncDebtOpened event args are missing.");
-      }
-
-      return {
-        ...buildReceiptBase(log),
+        account: requireReceiptAddress(args, "account", "ChildSyncDebtCleared"),
+        budgetTreasury: requireReceiptAddress(args, "budgetTreasury", "ChildSyncDebtCleared"),
+        childFlow: requireReceiptAddress(args, "childFlow", "ChildSyncDebtCleared"),
+        reason: requireReceiptBytes32(args, "reason", "ChildSyncDebtCleared"),
+      })
+    ),
+    ...mapReceiptEvents(
+      goalFlowAllocationLedgerPipelineAbi as Abi,
+      logs,
+      "ChildSyncDebtOpened",
+      (args, log) => ({
+        ...buildReceiptEventBase(log),
         family: "pipeline" as const,
         eventName: "ChildSyncDebtOpened" as const,
-        account: requireAddress(args, "account", "ChildSyncDebtOpened"),
-        budgetTreasury: requireAddress(args, "budgetTreasury", "ChildSyncDebtOpened"),
-        childFlow: requireAddress(args, "childFlow", "ChildSyncDebtOpened"),
-        childStrategy: requireAddress(args, "childStrategy", "ChildSyncDebtOpened"),
-        allocationKey: requireBigInt(args, "allocationKey", "ChildSyncDebtOpened"),
-        reason: requireBytes32(args, "reason", "ChildSyncDebtOpened"),
-      };
-    }),
+        account: requireReceiptAddress(args, "account", "ChildSyncDebtOpened"),
+        budgetTreasury: requireReceiptAddress(args, "budgetTreasury", "ChildSyncDebtOpened"),
+        childFlow: requireReceiptAddress(args, "childFlow", "ChildSyncDebtOpened"),
+        childStrategy: requireReceiptAddress(args, "childStrategy", "ChildSyncDebtOpened"),
+        allocationKey: requireReceiptBigInt(args, "allocationKey", "ChildSyncDebtOpened"),
+        reason: requireReceiptBytes32(args, "reason", "ChildSyncDebtOpened"),
+      })
+    ),
   ];
 
-  return sortReceiptEvents([...flowEvents, ...ledgerEvents, ...pipelineEvents]);
+  return sortReceiptEventsByLogIndex([...flowEvents, ...ledgerEvents, ...pipelineEvents]);
 }
 
 export function serializeFlowReceiptEvents(

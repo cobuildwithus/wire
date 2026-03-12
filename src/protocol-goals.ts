@@ -613,14 +613,12 @@ export function extractGoalFactoryDeployParams(raw: unknown): GoalFactoryDeployP
   return normalizeGoalFactoryDeployParams(raw);
 }
 
-export function encodeGoalFactoryDeployGoalData(deployParams: unknown): Hex {
-  const resolvedDeployParams = extractGoalFactoryDeployParams(deployParams);
-
+function encodeGoalFactoryDeployGoalDataFromNormalized(deployParams: GoalFactoryDeployParams): Hex {
   try {
     return encodeFunctionData({
       abi: goalFactoryAbi as Abi,
       functionName: "deployGoal",
-      args: [resolvedDeployParams],
+      args: [deployParams],
     });
   } catch (error) {
     throw new Error(
@@ -631,7 +629,11 @@ export function encodeGoalFactoryDeployGoalData(deployParams: unknown): Hex {
   }
 }
 
-export function buildGoalCreatePlan(params: {
+export function encodeGoalFactoryDeployGoalData(deployParams: unknown): Hex {
+  return encodeGoalFactoryDeployGoalDataFromNormalized(extractGoalFactoryDeployParams(deployParams));
+}
+
+function resolveGoalCreateArtifacts(params: {
   deployParams: unknown;
   factoryAddress?: string;
   network?: ProtocolNetwork | string;
@@ -643,7 +645,7 @@ export function buildGoalCreatePlan(params: {
     params.factoryAddress ?? protocolAddresses.entrypoints.goalFactory,
     "factoryAddress"
   );
-
+  const data = encodeGoalFactoryDeployGoalDataFromNormalized(deployParams);
   const writeContract: GoalCreateWriteContractRequest = {
     address: goalFactory,
     abi: goalFactoryAbi,
@@ -658,11 +660,19 @@ export function buildGoalCreatePlan(params: {
     deployParams,
     transaction: {
       to: goalFactory,
-      data: encodeGoalFactoryDeployGoalData(deployParams),
+      data,
       valueEth: "0",
     },
     writeContract,
   };
+}
+
+export function buildGoalCreatePlan(params: {
+  deployParams: unknown;
+  factoryAddress?: string;
+  network?: ProtocolNetwork | string;
+}): GoalCreatePlan {
+  return resolveGoalCreateArtifacts(params);
 }
 
 export function buildGoalCreateProtocolPlan(params: {
@@ -700,7 +710,7 @@ export function buildGoalCreateWriteContractRequest(params: {
   factoryAddress?: string;
   network?: ProtocolNetwork | string;
 }): GoalCreateWriteContractRequest {
-  return buildGoalCreatePlan(params).writeContract;
+  return resolveGoalCreateArtifacts(params).writeContract;
 }
 
 export function buildGoalCreateTransaction(params: {
@@ -708,7 +718,7 @@ export function buildGoalCreateTransaction(params: {
   factoryAddress?: string;
   network?: ProtocolNetwork | string;
 }): GoalCreateTransaction {
-  return buildGoalCreatePlan(params).transaction;
+  return resolveGoalCreateArtifacts(params).transaction;
 }
 
 function normalizeGoalDeployedStack(value: unknown): GoalDeployedStack {

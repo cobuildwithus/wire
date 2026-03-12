@@ -16,13 +16,11 @@ export function normalizeLookupIdentifier(value: string): string {
   return value.trim();
 }
 
-export function normalizeGoalLookupKey(value: string): string {
-  return normalizeLookupIdentifier(value).toLowerCase();
-}
-
 export function normalizeIndexedIdentifier(value: string): string {
   return normalizeLookupIdentifier(value).toLowerCase();
 }
+
+export const normalizeGoalLookupKey = normalizeIndexedIdentifier;
 
 export function normalizeOptionalHexLike(value: string | null | undefined): string | null {
   if (typeof value !== "string" || value.trim().length === 0) return null;

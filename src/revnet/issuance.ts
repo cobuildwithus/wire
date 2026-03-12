@@ -152,17 +152,16 @@ export function buildRevnetIssuanceSummary(
   }
 
   if (activeStageIndex === null) {
-    const upcomingStage =
-      stages.find((stage) => Math.floor(stage.start / 1000) > nowSec) ?? stages[0]!;
+    const upcomingStage = stages.find((stage) => Math.floor(stage.start / 1000) > nowSec) ?? null;
     return {
-      currentIssuance: upcomingStage.weight,
-      nextIssuance: upcomingStage.weight,
-      nextChangeAt: upcomingStage.start,
-      nextChangeType: "stage",
-      reservedPercent: upcomingStage.reservedPercent,
-      cashOutTaxRate: upcomingStage.cashOutTaxRate,
+      currentIssuance: null,
+      nextIssuance: upcomingStage?.weight ?? null,
+      nextChangeAt: upcomingStage?.start ?? null,
+      nextChangeType: upcomingStage ? "stage" : null,
+      reservedPercent: null,
+      cashOutTaxRate: null,
       activeStage: null,
-      nextStage: upcomingStage.stage,
+      nextStage: upcomingStage?.stage ?? null,
     };
   }
 
@@ -246,7 +245,17 @@ export function buildRevnetIssuanceBaseTerms(params: {
           rule.chainId === primaryProject.chainId && rule.projectId === primaryProject.projectId
       )
     : parsedRulesets;
-  const selectedRulesets = timelineRulesets.length > 0 ? timelineRulesets : parsedRulesets;
+  const selectedRulesets = primaryProject ? timelineRulesets : parsedRulesets;
+  if (selectedRulesets.length === 0) {
+    return {
+      baseSymbol: params.baseSymbol,
+      tokenSymbol: params.tokenSymbol,
+      stages: [],
+      chartData: [],
+      chartStart: 0,
+      chartEnd: 0,
+    };
+  }
   const stages: RevnetIssuanceStage[] = selectedRulesets.map((rule, index) => {
     const next = selectedRulesets[index + 1];
     return {

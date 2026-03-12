@@ -116,4 +116,11 @@ describe("protocol premium contract", () => {
       },
     });
   });
+
+  it("returns null receipt fields when premium events are absent", () => {
+    expect(decodePremiumEscrowReceipt([])).toEqual({
+      checkpointed: null,
+      claimed: null,
+    });
+  });
 });

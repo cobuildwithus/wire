@@ -1,4 +1,4 @@
-import { parseEventLogs, type Abi } from "viem";
+import type { Abi } from "viem";
 import type { EvmAddress } from "./evm.js";
 import { normalizeEvmAddress } from "./evm.js";
 import { goalStakeVaultAbi } from "./protocol-abis.js";
@@ -12,6 +12,13 @@ import {
   type ProtocolApprovalMode,
   type ProtocolExecutionPlan,
 } from "./protocol-plans.js";
+import {
+  decodeLatestReceiptEvent,
+  requireReceiptAddress,
+  requireReceiptBigInt,
+  requireReceiptBoolean,
+  requireReceiptRecord,
+} from "./protocol-receipts.js";
 
 export type GoalStakeDepositPlan = ProtocolExecutionPlan<"stake.deposit-goal"> & {
   stakeVaultAddress: EvmAddress;
@@ -128,45 +135,8 @@ export type StakeVaultReceiptSummary = {
   jurorDelegateSet: JurorDelegateSetEvent | null;
 };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function requireAddress(
-  value: Record<string, unknown>,
-  key: string,
-  label: string
-): EvmAddress {
-  const rawValue = value[key];
-  if (typeof rawValue !== "string") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return normalizeEvmAddress(rawValue, `${label}.${key}`);
-}
-
-function requireBigInt(value: Record<string, unknown>, key: string, label: string): bigint {
-  const rawValue = value[key];
-  if (typeof rawValue !== "bigint") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return rawValue;
-}
-
-function requireBoolean(value: Record<string, unknown>, key: string, label: string): boolean {
-  const rawValue = value[key];
-  if (typeof rawValue !== "boolean") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return rawValue;
-}
-
 function decodeLatestEvent(logs: readonly unknown[], eventName: string) {
-  return parseEventLogs({
-    abi: goalStakeVaultAbi as Abi,
-    logs: logs as any[],
-    eventName,
-    strict: false,
-  }).at(-1);
+  return decodeLatestReceiptEvent(goalStakeVaultAbi as Abi, logs, eventName);
 }
 
 function normalizeStakeEvent(
@@ -178,15 +148,12 @@ function normalizeStakeEvent(
     return null;
   }
 
-  const args = latest.args as unknown;
-  if (!isRecord(args)) {
-    throw new Error(`${eventName} event args are missing.`);
-  }
+  const args = requireReceiptRecord(latest.args as unknown, `${eventName} event args are missing.`);
 
   return {
-    user: requireAddress(args, "user", eventName),
-    amount: requireBigInt(args, "amount", eventName),
-    weightDelta: requireBigInt(args, "weightDelta", eventName),
+    user: requireReceiptAddress(args, "user", eventName),
+    amount: requireReceiptBigInt(args, "amount", eventName),
+    weightDelta: requireReceiptBigInt(args, "weightDelta", eventName),
   };
 }
 
@@ -199,15 +166,12 @@ function normalizeWithdrawnEvent(
     return null;
   }
 
-  const args = latest.args as unknown;
-  if (!isRecord(args)) {
-    throw new Error(`${eventName} event args are missing.`);
-  }
+  const args = requireReceiptRecord(latest.args as unknown, `${eventName} event args are missing.`);
 
   return {
-    user: requireAddress(args, "user", eventName),
-    to: requireAddress(args, "to", eventName),
-    amount: requireBigInt(args, "amount", eventName),
+    user: requireReceiptAddress(args, "user", eventName),
+    to: requireReceiptAddress(args, "to", eventName),
+    amount: requireReceiptBigInt(args, "amount", eventName),
   };
 }
 
@@ -217,16 +181,13 @@ function normalizeJurorOptedInEvent(logs: readonly unknown[]): JurorOptedInEvent
     return null;
   }
 
-  const args = latest.args as unknown;
-  if (!isRecord(args)) {
-    throw new Error("JurorOptedIn event args are missing.");
-  }
+  const args = requireReceiptRecord(latest.args as unknown, "JurorOptedIn event args are missing.");
 
   return {
-    juror: requireAddress(args, "juror", "JurorOptedIn"),
-    goalAmount: requireBigInt(args, "goalAmount", "JurorOptedIn"),
-    weightDelta: requireBigInt(args, "weightDelta", "JurorOptedIn"),
-    delegate: requireAddress(args, "delegate", "JurorOptedIn"),
+    juror: requireReceiptAddress(args, "juror", "JurorOptedIn"),
+    goalAmount: requireReceiptBigInt(args, "goalAmount", "JurorOptedIn"),
+    weightDelta: requireReceiptBigInt(args, "weightDelta", "JurorOptedIn"),
+    delegate: requireReceiptAddress(args, "delegate", "JurorOptedIn"),
   };
 }
 
@@ -236,16 +197,16 @@ function normalizeJurorExitRequestedEvent(logs: readonly unknown[]): JurorExitRe
     return null;
   }
 
-  const args = latest.args as unknown;
-  if (!isRecord(args)) {
-    throw new Error("JurorExitRequested event args are missing.");
-  }
+  const args = requireReceiptRecord(
+    latest.args as unknown,
+    "JurorExitRequested event args are missing."
+  );
 
   return {
-    juror: requireAddress(args, "juror", "JurorExitRequested"),
-    goalAmount: requireBigInt(args, "goalAmount", "JurorExitRequested"),
-    requestedAt: requireBigInt(args, "requestedAt", "JurorExitRequested"),
-    availableAt: requireBigInt(args, "availableAt", "JurorExitRequested"),
+    juror: requireReceiptAddress(args, "juror", "JurorExitRequested"),
+    goalAmount: requireReceiptBigInt(args, "goalAmount", "JurorExitRequested"),
+    requestedAt: requireReceiptBigInt(args, "requestedAt", "JurorExitRequested"),
+    availableAt: requireReceiptBigInt(args, "availableAt", "JurorExitRequested"),
   };
 }
 
@@ -255,15 +216,15 @@ function normalizeJurorExitFinalizedEvent(logs: readonly unknown[]): JurorExitFi
     return null;
   }
 
-  const args = latest.args as unknown;
-  if (!isRecord(args)) {
-    throw new Error("JurorExitFinalized event args are missing.");
-  }
+  const args = requireReceiptRecord(
+    latest.args as unknown,
+    "JurorExitFinalized event args are missing."
+  );
 
   return {
-    juror: requireAddress(args, "juror", "JurorExitFinalized"),
-    goalAmount: requireBigInt(args, "goalAmount", "JurorExitFinalized"),
-    weightDelta: requireBigInt(args, "weightDelta", "JurorExitFinalized"),
+    juror: requireReceiptAddress(args, "juror", "JurorExitFinalized"),
+    goalAmount: requireReceiptBigInt(args, "goalAmount", "JurorExitFinalized"),
+    weightDelta: requireReceiptBigInt(args, "weightDelta", "JurorExitFinalized"),
   };
 }
 
@@ -273,14 +234,14 @@ function normalizeJurorDelegateSetEvent(logs: readonly unknown[]): JurorDelegate
     return null;
   }
 
-  const args = latest.args as unknown;
-  if (!isRecord(args)) {
-    throw new Error("JurorDelegateSet event args are missing.");
-  }
+  const args = requireReceiptRecord(
+    latest.args as unknown,
+    "JurorDelegateSet event args are missing."
+  );
 
   return {
-    juror: requireAddress(args, "juror", "JurorDelegateSet"),
-    delegate: requireAddress(args, "delegate", "JurorDelegateSet"),
+    juror: requireReceiptAddress(args, "juror", "JurorDelegateSet"),
+    delegate: requireReceiptAddress(args, "delegate", "JurorDelegateSet"),
   };
 }
 
@@ -622,15 +583,19 @@ export function decodeStakeVaultReceipt(logs: readonly unknown[]): StakeVaultRec
       if (!latest) {
         return null;
       }
-      const args = latest.args as unknown;
-      if (!isRecord(args)) {
-        throw new Error("UnderwriterWithdrawalPrepared event args are missing.");
-      }
+      const args = requireReceiptRecord(
+        latest.args as unknown,
+        "UnderwriterWithdrawalPrepared event args are missing."
+      );
       return {
-        underwriter: requireAddress(args, "underwriter", "UnderwriterWithdrawalPrepared"),
-        nextBudgetIndex: requireBigInt(args, "nextBudgetIndex", "UnderwriterWithdrawalPrepared"),
-        budgetCount: requireBigInt(args, "budgetCount", "UnderwriterWithdrawalPrepared"),
-        complete: requireBoolean(args, "complete", "UnderwriterWithdrawalPrepared"),
+        underwriter: requireReceiptAddress(args, "underwriter", "UnderwriterWithdrawalPrepared"),
+        nextBudgetIndex: requireReceiptBigInt(
+          args,
+          "nextBudgetIndex",
+          "UnderwriterWithdrawalPrepared"
+        ),
+        budgetCount: requireReceiptBigInt(args, "budgetCount", "UnderwriterWithdrawalPrepared"),
+        complete: requireReceiptBoolean(args, "complete", "UnderwriterWithdrawalPrepared"),
       };
     })(),
     jurorOptedIn: normalizeJurorOptedInEvent(logs),

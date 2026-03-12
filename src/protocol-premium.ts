@@ -1,4 +1,4 @@
-import { parseEventLogs, type Abi } from "viem";
+import type { Abi } from "viem";
 import type { EvmAddress } from "./evm.js";
 import { normalizeEvmAddress } from "./evm.js";
 import { premiumEscrowAbi } from "./protocol-abis.js";
@@ -8,6 +8,12 @@ import {
   serializeProtocolBigInts,
   type ProtocolExecutionPlan,
 } from "./protocol-plans.js";
+import {
+  decodeLatestReceiptEvent,
+  requireReceiptAddress,
+  requireReceiptBigInt,
+  requireReceiptRecord,
+} from "./protocol-receipts.js";
 
 export type PremiumCheckpointPlan = ProtocolExecutionPlan<"premium.checkpoint"> & {
   premiumEscrowAddress: EvmAddress;
@@ -39,33 +45,8 @@ export type PremiumEscrowReceiptSummary = {
   claimed: PremiumClaimedEvent | null;
 };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function requireAddress(value: Record<string, unknown>, key: string, label: string): EvmAddress {
-  const rawValue = value[key];
-  if (typeof rawValue !== "string") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return normalizeEvmAddress(rawValue, `${label}.${key}`);
-}
-
-function requireBigInt(value: Record<string, unknown>, key: string, label: string): bigint {
-  const rawValue = value[key];
-  if (typeof rawValue !== "bigint") {
-    throw new Error(`${label} field "${key}" is missing.`);
-  }
-  return rawValue;
-}
-
 function decodeLatestEvent(logs: readonly unknown[], eventName: string) {
-  return parseEventLogs({
-    abi: premiumEscrowAbi as Abi,
-    logs: logs as any[],
-    eventName,
-    strict: false,
-  }).at(-1);
+  return decodeLatestReceiptEvent(premiumEscrowAbi as Abi, logs, eventName);
 }
 
 export function buildPremiumCheckpointPlan(params: {
@@ -138,18 +119,15 @@ export function decodePremiumEscrowReceipt(logs: readonly unknown[]): PremiumEsc
     if (!latest) {
       return null;
     }
-    const args = latest.args as unknown;
-    if (!isRecord(args)) {
-      throw new Error("AccountCheckpointed event args are missing.");
-    }
+    const args = requireReceiptRecord(latest.args as unknown, "AccountCheckpointed event args are missing.");
 
     return {
-      account: requireAddress(args, "account", "AccountCheckpointed"),
-      previousCoverage: requireBigInt(args, "previousCoverage", "AccountCheckpointed"),
-      currentCoverage: requireBigInt(args, "currentCoverage", "AccountCheckpointed"),
-      claimableAmount: requireBigInt(args, "claimableAmount", "AccountCheckpointed"),
-      exposureIntegral: requireBigInt(args, "exposureIntegral", "AccountCheckpointed"),
-      totalCoverage: requireBigInt(args, "totalCoverage", "AccountCheckpointed"),
+      account: requireReceiptAddress(args, "account", "AccountCheckpointed"),
+      previousCoverage: requireReceiptBigInt(args, "previousCoverage", "AccountCheckpointed"),
+      currentCoverage: requireReceiptBigInt(args, "currentCoverage", "AccountCheckpointed"),
+      claimableAmount: requireReceiptBigInt(args, "claimableAmount", "AccountCheckpointed"),
+      exposureIntegral: requireReceiptBigInt(args, "exposureIntegral", "AccountCheckpointed"),
+      totalCoverage: requireReceiptBigInt(args, "totalCoverage", "AccountCheckpointed"),
     };
   })();
 
@@ -158,15 +136,12 @@ export function decodePremiumEscrowReceipt(logs: readonly unknown[]): PremiumEsc
     if (!latest) {
       return null;
     }
-    const args = latest.args as unknown;
-    if (!isRecord(args)) {
-      throw new Error("Claimed event args are missing.");
-    }
+    const args = requireReceiptRecord(latest.args as unknown, "Claimed event args are missing.");
 
     return {
-      account: requireAddress(args, "account", "Claimed"),
-      to: requireAddress(args, "to", "Claimed"),
-      amount: requireBigInt(args, "amount", "Claimed"),
+      account: requireReceiptAddress(args, "account", "Claimed"),
+      to: requireReceiptAddress(args, "to", "Claimed"),
+      amount: requireReceiptBigInt(args, "amount", "Claimed"),
     };
   })();
 

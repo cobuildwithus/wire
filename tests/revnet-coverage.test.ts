@@ -369,8 +369,10 @@ describe("revnet coverage helpers", () => {
         100,
       ),
     ).toMatchObject({
-      currentIssuance: 2,
+      currentIssuance: null,
+      nextIssuance: 2,
       nextChangeType: "stage",
+      reservedPercent: null,
       nextStage: 1,
     });
     expect(

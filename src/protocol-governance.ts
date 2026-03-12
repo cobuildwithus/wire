@@ -27,6 +27,7 @@ import {
   serializeProtocolBigInts,
   type ProtocolExecutionPlan,
 } from "./protocol-plans.js";
+import { buildReceiptEventBase, sortReceiptEventsByLogIndex } from "./protocol-receipts.js";
 
 const generalizedTcrActionAbi = budgetTcrAbi as Abi;
 const arbitratorActionAbi = erc20VotesArbitratorAbi as Abi;
@@ -498,10 +499,6 @@ function normalizeHexData(value: string, label: string, allowEmpty = true): HexB
   return normalized as HexBytes;
 }
 
-function normalizeLogIndex(value: unknown): number | null {
-  return typeof value === "number" && Number.isInteger(value) ? value : null;
-}
-
 function normalizeBigIntFromUnknown(value: unknown, label: string): bigint {
   if (typeof value === "bigint") return value;
   if (typeof value === "number" && Number.isInteger(value) && value >= 0) {
@@ -660,23 +657,251 @@ function buildArbitratorPlan(params: {
   };
 }
 
-function buildReceiptBase(log: { address?: string; logIndex?: number }): ReceiptEventBase {
-  if (typeof log.address !== "string") {
-    throw new Error("receipt log address is missing.");
-  }
-  return {
-    contractAddress: normalizeEvmAddress(log.address, "receiptLog.address"),
-    logIndex: normalizeLogIndex(log.logIndex),
-  };
+function sortReceiptEvents(events: GovernanceReceiptEvent[]): GovernanceReceiptEvent[] {
+  return sortReceiptEventsByLogIndex(events);
 }
 
-function sortReceiptEvents(events: GovernanceReceiptEvent[]): GovernanceReceiptEvent[] {
-  return [...events].sort((left, right) => {
-    const leftIndex = left.logIndex ?? Number.MAX_SAFE_INTEGER;
-    const rightIndex = right.logIndex ?? Number.MAX_SAFE_INTEGER;
-    return leftIndex - rightIndex;
-  });
-}
+const SIMPLE_TCR_PLAN_DESCRIPTORS = {
+  executeRequest: {
+    summary: "Execute an unchallenged TCR request after the challenge window closes.",
+    callLabel: "Execute TCR request",
+    expectedEvents: ["ItemStatusChange", "SubmissionDepositTransferred"],
+  },
+  executeRequestTimeout: {
+    summary: "Execute a disputed TCR request after the dispute timeout path becomes available.",
+    callLabel: "Execute timed-out TCR request",
+    expectedEvents: ["Ruling", "ItemStatusChange", "SubmissionDepositTransferred"],
+  },
+  submitEvidence: {
+    summary: "Submit evidence for the latest TCR request cycle.",
+    callLabel: "Submit TCR evidence",
+    expectedEvents: ["Evidence"],
+  },
+  withdrawFeesAndRewards: {
+    summary: "Withdraw resolved TCR fees and rewards for a contributor.",
+    callLabel: "Withdraw TCR fees and rewards",
+    expectedEvents: [],
+  },
+} as const satisfies Record<
+  "executeRequest" | "executeRequestTimeout" | "submitEvidence" | "withdrawFeesAndRewards",
+  {
+    summary: string;
+    callLabel: string;
+    expectedEvents: readonly string[];
+  }
+>;
+
+const SIMPLE_ARBITRATOR_PLAN_DESCRIPTORS = {
+  withdrawVoterRewards: {
+    summary: "Withdraw arbitrator round rewards for a voter.",
+    callLabel: "Withdraw voter rewards",
+    expectedEvents: ["RewardWithdrawn", "SlashRewardsWithdrawn"],
+  },
+  withdrawInvalidRoundRewards: {
+    summary: "Withdraw invalid-round rewards to the configured sink when no votes were cast.",
+    callLabel: "Withdraw invalid-round rewards",
+    expectedEvents: [],
+  },
+  slashVoter: {
+    summary: "Permissionlessly process slashing for a solved arbitrator round voter.",
+    callLabel: "Slash voter",
+    expectedEvents: ["VoterSlashed"],
+  },
+  slashVoters: {
+    summary: "Permissionlessly batch-process voter slashing for a solved arbitrator round.",
+    callLabel: "Slash voters",
+    expectedEvents: ["VoterSlashed"],
+  },
+} as const satisfies Record<
+  "withdrawVoterRewards" | "withdrawInvalidRoundRewards" | "slashVoter" | "slashVoters",
+  {
+    summary: string;
+    callLabel: string;
+    expectedEvents: readonly string[];
+  }
+>;
+
+type GovernanceReceiptEventDecoder<TEvent> = (
+  args: Record<string, unknown>,
+  base: ReceiptEventBase
+) => TEvent;
+
+const TCR_RECEIPT_EVENT_DECODERS = {
+  Dispute: (args, base) => ({
+    family: "tcr",
+    eventName: "Dispute",
+    ...base,
+    arbitrator: normalizeEvmAddress(String(args._arbitrator), "args._arbitrator"),
+    disputeId: normalizeBigIntFromUnknown(args._disputeID, "args._disputeID"),
+    metaEvidenceId: normalizeBigIntFromUnknown(args._metaEvidenceID, "args._metaEvidenceID"),
+    evidenceGroupId: normalizeBigIntFromUnknown(args._evidenceGroupID, "args._evidenceGroupID"),
+    itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
+    requestIndex: normalizeBigIntFromUnknown(args._requestIndex, "args._requestIndex"),
+    challenger: normalizeEvmAddress(String(args._challenger), "args._challenger"),
+  }),
+  Evidence: (args, base) => ({
+    family: "tcr",
+    eventName: "Evidence",
+    ...base,
+    arbitrator: normalizeEvmAddress(String(args._arbitrator), "args._arbitrator"),
+    evidenceGroupId: normalizeBigIntFromUnknown(args._evidenceGroupID, "args._evidenceGroupID"),
+    party: normalizeEvmAddress(String(args._party), "args._party"),
+    evidence: normalizeText(args._evidence, "args._evidence"),
+  }),
+  ItemStatusChange: (args, base) => ({
+    family: "tcr",
+    eventName: "ItemStatusChange",
+    ...base,
+    itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
+    requestIndex: normalizeBigIntFromUnknown(args._requestIndex, "args._requestIndex"),
+    roundIndex: normalizeBigIntFromUnknown(args._roundIndex, "args._roundIndex"),
+    disputed: normalizeBool(args._disputed, "args._disputed"),
+    resolved: normalizeBool(args._resolved, "args._resolved"),
+    itemStatus: normalizeItemStatusFromUnknown(args._itemStatus, "args._itemStatus"),
+  }),
+  ItemSubmitted: (args, base) => ({
+    family: "tcr",
+    eventName: "ItemSubmitted",
+    ...base,
+    itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
+    submitter: normalizeEvmAddress(String(args._submitter), "args._submitter"),
+    evidenceGroupId: normalizeBigIntFromUnknown(args._evidenceGroupID, "args._evidenceGroupID"),
+    data: normalizeHexData(String(args._data), "args._data", false),
+  }),
+  RequestEvidenceGroupID: (args, base) => ({
+    family: "tcr",
+    eventName: "RequestEvidenceGroupID",
+    ...base,
+    itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
+    requestIndex: normalizeBigIntFromUnknown(args._requestIndex, "args._requestIndex"),
+    evidenceGroupId: normalizeBigIntFromUnknown(args._evidenceGroupID, "args._evidenceGroupID"),
+  }),
+  RequestSubmitted: (args, base) => ({
+    family: "tcr",
+    eventName: "RequestSubmitted",
+    ...base,
+    itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
+    requestIndex: normalizeBigIntFromUnknown(args._requestIndex, "args._requestIndex"),
+    requestType: normalizeRequestTypeFromUnknown(args._requestType, "args._requestType"),
+    requester: normalizeEvmAddress(String(args._requester), "args._requester"),
+  }),
+  Ruling: (args, base) => ({
+    family: "tcr",
+    eventName: "Ruling",
+    ...base,
+    arbitrator: normalizeEvmAddress(String(args._arbitrator), "args._arbitrator"),
+    disputeId: normalizeBigIntFromUnknown(args._disputeID, "args._disputeID"),
+    ruling: normalizePartyFromUnknown(args._ruling, "args._ruling"),
+  }),
+  SubmissionDepositPaid: (args, base) => ({
+    family: "tcr",
+    eventName: "SubmissionDepositPaid",
+    ...base,
+    itemId: normalizeBytes32(String(args.itemID), "args.itemID"),
+    payer: normalizeEvmAddress(String(args.payer), "args.payer"),
+    amount: normalizeBigIntFromUnknown(args.amount, "args.amount"),
+  }),
+  SubmissionDepositTransferred: (args, base) => ({
+    family: "tcr",
+    eventName: "SubmissionDepositTransferred",
+    ...base,
+    itemId: normalizeBytes32(String(args.itemID), "args.itemID"),
+    recipient: normalizeEvmAddress(String(args.recipient), "args.recipient"),
+    amount: normalizeBigIntFromUnknown(args.amount, "args.amount"),
+    requestType: normalizeItemStatusFromUnknown(args.requestType, "args.requestType"),
+    ruling: normalizePartyFromUnknown(args.ruling, "args.ruling"),
+  }),
+} as const satisfies Record<
+  TcrReceiptEvent["eventName"],
+  GovernanceReceiptEventDecoder<TcrReceiptEvent>
+>;
+
+const ARBITRATOR_RECEIPT_EVENT_DECODERS = {
+  DisputeCreated: (args, base) => ({
+    family: "arbitrator",
+    eventName: "DisputeCreated",
+    ...base,
+    disputeId: normalizeBigIntFromUnknown(args.id, "args.id"),
+    arbitrable: normalizeEvmAddress(String(args.arbitrable), "args.arbitrable"),
+    votingStartTime: normalizeBigIntFromUnknown(args.votingStartTime, "args.votingStartTime"),
+    votingEndTime: normalizeBigIntFromUnknown(args.votingEndTime, "args.votingEndTime"),
+    revealPeriodEndTime: normalizeBigIntFromUnknown(
+      args.revealPeriodEndTime,
+      "args.revealPeriodEndTime"
+    ),
+    creationBlock: normalizeBigIntFromUnknown(args.creationBlock, "args.creationBlock"),
+    arbitrationCost: normalizeBigIntFromUnknown(args.arbitrationCost, "args.arbitrationCost"),
+    extraData: normalizeHexData(String(args.extraData), "args.extraData"),
+    choices: normalizeBigIntFromUnknown(args.choices, "args.choices"),
+  }),
+  DisputeCreation: (args, base) => ({
+    family: "arbitrator",
+    eventName: "DisputeCreation",
+    ...base,
+    disputeId: normalizeBigIntFromUnknown(args._disputeID, "args._disputeID"),
+    arbitrable: normalizeEvmAddress(String(args._arbitrable), "args._arbitrable"),
+  }),
+  DisputeExecuted: (args, base) => ({
+    family: "arbitrator",
+    eventName: "DisputeExecuted",
+    ...base,
+    disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
+    ruling: normalizePartyFromUnknown(args.ruling, "args.ruling"),
+  }),
+  RewardWithdrawn: (args, base) => ({
+    family: "arbitrator",
+    eventName: "RewardWithdrawn",
+    ...base,
+    disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
+    round: normalizeBigIntFromUnknown(args.round, "args.round"),
+    voter: normalizeEvmAddress(String(args.voter), "args.voter"),
+    amount: normalizeBigIntFromUnknown(args.amount, "args.amount"),
+  }),
+  SlashRewardsWithdrawn: (args, base) => ({
+    family: "arbitrator",
+    eventName: "SlashRewardsWithdrawn",
+    ...base,
+    disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
+    round: normalizeBigIntFromUnknown(args.round, "args.round"),
+    voter: normalizeEvmAddress(String(args.voter), "args.voter"),
+    goalAmount: normalizeBigIntFromUnknown(args.goalAmount, "args.goalAmount"),
+    cobuildAmount: normalizeBigIntFromUnknown(args.cobuildAmount, "args.cobuildAmount"),
+  }),
+  VoteCommitted: (args, base) => ({
+    family: "arbitrator",
+    eventName: "VoteCommitted",
+    ...base,
+    voter: normalizeEvmAddress(String(args.voter), "args.voter"),
+    disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
+    commitHash: normalizeBytes32(String(args.commitHash), "args.commitHash"),
+  }),
+  VoteRevealed: (args, base) => ({
+    family: "arbitrator",
+    eventName: "VoteRevealed",
+    ...base,
+    voter: normalizeEvmAddress(String(args.voter), "args.voter"),
+    disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
+    commitHash: normalizeBytes32(String(args.commitHash), "args.commitHash"),
+    choice: normalizeBigIntFromUnknown(args.choice, "args.choice"),
+    reason: normalizeText(args.reason, "args.reason"),
+    votes: normalizeBigIntFromUnknown(args.votes, "args.votes"),
+  }),
+  VoterSlashed: (args, base) => ({
+    family: "arbitrator",
+    eventName: "VoterSlashed",
+    ...base,
+    disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
+    round: normalizeBigIntFromUnknown(args.round, "args.round"),
+    voter: normalizeEvmAddress(String(args.voter), "args.voter"),
+    snapshotVotes: normalizeBigIntFromUnknown(args.snapshotVotes, "args.snapshotVotes"),
+    slashWeight: normalizeBigIntFromUnknown(args.slashWeight, "args.slashWeight"),
+    missedReveal: normalizeBool(args.missedReveal, "args.missedReveal"),
+    recipient: normalizeEvmAddress(String(args.recipient), "args.recipient"),
+  }),
+} as const satisfies Record<
+  ArbitratorReceiptEvent["eventName"],
+  GovernanceReceiptEventDecoder<ArbitratorReceiptEvent>
+>;
 
 export function normalizeTcrRequestType(
   value: string | number | bigint,
@@ -1105,6 +1330,7 @@ export function buildTcrExecuteRequestPlan(params: {
 }): TcrActionPlan {
   const registryAddress = normalizeEvmAddress(params.registryAddress, "registryAddress");
   const itemId = normalizeBytes32(params.itemId, "itemId");
+  const descriptor = SIMPLE_TCR_PLAN_DESCRIPTORS.executeRequest;
 
   return {
     family: "tcr",
@@ -1112,12 +1338,12 @@ export function buildTcrExecuteRequestPlan(params: {
     registryAddress,
     itemId,
     ...withOptionalApproval({
-      summary: "Execute an unchallenged TCR request after the challenge window closes.",
+      summary: descriptor.summary,
       registryAddress,
-      callLabel: "Execute TCR request",
+      callLabel: descriptor.callLabel,
       functionName: "executeRequest",
       args: [itemId],
-      expectedEvents: ["ItemStatusChange", "SubmissionDepositTransferred"],
+      expectedEvents: descriptor.expectedEvents,
     }),
   };
 }
@@ -1128,6 +1354,7 @@ export function buildTcrExecuteRequestTimeoutPlan(params: {
 }): TcrActionPlan {
   const registryAddress = normalizeEvmAddress(params.registryAddress, "registryAddress");
   const itemId = normalizeBytes32(params.itemId, "itemId");
+  const descriptor = SIMPLE_TCR_PLAN_DESCRIPTORS.executeRequestTimeout;
 
   return {
     family: "tcr",
@@ -1135,12 +1362,12 @@ export function buildTcrExecuteRequestTimeoutPlan(params: {
     registryAddress,
     itemId,
     ...withOptionalApproval({
-      summary: "Execute a disputed TCR request after the dispute timeout path becomes available.",
+      summary: descriptor.summary,
       registryAddress,
-      callLabel: "Execute timed-out TCR request",
+      callLabel: descriptor.callLabel,
       functionName: "executeRequestTimeout",
       args: [itemId],
-      expectedEvents: ["Ruling", "ItemStatusChange", "SubmissionDepositTransferred"],
+      expectedEvents: descriptor.expectedEvents,
     }),
   };
 }
@@ -1153,6 +1380,7 @@ export function buildTcrSubmitEvidencePlan(params: {
   const registryAddress = normalizeEvmAddress(params.registryAddress, "registryAddress");
   const itemId = normalizeBytes32(params.itemId, "itemId");
   const evidence = normalizeText(params.evidence, "evidence");
+  const descriptor = SIMPLE_TCR_PLAN_DESCRIPTORS.submitEvidence;
 
   return {
     family: "tcr",
@@ -1160,12 +1388,12 @@ export function buildTcrSubmitEvidencePlan(params: {
     registryAddress,
     itemId,
     ...withOptionalApproval({
-      summary: "Submit evidence for the latest TCR request cycle.",
+      summary: descriptor.summary,
       registryAddress,
-      callLabel: "Submit TCR evidence",
+      callLabel: descriptor.callLabel,
       functionName: "submitEvidence",
       args: [itemId, evidence],
-      expectedEvents: ["Evidence"],
+      expectedEvents: descriptor.expectedEvents,
     }),
   };
 }
@@ -1182,6 +1410,7 @@ export function buildTcrWithdrawFeesAndRewardsPlan(params: {
   const itemId = normalizeBytes32(params.itemId, "itemId");
   const requestIndex = normalizeUint(params.requestIndex, "requestIndex");
   const roundIndex = normalizeUint(params.roundIndex, "roundIndex");
+  const descriptor = SIMPLE_TCR_PLAN_DESCRIPTORS.withdrawFeesAndRewards;
 
   return {
     family: "tcr",
@@ -1189,12 +1418,12 @@ export function buildTcrWithdrawFeesAndRewardsPlan(params: {
     registryAddress,
     itemId,
     ...withOptionalApproval({
-      summary: "Withdraw resolved TCR fees and rewards for a contributor.",
+      summary: descriptor.summary,
       registryAddress,
-      callLabel: "Withdraw TCR fees and rewards",
+      callLabel: descriptor.callLabel,
       functionName: "withdrawFeesAndRewards",
       args: [beneficiary, itemId, requestIndex, roundIndex],
-      expectedEvents: [],
+      expectedEvents: descriptor.expectedEvents,
     }),
   };
 }
@@ -1432,6 +1661,7 @@ export function buildArbitratorWithdrawVoterRewardsPlan(params: {
   const disputeId = normalizeUint(params.disputeId, "disputeId");
   const round = normalizeUint(params.round, "round");
   const voter = normalizeEvmAddress(params.voterAddress, "voterAddress");
+  const descriptor = SIMPLE_ARBITRATOR_PLAN_DESCRIPTORS.withdrawVoterRewards;
 
   return {
     family: "arbitrator",
@@ -1441,12 +1671,12 @@ export function buildArbitratorWithdrawVoterRewardsPlan(params: {
     round,
     voter,
     ...buildArbitratorPlan({
-      summary: "Withdraw arbitrator round rewards for a voter.",
+      summary: descriptor.summary,
       arbitratorAddress,
-      callLabel: "Withdraw voter rewards",
+      callLabel: descriptor.callLabel,
       functionName: "withdrawVoterRewards",
       args: [disputeId, round, voter],
-      expectedEvents: ["RewardWithdrawn", "SlashRewardsWithdrawn"],
+      expectedEvents: descriptor.expectedEvents,
     }),
   };
 }
@@ -1459,6 +1689,7 @@ export function buildArbitratorWithdrawInvalidRoundRewardsPlan(params: {
   const arbitratorAddress = normalizeEvmAddress(params.arbitratorAddress, "arbitratorAddress");
   const disputeId = normalizeUint(params.disputeId, "disputeId");
   const round = normalizeUint(params.round, "round");
+  const descriptor = SIMPLE_ARBITRATOR_PLAN_DESCRIPTORS.withdrawInvalidRoundRewards;
 
   return {
     family: "arbitrator",
@@ -1467,12 +1698,12 @@ export function buildArbitratorWithdrawInvalidRoundRewardsPlan(params: {
     disputeId,
     round,
     ...buildArbitratorPlan({
-      summary: "Withdraw invalid-round rewards to the configured sink when no votes were cast.",
+      summary: descriptor.summary,
       arbitratorAddress,
-      callLabel: "Withdraw invalid-round rewards",
+      callLabel: descriptor.callLabel,
       functionName: "withdrawInvalidRoundRewards",
       args: [disputeId, round],
-      expectedEvents: [],
+      expectedEvents: descriptor.expectedEvents,
     }),
   };
 }
@@ -1487,6 +1718,7 @@ export function buildArbitratorSlashVoterPlan(params: {
   const disputeId = normalizeUint(params.disputeId, "disputeId");
   const round = normalizeUint(params.round, "round");
   const voter = normalizeEvmAddress(params.voterAddress, "voterAddress");
+  const descriptor = SIMPLE_ARBITRATOR_PLAN_DESCRIPTORS.slashVoter;
 
   return {
     family: "arbitrator",
@@ -1496,12 +1728,12 @@ export function buildArbitratorSlashVoterPlan(params: {
     round,
     voter,
     ...buildArbitratorPlan({
-      summary: "Permissionlessly process slashing for a solved arbitrator round voter.",
+      summary: descriptor.summary,
       arbitratorAddress,
-      callLabel: "Slash voter",
+      callLabel: descriptor.callLabel,
       functionName: "slashVoter",
       args: [disputeId, round, voter],
-      expectedEvents: ["VoterSlashed"],
+      expectedEvents: descriptor.expectedEvents,
     }),
   };
 }
@@ -1521,6 +1753,7 @@ export function buildArbitratorSlashVotersPlan(params: {
   const voters = params.voterAddresses.map((address, index) =>
     normalizeEvmAddress(address, `voterAddresses[${index}]`)
   );
+  const descriptor = SIMPLE_ARBITRATOR_PLAN_DESCRIPTORS.slashVoters;
 
   return {
     family: "arbitrator",
@@ -1529,12 +1762,12 @@ export function buildArbitratorSlashVotersPlan(params: {
     disputeId,
     round,
     ...buildArbitratorPlan({
-      summary: "Permissionlessly batch-process voter slashing for a solved arbitrator round.",
+      summary: descriptor.summary,
       arbitratorAddress,
-      callLabel: "Slash voters",
+      callLabel: descriptor.callLabel,
       functionName: "slashVoters",
       args: [disputeId, round, voters],
-      expectedEvents: ["VoterSlashed"],
+      expectedEvents: descriptor.expectedEvents,
     }),
   };
 }
@@ -1549,128 +1782,17 @@ export function decodeTcrReceiptEvents(logs: readonly unknown[]): TcrReceiptEven
   const events: TcrReceiptEvent[] = [];
 
   for (const log of parsed) {
-    const args = (log.args ?? {}) as Record<string, unknown>;
-    const base = buildReceiptBase(log);
-
-    switch (log.eventName) {
-      case "Dispute":
-        events.push({
-          family: "tcr",
-          eventName: "Dispute",
-          ...base,
-          arbitrator: normalizeEvmAddress(String(args._arbitrator), "args._arbitrator"),
-          disputeId: normalizeBigIntFromUnknown(args._disputeID, "args._disputeID"),
-          metaEvidenceId: normalizeBigIntFromUnknown(
-            args._metaEvidenceID,
-            "args._metaEvidenceID"
-          ),
-          evidenceGroupId: normalizeBigIntFromUnknown(
-            args._evidenceGroupID,
-            "args._evidenceGroupID"
-          ),
-          itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
-          requestIndex: normalizeBigIntFromUnknown(args._requestIndex, "args._requestIndex"),
-          challenger: normalizeEvmAddress(String(args._challenger), "args._challenger"),
-        });
-        break;
-      case "Evidence":
-        events.push({
-          family: "tcr",
-          eventName: "Evidence",
-          ...base,
-          arbitrator: normalizeEvmAddress(String(args._arbitrator), "args._arbitrator"),
-          evidenceGroupId: normalizeBigIntFromUnknown(
-            args._evidenceGroupID,
-            "args._evidenceGroupID"
-          ),
-          party: normalizeEvmAddress(String(args._party), "args._party"),
-          evidence: normalizeText(args._evidence, "args._evidence"),
-        });
-        break;
-      case "ItemStatusChange":
-        events.push({
-          family: "tcr",
-          eventName: "ItemStatusChange",
-          ...base,
-          itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
-          requestIndex: normalizeBigIntFromUnknown(args._requestIndex, "args._requestIndex"),
-          roundIndex: normalizeBigIntFromUnknown(args._roundIndex, "args._roundIndex"),
-          disputed: normalizeBool(args._disputed, "args._disputed"),
-          resolved: normalizeBool(args._resolved, "args._resolved"),
-          itemStatus: normalizeItemStatusFromUnknown(args._itemStatus, "args._itemStatus"),
-        });
-        break;
-      case "ItemSubmitted":
-        events.push({
-          family: "tcr",
-          eventName: "ItemSubmitted",
-          ...base,
-          itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
-          submitter: normalizeEvmAddress(String(args._submitter), "args._submitter"),
-          evidenceGroupId: normalizeBigIntFromUnknown(
-            args._evidenceGroupID,
-            "args._evidenceGroupID"
-          ),
-          data: normalizeHexData(String(args._data), "args._data", false),
-        });
-        break;
-      case "RequestEvidenceGroupID":
-        events.push({
-          family: "tcr",
-          eventName: "RequestEvidenceGroupID",
-          ...base,
-          itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
-          requestIndex: normalizeBigIntFromUnknown(args._requestIndex, "args._requestIndex"),
-          evidenceGroupId: normalizeBigIntFromUnknown(
-            args._evidenceGroupID,
-            "args._evidenceGroupID"
-          ),
-        });
-        break;
-      case "RequestSubmitted":
-        events.push({
-          family: "tcr",
-          eventName: "RequestSubmitted",
-          ...base,
-          itemId: normalizeBytes32(String(args._itemID), "args._itemID"),
-          requestIndex: normalizeBigIntFromUnknown(args._requestIndex, "args._requestIndex"),
-          requestType: normalizeRequestTypeFromUnknown(args._requestType, "args._requestType"),
-          requester: normalizeEvmAddress(String(args._requester), "args._requester"),
-        });
-        break;
-      case "Ruling":
-        events.push({
-          family: "tcr",
-          eventName: "Ruling",
-          ...base,
-          arbitrator: normalizeEvmAddress(String(args._arbitrator), "args._arbitrator"),
-          disputeId: normalizeBigIntFromUnknown(args._disputeID, "args._disputeID"),
-          ruling: normalizePartyFromUnknown(args._ruling, "args._ruling"),
-        });
-        break;
-      case "SubmissionDepositPaid":
-        events.push({
-          family: "tcr",
-          eventName: "SubmissionDepositPaid",
-          ...base,
-          itemId: normalizeBytes32(String(args.itemID), "args.itemID"),
-          payer: normalizeEvmAddress(String(args.payer), "args.payer"),
-          amount: normalizeBigIntFromUnknown(args.amount, "args.amount"),
-        });
-        break;
-      case "SubmissionDepositTransferred":
-        events.push({
-          family: "tcr",
-          eventName: "SubmissionDepositTransferred",
-          ...base,
-          itemId: normalizeBytes32(String(args.itemID), "args.itemID"),
-          recipient: normalizeEvmAddress(String(args.recipient), "args.recipient"),
-          amount: normalizeBigIntFromUnknown(args.amount, "args.amount"),
-          requestType: normalizeItemStatusFromUnknown(args.requestType, "args.requestType"),
-          ruling: normalizePartyFromUnknown(args.ruling, "args.ruling"),
-        });
-        break;
+    const decoder =
+      TCR_RECEIPT_EVENT_DECODERS[
+        log.eventName as keyof typeof TCR_RECEIPT_EVENT_DECODERS
+      ];
+    if (!decoder) {
+      continue;
     }
+    const args = (log.args ?? {}) as Record<string, unknown>;
+    const base: ReceiptEventBase = buildReceiptEventBase(log);
+
+    events.push(decoder(args, base));
   }
 
   return events;
@@ -1686,114 +1808,17 @@ export function decodeArbitratorReceiptEvents(logs: readonly unknown[]): Arbitra
   const events: ArbitratorReceiptEvent[] = [];
 
   for (const log of parsed) {
-    const args = (log.args ?? {}) as Record<string, unknown>;
-    const base = buildReceiptBase(log);
-
-    switch (log.eventName) {
-      case "DisputeCreated":
-        events.push({
-          family: "arbitrator",
-          eventName: "DisputeCreated",
-          ...base,
-          disputeId: normalizeBigIntFromUnknown(args.id, "args.id"),
-          arbitrable: normalizeEvmAddress(String(args.arbitrable), "args.arbitrable"),
-          votingStartTime: normalizeBigIntFromUnknown(
-            args.votingStartTime,
-            "args.votingStartTime"
-          ),
-          votingEndTime: normalizeBigIntFromUnknown(args.votingEndTime, "args.votingEndTime"),
-          revealPeriodEndTime: normalizeBigIntFromUnknown(
-            args.revealPeriodEndTime,
-            "args.revealPeriodEndTime"
-          ),
-          creationBlock: normalizeBigIntFromUnknown(args.creationBlock, "args.creationBlock"),
-          arbitrationCost: normalizeBigIntFromUnknown(
-            args.arbitrationCost,
-            "args.arbitrationCost"
-          ),
-          extraData: normalizeHexData(String(args.extraData), "args.extraData"),
-          choices: normalizeBigIntFromUnknown(args.choices, "args.choices"),
-        });
-        break;
-      case "DisputeCreation":
-        events.push({
-          family: "arbitrator",
-          eventName: "DisputeCreation",
-          ...base,
-          disputeId: normalizeBigIntFromUnknown(args._disputeID, "args._disputeID"),
-          arbitrable: normalizeEvmAddress(String(args._arbitrable), "args._arbitrable"),
-        });
-        break;
-      case "DisputeExecuted":
-        events.push({
-          family: "arbitrator",
-          eventName: "DisputeExecuted",
-          ...base,
-          disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
-          ruling: normalizePartyFromUnknown(args.ruling, "args.ruling"),
-        });
-        break;
-      case "RewardWithdrawn":
-        events.push({
-          family: "arbitrator",
-          eventName: "RewardWithdrawn",
-          ...base,
-          disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
-          round: normalizeBigIntFromUnknown(args.round, "args.round"),
-          voter: normalizeEvmAddress(String(args.voter), "args.voter"),
-          amount: normalizeBigIntFromUnknown(args.amount, "args.amount"),
-        });
-        break;
-      case "SlashRewardsWithdrawn":
-        events.push({
-          family: "arbitrator",
-          eventName: "SlashRewardsWithdrawn",
-          ...base,
-          disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
-          round: normalizeBigIntFromUnknown(args.round, "args.round"),
-          voter: normalizeEvmAddress(String(args.voter), "args.voter"),
-          goalAmount: normalizeBigIntFromUnknown(args.goalAmount, "args.goalAmount"),
-          cobuildAmount: normalizeBigIntFromUnknown(args.cobuildAmount, "args.cobuildAmount"),
-        });
-        break;
-      case "VoteCommitted":
-        events.push({
-          family: "arbitrator",
-          eventName: "VoteCommitted",
-          ...base,
-          voter: normalizeEvmAddress(String(args.voter), "args.voter"),
-          disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
-          commitHash: normalizeBytes32(String(args.commitHash), "args.commitHash"),
-        });
-        break;
-      case "VoteRevealed":
-        events.push({
-          family: "arbitrator",
-          eventName: "VoteRevealed",
-          ...base,
-          voter: normalizeEvmAddress(String(args.voter), "args.voter"),
-          disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
-          commitHash: normalizeBytes32(String(args.commitHash), "args.commitHash"),
-          choice: normalizeBigIntFromUnknown(args.choice, "args.choice"),
-          reason: normalizeText(args.reason, "args.reason"),
-          votes: normalizeBigIntFromUnknown(args.votes, "args.votes"),
-        });
-        break;
-      case "VoterSlashed":
-        events.push({
-          family: "arbitrator",
-          eventName: "VoterSlashed",
-          ...base,
-          disputeId: normalizeBigIntFromUnknown(args.disputeId, "args.disputeId"),
-          round: normalizeBigIntFromUnknown(args.round, "args.round"),
-          voter: normalizeEvmAddress(String(args.voter), "args.voter"),
-          snapshotVotes: normalizeBigIntFromUnknown(args.snapshotVotes, "args.snapshotVotes"),
-          slashWeight: normalizeBigIntFromUnknown(args.slashWeight, "args.slashWeight"),
-          missedReveal: normalizeBool(args.missedReveal, "args.missedReveal"),
-          recipient: normalizeEvmAddress(String(args.recipient), "args.recipient"),
-        });
-        break;
+    const decoder =
+      ARBITRATOR_RECEIPT_EVENT_DECODERS[
+        log.eventName as keyof typeof ARBITRATOR_RECEIPT_EVENT_DECODERS
+      ];
+    if (!decoder) {
+      continue;
     }
+    const args = (log.args ?? {}) as Record<string, unknown>;
+    const base: ReceiptEventBase = buildReceiptEventBase(log);
+
+    events.push(decoder(args, base));
   }
 
   return events;
