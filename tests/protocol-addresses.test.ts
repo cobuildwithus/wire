@@ -2,6 +2,7 @@ import { isAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
 import {
+  BASE_SCAFFOLD_START_BLOCK,
   COBUILD_PROJECT_ID,
   COBUILD_PROJECT_ID_BIGINT,
   COBUILD_TOKEN_ADDRESS,
@@ -33,6 +34,7 @@ describe("protocol address exports", () => {
     expect(baseAddresses.chainId).toBe(8453);
     expect(COBUILD_PROJECT_ID).toBe(138);
     expect(COBUILD_PROJECT_ID_BIGINT).toBe(138n);
+    expect(BASE_SCAFFOLD_START_BLOCK).toBe(43_290_000);
     expect(goalFactoryAddress).toBe("0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3");
     expect(budgetTcrFactoryAddress).toBe("0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D");
     expect(goalFactoryPairDeployerAddress).toBe("0xDE0c5C6fCe39Ce79e290544E4115d99d0dD9589A");
@@ -69,6 +71,7 @@ describe("protocol address exports", () => {
     expect(baseAddresses.contracts).toBe(baseContracts);
     expect(baseAddresses.config.cobuildProjectId).toBe(COBUILD_PROJECT_ID);
     expect(baseAddresses.config.cobuildRevnetId).toBe(COBUILD_PROJECT_ID);
+    expect(baseAddresses.config.scaffoldStartBlock).toBe(BASE_SCAFFOLD_START_BLOCK);
     expect(baseContracts.GoalFactory).toBe(baseEntrypoints.goalFactory);
     expect(baseContracts.BudgetTCRFactory).toBe(baseEntrypoints.budgetTcrFactory);
     expect(baseContracts.GoalFactoryPairDeployer).toBe(baseEntrypoints.goalFactoryPairDeployer);

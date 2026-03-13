@@ -101,10 +101,12 @@ export const baseDefaults = {
 
 export const COBUILD_PROJECT_ID = 138 as const;
 export const COBUILD_PROJECT_ID_BIGINT = 138n as const;
+export const BASE_SCAFFOLD_START_BLOCK = 43_290_000 as const;
 
 export const baseConfig = {
   cobuildProjectId: COBUILD_PROJECT_ID,
   cobuildRevnetId: COBUILD_PROJECT_ID,
+  scaffoldStartBlock: BASE_SCAFFOLD_START_BLOCK,
   fakeUmaTreasurySuccessResolver: "0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49",
   fakeUmaOwner: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
   fakeUmaEscalationManager: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
