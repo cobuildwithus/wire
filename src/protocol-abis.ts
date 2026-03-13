@@ -5,25 +5,18 @@ import {
 
 function dedupeAbiItems<const T extends readonly unknown[]>(abi: T): T {
   const seen = new Set<string>();
-  let duplicated = false;
 
-  const deduped = abi.filter((item) => {
-    const key = JSON.stringify(item);
-
-    if (seen.has(key)) {
-      duplicated = true;
-      return false;
-    }
-
-    seen.add(key);
-    return true;
-  });
-
-  return (duplicated ? deduped : abi) as T;
+  return abi.filter((item) => {
+    const sizeBefore = seen.size;
+    seen.add(JSON.stringify(item));
+    return seen.size > sizeBefore;
+  }) as T;
 }
 
 export const budgetTcrAbi = dedupeAbiItems(generatedBudgetTcrAbi);
-export const managedBudgetControllerAbi = dedupeAbiItems(generatedManagedBudgetControllerAbi);
+export const managedBudgetControllerAbi = dedupeAbiItems(
+  generatedManagedBudgetControllerAbi,
+);
 
 export {
   allocationMechanismTcrAbi,

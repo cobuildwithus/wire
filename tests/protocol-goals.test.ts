@@ -26,6 +26,7 @@ const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
 const normalizedDeployParams = {
   preset: 0,
   managedSafe: ZERO_ADDRESS,
+  managedBudgetGatePolicy: ZERO_ADDRESS,
   funding: {
     paymentToken: "0x62f05b13239b24b8eeff36696344de0db7d2efdd",
     paymentRevnetId: COBUILD_PROJECT_ID_BIGINT,
@@ -100,6 +101,67 @@ const normalizedDeployParams = {
     },
   },
   goalSpendPolicy: "0x6666666666666666666666666666666666666666",
+} as const;
+
+const normalizedCommonGoalParams = {
+  funding: normalizedDeployParams.funding,
+  revnet: normalizedDeployParams.revnet,
+  timing: normalizedDeployParams.timing,
+  success: normalizedDeployParams.success,
+  flowMetadata: normalizedDeployParams.flowMetadata,
+  underwriting: normalizedDeployParams.underwriting,
+  goalSpendPolicy: normalizedDeployParams.goalSpendPolicy,
+} as const;
+
+const normalizedBudgetRuntimeParams = {
+  budgetSuccessResolver: normalizedDeployParams.budgetTCR.budgetSuccessResolver,
+  budgetSpendPolicy: normalizedDeployParams.budgetTCR.budgetSpendPolicy,
+  oracleBounds: normalizedDeployParams.budgetTCR.oracleBounds,
+} as const;
+
+const normalizedOpenGoalContractArgs = {
+  common: normalizedCommonGoalParams,
+  budgetRuntime: normalizedBudgetRuntimeParams,
+  openBudgetTCR: {
+    allocationMechanismAdmin: normalizedDeployParams.budgetTCR.allocationMechanismAdmin,
+    invalidRoundRewardsSink: normalizedDeployParams.budgetTCR.invalidRoundRewardsSink,
+    submissionDepositStrategy: normalizedDeployParams.budgetTCR.submissionDepositStrategy,
+    submissionBaseDeposit: normalizedDeployParams.budgetTCR.submissionBaseDeposit,
+    removalBaseDeposit: normalizedDeployParams.budgetTCR.removalBaseDeposit,
+    submissionChallengeBaseDeposit: normalizedDeployParams.budgetTCR.submissionChallengeBaseDeposit,
+    removalChallengeBaseDeposit: normalizedDeployParams.budgetTCR.removalChallengeBaseDeposit,
+    registrationMetaEvidence: normalizedDeployParams.budgetTCR.registrationMetaEvidence,
+    clearingMetaEvidence: normalizedDeployParams.budgetTCR.clearingMetaEvidence,
+    challengePeriodDuration: normalizedDeployParams.budgetTCR.challengePeriodDuration,
+    arbitratorExtraData: normalizedDeployParams.budgetTCR.arbitratorExtraData,
+    budgetBounds: normalizedDeployParams.budgetTCR.budgetBounds,
+    arbitratorParams: normalizedDeployParams.budgetTCR.arbitratorParams,
+  },
+} as const;
+
+const normalizedManagedDeployParams = {
+  ...normalizedDeployParams,
+  preset: 1,
+  managedSafe: "0x7777777777777777777777777777777777777777",
+  funding: {
+    paymentToken: "0x8888888888888888888888888888888888888888",
+    paymentRevnetId: 139n,
+  },
+} as const;
+
+const normalizedManagedGoalContractArgs = {
+  common: {
+    funding: normalizedManagedDeployParams.funding,
+    revnet: normalizedManagedDeployParams.revnet,
+    timing: normalizedManagedDeployParams.timing,
+    success: normalizedManagedDeployParams.success,
+    flowMetadata: normalizedManagedDeployParams.flowMetadata,
+    underwriting: normalizedManagedDeployParams.underwriting,
+    goalSpendPolicy: normalizedManagedDeployParams.goalSpendPolicy,
+  },
+  managedSafe: normalizedManagedDeployParams.managedSafe,
+  managedBudgetGatePolicy: ZERO_ADDRESS,
+  budgetRuntime: normalizedBudgetRuntimeParams,
 } as const;
 
 const rawDeployParams = {
@@ -301,6 +363,7 @@ describe("protocol goals contract", () => {
     expect(normalizeGoalFactoryDeployParams(managedDeployParams)).toMatchObject({
       preset: 1,
       managedSafe: "0x7777777777777777777777777777777777777777",
+      managedBudgetGatePolicy: ZERO_ADDRESS,
       funding: {
         paymentToken: "0x8888888888888888888888888888888888888888",
         paymentRevnetId: 139n,
@@ -366,8 +429,8 @@ describe("protocol goals contract", () => {
     expect(data).toBe(
       encodeFunctionData({
         abi: goalFactoryAbi,
-        functionName: "deployGoal",
-        args: [normalizedDeployParams],
+        functionName: "deployOpenGoal",
+        args: [normalizedOpenGoalContractArgs],
       })
     );
 
@@ -389,16 +452,16 @@ describe("protocol goals contract", () => {
       },
       writeContract: {
         address: goalFactoryAddress.toLowerCase(),
-        functionName: "deployGoal",
-        args: [normalizedDeployParams],
+        functionName: "deployOpenGoal",
+        args: [normalizedOpenGoalContractArgs],
       },
     });
 
     expect(buildGoalCreateWriteContractRequest({ deployParams: rawDeployParams })).toEqual({
       address: goalFactoryAddress.toLowerCase(),
       abi: goalFactoryAbi,
-      functionName: "deployGoal",
-      args: [normalizedDeployParams],
+      functionName: "deployOpenGoal",
+      args: [normalizedOpenGoalContractArgs],
     });
 
     expect(buildGoalCreateProtocolPlan({ deployParams: rawDeployParams })).toMatchObject({
@@ -413,7 +476,7 @@ describe("protocol goals contract", () => {
         {
           kind: "contract-call",
           contract: "GoalFactory",
-          functionName: "deployGoal",
+          functionName: "deployOpenGoal",
           transaction: {
             to: goalFactoryAddress.toLowerCase(),
             data,
@@ -421,6 +484,25 @@ describe("protocol goals contract", () => {
           },
         },
       ],
+    });
+  });
+
+  it("routes managed presets to GoalFactory.deployManagedGoal", () => {
+    const data = encodeGoalFactoryDeployGoalData(managedDeployParams);
+
+    expect(data).toBe(
+      encodeFunctionData({
+        abi: goalFactoryAbi,
+        functionName: "deployManagedGoal",
+        args: [normalizedManagedGoalContractArgs],
+      })
+    );
+
+    expect(buildGoalCreateWriteContractRequest({ deployParams: managedDeployParams })).toEqual({
+      address: goalFactoryAddress.toLowerCase(),
+      abi: goalFactoryAbi,
+      functionName: "deployManagedGoal",
+      args: [normalizedManagedGoalContractArgs],
     });
   });
 

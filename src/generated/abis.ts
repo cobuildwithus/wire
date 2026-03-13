@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x40F2E2be9ddA7BAeA903A67A54D65102f5492876)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xeD65dd552901D4997d233c9645e5495345c05C64)
  */
 export const allocationMechanismTcrAbi = [
   {
@@ -1357,14 +1357,14 @@ export const allocationMechanismTcrAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x40F2E2be9ddA7BAeA903A67A54D65102f5492876)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xeD65dd552901D4997d233c9645e5495345c05C64)
  */
 export const allocationMechanismTcrAddress = {
-  8453: '0x40F2E2be9ddA7BAeA903A67A54D65102f5492876',
+  8453: '0xeD65dd552901D4997d233c9645e5495345c05C64',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x40F2E2be9ddA7BAeA903A67A54D65102f5492876)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xeD65dd552901D4997d233c9645e5495345c05C64)
  */
 export const allocationMechanismTcrConfig = {
   address: allocationMechanismTcrAddress,
@@ -1376,7 +1376,7 @@ export const allocationMechanismTcrConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4d5D1C0305ceeb54eFd718BF7AC5dF62A09e1633)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x655ED37e9e668327b9866150D102886Eb88a08D0)
  */
 export const budgetFlowRouterStrategyAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -1589,14 +1589,14 @@ export const budgetFlowRouterStrategyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4d5D1C0305ceeb54eFd718BF7AC5dF62A09e1633)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x655ED37e9e668327b9866150D102886Eb88a08D0)
  */
 export const budgetFlowRouterStrategyAddress = {
-  8453: '0x4d5D1C0305ceeb54eFd718BF7AC5dF62A09e1633',
+  8453: '0x655ED37e9e668327b9866150D102886Eb88a08D0',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4d5D1C0305ceeb54eFd718BF7AC5dF62A09e1633)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x655ED37e9e668327b9866150D102886Eb88a08D0)
  */
 export const budgetFlowRouterStrategyConfig = {
   address: budgetFlowRouterStrategyAddress,
@@ -1608,7 +1608,7 @@ export const budgetFlowRouterStrategyConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xBF102f4a9A98490c3463ca015Ea19839Ec88C7Ac)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x688d62033FC84be90CdeB92f6D1F158B4C0e9c58)
  */
 export const budgetSingleAllocatorStrategyAbi = [
   {
@@ -1752,14 +1752,14 @@ export const budgetSingleAllocatorStrategyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xBF102f4a9A98490c3463ca015Ea19839Ec88C7Ac)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x688d62033FC84be90CdeB92f6D1F158B4C0e9c58)
  */
 export const budgetSingleAllocatorStrategyAddress = {
-  8453: '0xBF102f4a9A98490c3463ca015Ea19839Ec88C7Ac',
+  8453: '0x688d62033FC84be90CdeB92f6D1F158B4C0e9c58',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xBF102f4a9A98490c3463ca015Ea19839Ec88C7Ac)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x688d62033FC84be90CdeB92f6D1F158B4C0e9c58)
  */
 export const budgetSingleAllocatorStrategyConfig = {
   address: budgetSingleAllocatorStrategyAddress,
@@ -1771,7 +1771,7 @@ export const budgetSingleAllocatorStrategyConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9d238C4414ffCc79Fb81aE28142FfDD861E6CEfC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4F72D656e864C0ED5826F11eCA3eC8F39Ec793A0)
  */
 export const budgetSingleAllocatorStrategyFactoryAbi = [
   {
@@ -1824,14 +1824,14 @@ export const budgetSingleAllocatorStrategyFactoryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9d238C4414ffCc79Fb81aE28142FfDD861E6CEfC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4F72D656e864C0ED5826F11eCA3eC8F39Ec793A0)
  */
 export const budgetSingleAllocatorStrategyFactoryAddress = {
-  8453: '0x9d238C4414ffCc79Fb81aE28142FfDD861E6CEfC',
+  8453: '0x4F72D656e864C0ED5826F11eCA3eC8F39Ec793A0',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9d238C4414ffCc79Fb81aE28142FfDD861E6CEfC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4F72D656e864C0ED5826F11eCA3eC8F39Ec793A0)
  */
 export const budgetSingleAllocatorStrategyFactoryConfig = {
   address: budgetSingleAllocatorStrategyFactoryAddress,
@@ -1843,7 +1843,7 @@ export const budgetSingleAllocatorStrategyFactoryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x6700Da310Ba1b24a6629dBb3370dBcEf54038151)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x51B6808Ba6d9855e8247C8F4BB93D71cD3b10d39)
  */
 export const budgetStakeLedgerAbi = [
   {
@@ -2305,14 +2305,14 @@ export const budgetStakeLedgerAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x6700Da310Ba1b24a6629dBb3370dBcEf54038151)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x51B6808Ba6d9855e8247C8F4BB93D71cD3b10d39)
  */
 export const budgetStakeLedgerAddress = {
-  8453: '0x6700Da310Ba1b24a6629dBb3370dBcEf54038151',
+  8453: '0x51B6808Ba6d9855e8247C8F4BB93D71cD3b10d39',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x6700Da310Ba1b24a6629dBb3370dBcEf54038151)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x51B6808Ba6d9855e8247C8F4BB93D71cD3b10d39)
  */
 export const budgetStakeLedgerConfig = {
   address: budgetStakeLedgerAddress,
@@ -2324,7 +2324,7 @@ export const budgetStakeLedgerConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x5C54201DaD0eFBc66398395562B3d49d27B92361)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x0fc6A845c8Cc3be6DDF7a3Edb4f5d820B590000F)
  */
 export const budgetTcrAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -2561,6 +2561,13 @@ export const budgetTcrAbi = [
     inputs: [],
     name: 'cobuildToken',
     outputs: [{ name: '', internalType: 'contract IERC20', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'discoveryEmitter',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -2884,6 +2891,11 @@ export const budgetTcrAbi = [
         components: [
           { name: 'stackDeployer', internalType: 'address', type: 'address' },
           {
+            name: 'discoveryEmitter',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
             name: 'budgetSuccessResolver',
             internalType: 'address',
             type: 'address',
@@ -2937,11 +2949,6 @@ export const budgetTcrAbi = [
             type: 'address',
           },
           { name: 'goalRevnetId', internalType: 'uint256', type: 'uint256' },
-          {
-            name: 'paymentTokenDecimals',
-            internalType: 'uint8',
-            type: 'uint8',
-          },
           { name: 'budgetPremiumPpm', internalType: 'uint32', type: 'uint32' },
           { name: 'budgetSlashPpm', internalType: 'uint32', type: 'uint32' },
           {
@@ -3076,20 +3083,6 @@ export const budgetTcrAbi = [
       { name: 'liveness', internalType: 'uint64', type: 'uint64' },
       { name: 'bondAmount', internalType: 'uint256', type: 'uint256' },
     ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'paymentTokenDecimals',
-    outputs: [{ name: '', internalType: 'uint8', type: 'uint8' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'premiumEscrowImplementation',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -3295,7 +3288,7 @@ export const budgetTcrAbi = [
       },
       { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'BudgetCreditCapEnforcementFailed',
+    name: 'BudgetGateEnforcementFailed',
   },
   {
     type: 'event',
@@ -3523,32 +3516,6 @@ export const budgetTcrAbi = [
       },
     ],
     name: 'BudgetTreasuryBatchSyncSkipped',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'selector',
-        internalType: 'bytes4',
-        type: 'bytes4',
-        indexed: true,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'BudgetTreasuryCallFailed',
   },
   {
     type: 'event',
@@ -3937,9 +3904,21 @@ export const budgetTcrAbi = [
     name: 'INVALID_PREMIUM_ESCROW_IMPLEMENTATION',
   },
   { type: 'error', inputs: [], name: 'INVALID_RULING_OPTION' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'stackDeployer', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_STACK_DEPLOYER',
+  },
   { type: 'error', inputs: [], name: 'INVALID_SUBMISSION_DEPOSIT_ACTION' },
   { type: 'error', inputs: [], name: 'INVALID_SUBMISSION_DEPOSIT_RECIPIENT' },
   { type: 'error', inputs: [], name: 'INVALID_SUBMISSION_DEPOSIT_STRATEGY' },
+  {
+    type: 'error',
+    inputs: [{ name: 'resolver', internalType: 'address', type: 'address' }],
+    name: 'INVALID_SUCCESS_RESOLVER',
+  },
   { type: 'error', inputs: [], name: 'INVALID_VOTING_TOKEN_COMPATIBILITY' },
   {
     type: 'error',
@@ -3993,6 +3972,7 @@ export const budgetTcrAbi = [
   { type: 'error', inputs: [], name: 'REQUEST_MUST_NOT_BE_RESOLVED' },
   { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
   { type: 'error', inputs: [], name: 'STACK_ALREADY_ACTIVE' },
+  { type: 'error', inputs: [], name: 'STACK_MODULE_CONFIG_MISMATCH' },
   { type: 'error', inputs: [], name: 'STACK_STILL_ACTIVE' },
   { type: 'error', inputs: [], name: 'SUBMISSION_DEPOSIT_ALREADY_SET' },
   { type: 'error', inputs: [], name: 'SUBMISSION_DEPOSIT_TRANSFER_INCOMPLETE' },
@@ -4007,14 +3987,14 @@ export const budgetTcrAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x5C54201DaD0eFBc66398395562B3d49d27B92361)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x0fc6A845c8Cc3be6DDF7a3Edb4f5d820B590000F)
  */
 export const budgetTcrAddress = {
-  8453: '0x5C54201DaD0eFBc66398395562B3d49d27B92361',
+  8453: '0x0fc6A845c8Cc3be6DDF7a3Edb4f5d820B590000F',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x5C54201DaD0eFBc66398395562B3d49d27B92361)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x0fc6A845c8Cc3be6DDF7a3Edb4f5d820B590000F)
  */
 export const budgetTcrConfig = {
   address: budgetTcrAddress,
@@ -4026,7 +4006,7 @@ export const budgetTcrConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4D1bA668a55a842C593aBcbaeE795ce5A245B71d)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xD9671A34E5dD840337aa933A555CD7B0FC94Cc6c)
  */
 export const budgetTcrDeployerAbi = [
   {
@@ -4081,13 +4061,6 @@ export const budgetTcrDeployerAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'budgetTCR',
-    outputs: [{ name: 'budgetTCR_', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
     name: 'budgetTreasuryImplementation',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
@@ -4106,7 +4079,7 @@ export const budgetTcrDeployerAbi = [
     outputs: [
       {
         name: '',
-        internalType: 'enum IBudgetStackDeployer.ChildFlowStrategyMode',
+        internalType: 'enum BudgetStackTypes.ChildFlowStrategyMode',
         type: 'uint8',
       },
     ],
@@ -4225,7 +4198,7 @@ export const budgetTcrDeployerAbi = [
       },
       {
         name: 'riskModuleInitConfig',
-        internalType: 'struct IBudgetStackDeployer.RiskModuleInitConfig',
+        internalType: 'struct BudgetStackTypes.RiskModuleInitConfig',
         type: 'tuple',
         components: [
           {
@@ -4256,42 +4229,6 @@ export const budgetTcrDeployerAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'discoveryEmitter',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'itemID', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'allocationMechanism', internalType: 'address', type: 'address' },
-      {
-        name: 'allocationMechanismArbitrator',
-        internalType: 'address',
-        type: 'address',
-      },
-      { name: 'roundFactory_', internalType: 'address', type: 'address' },
-    ],
-    name: 'emitBudgetAllocationMechanismDeployed',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'itemID', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'childFlow', internalType: 'address', type: 'address' },
-      { name: 'budgetTreasury', internalType: 'address', type: 'address' },
-      { name: 'premiumEscrow', internalType: 'address', type: 'address' },
-      { name: 'strategy', internalType: 'address', type: 'address' },
-    ],
-    name: 'emitBudgetStackDeployed',
-    outputs: [],
-    stateMutability: 'nonpayable',
-  },
-  {
-    type: 'function',
-    inputs: [],
     name: 'initialMechanismFactories',
     outputs: [
       { name: 'factories', internalType: 'address[]', type: 'address[]' },
@@ -4301,15 +4238,15 @@ export const budgetTcrDeployerAbi = [
   {
     type: 'function',
     inputs: [
-      { name: 'budgetTCR_', internalType: 'address', type: 'address' },
+      { name: 'controller_', internalType: 'address', type: 'address' },
       {
         name: 'stackModuleConfig_',
-        internalType: 'struct IBudgetStackDeployer.StackModuleConfig',
+        internalType: 'struct BudgetStackTypes.StackModuleConfig',
         type: 'tuple',
         components: [
           {
             name: 'childFlowStrategyMode',
-            internalType: 'enum IBudgetStackDeployer.ChildFlowStrategyMode',
+            internalType: 'enum BudgetStackTypes.ChildFlowStrategyMode',
             type: 'uint8',
           },
           {
@@ -4319,7 +4256,7 @@ export const budgetTcrDeployerAbi = [
           },
           {
             name: 'mechanismLayerMode',
-            internalType: 'enum IBudgetStackDeployer.MechanismLayerMode',
+            internalType: 'enum BudgetStackTypes.MechanismLayerMode',
             type: 'uint8',
           },
           {
@@ -4334,7 +4271,6 @@ export const budgetTcrDeployerAbi = [
           },
         ],
       },
-      { name: 'discoveryEmitter_', internalType: 'address', type: 'address' },
     ],
     name: 'initializeWithConfig',
     outputs: [],
@@ -4347,17 +4283,10 @@ export const budgetTcrDeployerAbi = [
     outputs: [
       {
         name: '',
-        internalType: 'enum IBudgetStackDeployer.MechanismLayerMode',
+        internalType: 'enum BudgetStackTypes.MechanismLayerMode',
         type: 'uint8',
       },
     ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'premiumEscrowImplementation',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -4370,7 +4299,7 @@ export const budgetTcrDeployerAbi = [
     outputs: [
       {
         name: 'result',
-        internalType: 'struct IBudgetStackDeployer.PreparationResult',
+        internalType: 'struct BudgetStackTypes.PreparationResult',
         type: 'tuple',
         components: [
           { name: 'strategy', internalType: 'address', type: 'address' },
@@ -4418,23 +4347,16 @@ export const budgetTcrDeployerAbi = [
   {
     type: 'function',
     inputs: [],
-    name: 'sharedBudgetFlowStrategyLedger',
-    outputs: [{ name: 'ledger', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
     name: 'stackModuleConfig',
     outputs: [
       {
         name: 'config',
-        internalType: 'struct IBudgetStackDeployer.StackModuleConfig',
+        internalType: 'struct BudgetStackTypes.StackModuleConfig',
         type: 'tuple',
         components: [
           {
             name: 'childFlowStrategyMode',
-            internalType: 'enum IBudgetStackDeployer.ChildFlowStrategyMode',
+            internalType: 'enum BudgetStackTypes.ChildFlowStrategyMode',
             type: 'uint8',
           },
           {
@@ -4444,7 +4366,7 @@ export const budgetTcrDeployerAbi = [
           },
           {
             name: 'mechanismLayerMode',
-            internalType: 'enum IBudgetStackDeployer.MechanismLayerMode',
+            internalType: 'enum BudgetStackTypes.MechanismLayerMode',
             type: 'uint8',
           },
           {
@@ -4531,14 +4453,14 @@ export const budgetTcrDeployerAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4D1bA668a55a842C593aBcbaeE795ce5A245B71d)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xD9671A34E5dD840337aa933A555CD7B0FC94Cc6c)
  */
 export const budgetTcrDeployerAddress = {
-  8453: '0x4D1bA668a55a842C593aBcbaeE795ce5A245B71d',
+  8453: '0xD9671A34E5dD840337aa933A555CD7B0FC94Cc6c',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4D1bA668a55a842C593aBcbaeE795ce5A245B71d)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xD9671A34E5dD840337aa933A555CD7B0FC94Cc6c)
  */
 export const budgetTcrDeployerConfig = {
   address: budgetTcrDeployerAddress,
@@ -4550,7 +4472,7 @@ export const budgetTcrDeployerConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xFf9d8986328841De5e9593f72A18982263291593)
  */
 export const budgetTcrFactoryAbi = [
   {
@@ -4588,15 +4510,6 @@ export const budgetTcrFactoryAbi = [
     inputs: [],
     name: 'authorizedCaller',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [
-      { name: 'stackDeployer', internalType: 'address', type: 'address' },
-    ],
-    name: 'budgetTCRByStackDeployer',
-    outputs: [{ name: 'budgetTCR', internalType: 'address', type: 'address' }],
     stateMutability: 'view',
   },
   {
@@ -4685,10 +4598,10 @@ export const budgetTcrFactoryAbi = [
       },
       {
         name: 'deploymentConfig',
-        internalType: 'struct IBudgetTCR.DeploymentConfig',
+        internalType:
+          'struct BudgetTCRFactory.RequestedBudgetTCRDeploymentConfig',
         type: 'tuple',
         components: [
-          { name: 'stackDeployer', internalType: 'address', type: 'address' },
           {
             name: 'budgetSuccessResolver',
             internalType: 'address',
@@ -4743,11 +4656,6 @@ export const budgetTcrFactoryAbi = [
             type: 'address',
           },
           { name: 'goalRevnetId', internalType: 'uint256', type: 'uint256' },
-          {
-            name: 'paymentTokenDecimals',
-            internalType: 'uint8',
-            type: 'uint8',
-          },
           { name: 'budgetPremiumPpm', internalType: 'uint32', type: 'uint32' },
           { name: 'budgetSlashPpm', internalType: 'uint32', type: 'uint32' },
           {
@@ -4834,7 +4742,6 @@ export const budgetTcrFactoryAbi = [
         components: [
           { name: 'budgetTCR', internalType: 'address', type: 'address' },
           { name: 'arbitrator', internalType: 'address', type: 'address' },
-          { name: 'token', internalType: 'address', type: 'address' },
         ],
       },
     ],
@@ -4909,15 +4816,6 @@ export const budgetTcrFactoryAbi = [
     ],
     name: 'predictBudgetTCRAddress',
     outputs: [{ name: 'predicted', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [{ name: 'budgetTCR', internalType: 'address', type: 'address' }],
-    name: 'stackDeployerByBudgetTCR',
-    outputs: [
-      { name: 'stackDeployer', internalType: 'address', type: 'address' },
-    ],
     stateMutability: 'view',
   },
   {
@@ -5115,12 +5013,12 @@ export const budgetTcrFactoryAbi = [
   {
     type: 'error',
     inputs: [{ name: 'caller', internalType: 'address', type: 'address' }],
-    name: 'UNAUTHORIZED_CALLER',
+    name: 'UNAUTHORIZED_BUDGET_TCR',
   },
   {
     type: 'error',
     inputs: [{ name: 'caller', internalType: 'address', type: 'address' }],
-    name: 'UNAUTHORIZED_STACK_DEPLOYER',
+    name: 'UNAUTHORIZED_CALLER',
   },
   {
     type: 'error',
@@ -5148,14 +5046,14 @@ export const budgetTcrFactoryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xFf9d8986328841De5e9593f72A18982263291593)
  */
 export const budgetTcrFactoryAddress = {
-  8453: '0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D',
+  8453: '0xFf9d8986328841De5e9593f72A18982263291593',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xFf9d8986328841De5e9593f72A18982263291593)
  */
 export const budgetTcrFactoryConfig = {
   address: budgetTcrFactoryAddress,
@@ -5167,7 +5065,7 @@ export const budgetTcrFactoryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x6F57C337A2B4B5f1eF39A8aE8c197AfE3e9CebBd)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xE63Cb1Ed7a750e541bEBaE710077ab47641627f4)
  */
 export const budgetTreasuryAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -6086,14 +5984,14 @@ export const budgetTreasuryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x6F57C337A2B4B5f1eF39A8aE8c197AfE3e9CebBd)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xE63Cb1Ed7a750e541bEBaE710077ab47641627f4)
  */
 export const budgetTreasuryAddress = {
-  8453: '0x6F57C337A2B4B5f1eF39A8aE8c197AfE3e9CebBd',
+  8453: '0xE63Cb1Ed7a750e541bEBaE710077ab47641627f4',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x6F57C337A2B4B5f1eF39A8aE8c197AfE3e9CebBd)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xE63Cb1Ed7a750e541bEBaE710077ab47641627f4)
  */
 export const budgetTreasuryConfig = {
   address: budgetTreasuryAddress,
@@ -7232,7 +7130,7 @@ export const cobuildTerminalConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x96B5535c2F6a6dD5464Ec82Cb974c4a727033cBC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x8B29c07b3bb02BFd3be69b4602F86101bC2ec082)
  */
 export const erc20VotesArbitratorAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -8234,14 +8132,14 @@ export const erc20VotesArbitratorAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x96B5535c2F6a6dD5464Ec82Cb974c4a727033cBC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x8B29c07b3bb02BFd3be69b4602F86101bC2ec082)
  */
 export const erc20VotesArbitratorAddress = {
-  8453: '0x96B5535c2F6a6dD5464Ec82Cb974c4a727033cBC',
+  8453: '0x8B29c07b3bb02BFd3be69b4602F86101bC2ec082',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x96B5535c2F6a6dD5464Ec82Cb974c4a727033cBC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x8B29c07b3bb02BFd3be69b4602F86101bC2ec082)
  */
 export const erc20VotesArbitratorConfig = {
   address: erc20VotesArbitratorAddress,
@@ -8253,7 +8151,7 @@ export const erc20VotesArbitratorConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x29a8e4A2640D07C9C1b055119a7b3923Bbb6C7ad)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x59E9cD3f0ee1Ffb5C6e39EA104878184f5A853D9)
  */
 export const flowAbi = [
   {
@@ -9144,14 +9042,14 @@ export const flowAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x29a8e4A2640D07C9C1b055119a7b3923Bbb6C7ad)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x59E9cD3f0ee1Ffb5C6e39EA104878184f5A853D9)
  */
 export const flowAddress = {
-  8453: '0x29a8e4A2640D07C9C1b055119a7b3923Bbb6C7ad',
+  8453: '0x59E9cD3f0ee1Ffb5C6e39EA104878184f5A853D9',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x29a8e4A2640D07C9C1b055119a7b3923Bbb6C7ad)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x59E9cD3f0ee1Ffb5C6e39EA104878184f5A853D9)
  */
 export const flowConfig = { address: flowAddress, abi: flowAbi } as const
 
@@ -9160,7 +9058,7 @@ export const flowConfig = { address: flowAddress, abi: flowAbi } as const
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x5702a03784925Fb0E0dcc2a817B709cF42A3cd4C)
  */
 export const goalDeploymentRegistryAbi = [
   {
@@ -9313,14 +9211,14 @@ export const goalDeploymentRegistryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x5702a03784925Fb0E0dcc2a817B709cF42A3cd4C)
  */
 export const goalDeploymentRegistryAddress = {
-  8453: '0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67',
+  8453: '0x5702a03784925Fb0E0dcc2a817B709cF42A3cd4C',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x5702a03784925Fb0E0dcc2a817B709cF42A3cd4C)
  */
 export const goalDeploymentRegistryConfig = {
   address: goalDeploymentRegistryAddress,
@@ -9332,7 +9230,7 @@ export const goalDeploymentRegistryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x8Aa7d640C7997b45adB53AB1D703681e8FB449A4)
  */
 export const goalFactoryAbi = [
   {
@@ -9634,237 +9532,170 @@ export const goalFactoryAbi = [
     inputs: [
       {
         name: 'p',
-        internalType: 'struct GoalFactory.DeployParams',
+        internalType: 'struct GoalFactory.ManagedGoalParams',
         type: 'tuple',
         components: [
           {
-            name: 'preset',
-            internalType: 'enum GoalFactory.GoalPreset',
-            type: 'uint8',
-          },
-          { name: 'managedSafe', internalType: 'address', type: 'address' },
-          {
-            name: 'funding',
-            internalType: 'struct GoalFactory.FundingContext',
+            name: 'common',
+            internalType: 'struct GoalFactory.CommonGoalParams',
             type: 'tuple',
             components: [
               {
-                name: 'paymentToken',
-                internalType: 'address',
-                type: 'address',
-              },
-              {
-                name: 'paymentRevnetId',
-                internalType: 'uint256',
-                type: 'uint256',
-              },
-            ],
-          },
-          {
-            name: 'revnet',
-            internalType: 'struct GoalFactory.RevnetParams',
-            type: 'tuple',
-            components: [
-              { name: 'name', internalType: 'string', type: 'string' },
-              { name: 'ticker', internalType: 'string', type: 'string' },
-              { name: 'uri', internalType: 'string', type: 'string' },
-              {
-                name: 'initialIssuance',
-                internalType: 'uint112',
-                type: 'uint112',
-              },
-              {
-                name: 'cashOutTaxRate',
-                internalType: 'uint16',
-                type: 'uint16',
-              },
-              {
-                name: 'reservedPercent',
-                internalType: 'uint16',
-                type: 'uint16',
-              },
-              {
-                name: 'durationSeconds',
-                internalType: 'uint32',
-                type: 'uint32',
-              },
-            ],
-          },
-          {
-            name: 'timing',
-            internalType: 'struct GoalFactory.GoalTimingParams',
-            type: 'tuple',
-            components: [
-              { name: 'minRaise', internalType: 'uint256', type: 'uint256' },
-              {
-                name: 'minRaiseDurationSeconds',
-                internalType: 'uint32',
-                type: 'uint32',
-              },
-            ],
-          },
-          {
-            name: 'success',
-            internalType: 'struct GoalFactory.SuccessParams',
-            type: 'tuple',
-            components: [
-              {
-                name: 'successResolver',
-                internalType: 'address',
-                type: 'address',
-              },
-              {
-                name: 'successAssertionLiveness',
-                internalType: 'uint64',
-                type: 'uint64',
-              },
-              {
-                name: 'successAssertionBond',
-                internalType: 'uint256',
-                type: 'uint256',
-              },
-              {
-                name: 'successOracleSpecHash',
-                internalType: 'bytes32',
-                type: 'bytes32',
-              },
-              {
-                name: 'successAssertionPolicyHash',
-                internalType: 'bytes32',
-                type: 'bytes32',
-              },
-            ],
-          },
-          {
-            name: 'flowMetadata',
-            internalType: 'struct GoalFactory.FlowMetadataParams',
-            type: 'tuple',
-            components: [
-              { name: 'title', internalType: 'string', type: 'string' },
-              { name: 'description', internalType: 'string', type: 'string' },
-              { name: 'image', internalType: 'string', type: 'string' },
-              { name: 'tagline', internalType: 'string', type: 'string' },
-              { name: 'url', internalType: 'string', type: 'string' },
-            ],
-          },
-          {
-            name: 'underwriting',
-            internalType: 'struct GoalFactory.UnderwritingParams',
-            type: 'tuple',
-            components: [
-              {
-                name: 'budgetPremiumPpm',
-                internalType: 'uint32',
-                type: 'uint32',
-              },
-              {
-                name: 'budgetSlashPpm',
-                internalType: 'uint32',
-                type: 'uint32',
-              },
-            ],
-          },
-          {
-            name: 'budgetTCR',
-            internalType: 'struct GoalFactory.BudgetTCRParams',
-            type: 'tuple',
-            components: [
-              {
-                name: 'allocationMechanismAdmin',
-                internalType: 'address',
-                type: 'address',
-              },
-              {
-                name: 'invalidRoundRewardsSink',
-                internalType: 'address',
-                type: 'address',
-              },
-              {
-                name: 'submissionDepositStrategy',
-                internalType: 'address',
-                type: 'address',
-              },
-              {
-                name: 'submissionBaseDeposit',
-                internalType: 'uint256',
-                type: 'uint256',
-              },
-              {
-                name: 'removalBaseDeposit',
-                internalType: 'uint256',
-                type: 'uint256',
-              },
-              {
-                name: 'submissionChallengeBaseDeposit',
-                internalType: 'uint256',
-                type: 'uint256',
-              },
-              {
-                name: 'removalChallengeBaseDeposit',
-                internalType: 'uint256',
-                type: 'uint256',
-              },
-              {
-                name: 'registrationMetaEvidence',
-                internalType: 'string',
-                type: 'string',
-              },
-              {
-                name: 'clearingMetaEvidence',
-                internalType: 'string',
-                type: 'string',
-              },
-              {
-                name: 'challengePeriodDuration',
-                internalType: 'uint256',
-                type: 'uint256',
-              },
-              {
-                name: 'arbitratorExtraData',
-                internalType: 'bytes',
-                type: 'bytes',
-              },
-              {
-                name: 'budgetBounds',
-                internalType: 'struct IBudgetTCR.BudgetValidationBounds',
+                name: 'funding',
+                internalType: 'struct GoalFactory.FundingContext',
                 type: 'tuple',
                 components: [
                   {
-                    name: 'minFundingLeadTime',
-                    internalType: 'uint64',
-                    type: 'uint64',
+                    name: 'paymentToken',
+                    internalType: 'address',
+                    type: 'address',
                   },
                   {
-                    name: 'maxFundingHorizon',
-                    internalType: 'uint64',
-                    type: 'uint64',
-                  },
-                  {
-                    name: 'minExecutionDuration',
-                    internalType: 'uint64',
-                    type: 'uint64',
-                  },
-                  {
-                    name: 'maxExecutionDuration',
-                    internalType: 'uint64',
-                    type: 'uint64',
-                  },
-                  {
-                    name: 'minActivationThreshold',
-                    internalType: 'uint256',
-                    type: 'uint256',
-                  },
-                  {
-                    name: 'maxActivationThreshold',
-                    internalType: 'uint256',
-                    type: 'uint256',
-                  },
-                  {
-                    name: 'maxRunwayCap',
+                    name: 'paymentRevnetId',
                     internalType: 'uint256',
                     type: 'uint256',
                   },
                 ],
+              },
+              {
+                name: 'revnet',
+                internalType: 'struct GoalFactory.RevnetParams',
+                type: 'tuple',
+                components: [
+                  { name: 'name', internalType: 'string', type: 'string' },
+                  { name: 'ticker', internalType: 'string', type: 'string' },
+                  { name: 'uri', internalType: 'string', type: 'string' },
+                  {
+                    name: 'initialIssuance',
+                    internalType: 'uint112',
+                    type: 'uint112',
+                  },
+                  {
+                    name: 'cashOutTaxRate',
+                    internalType: 'uint16',
+                    type: 'uint16',
+                  },
+                  {
+                    name: 'reservedPercent',
+                    internalType: 'uint16',
+                    type: 'uint16',
+                  },
+                  {
+                    name: 'durationSeconds',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'timing',
+                internalType: 'struct GoalFactory.GoalTimingParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'minRaise',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'minRaiseDurationSeconds',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'success',
+                internalType: 'struct GoalFactory.SuccessParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'successResolver',
+                    internalType: 'address',
+                    type: 'address',
+                  },
+                  {
+                    name: 'successAssertionLiveness',
+                    internalType: 'uint64',
+                    type: 'uint64',
+                  },
+                  {
+                    name: 'successAssertionBond',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'successOracleSpecHash',
+                    internalType: 'bytes32',
+                    type: 'bytes32',
+                  },
+                  {
+                    name: 'successAssertionPolicyHash',
+                    internalType: 'bytes32',
+                    type: 'bytes32',
+                  },
+                ],
+              },
+              {
+                name: 'flowMetadata',
+                internalType: 'struct GoalFactory.FlowMetadataParams',
+                type: 'tuple',
+                components: [
+                  { name: 'title', internalType: 'string', type: 'string' },
+                  {
+                    name: 'description',
+                    internalType: 'string',
+                    type: 'string',
+                  },
+                  { name: 'image', internalType: 'string', type: 'string' },
+                  { name: 'tagline', internalType: 'string', type: 'string' },
+                  { name: 'url', internalType: 'string', type: 'string' },
+                ],
+              },
+              {
+                name: 'underwriting',
+                internalType: 'struct GoalFactory.UnderwritingParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'budgetPremiumPpm',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                  {
+                    name: 'budgetSlashPpm',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'goalSpendPolicy',
+                internalType: 'address',
+                type: 'address',
+              },
+            ],
+          },
+          { name: 'managedSafe', internalType: 'address', type: 'address' },
+          {
+            name: 'managedBudgetGatePolicy',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'budgetRuntime',
+            internalType: 'struct GoalFactory.BudgetRuntimeParams',
+            type: 'tuple',
+            components: [
+              {
+                name: 'budgetSuccessResolver',
+                internalType: 'address',
+                type: 'address',
+              },
+              {
+                name: 'budgetSpendPolicy',
+                internalType: 'address',
+                type: 'address',
               },
               {
                 name: 'oracleBounds',
@@ -9879,60 +9710,12 @@ export const goalFactoryAbi = [
                   },
                 ],
               },
-              {
-                name: 'budgetSuccessResolver',
-                internalType: 'address',
-                type: 'address',
-              },
-              {
-                name: 'budgetSpendPolicy',
-                internalType: 'address',
-                type: 'address',
-              },
-              {
-                name: 'arbitratorParams',
-                internalType: 'struct IArbitrator.ArbitratorParams',
-                type: 'tuple',
-                components: [
-                  {
-                    name: 'votingPeriod',
-                    internalType: 'uint256',
-                    type: 'uint256',
-                  },
-                  {
-                    name: 'votingDelay',
-                    internalType: 'uint256',
-                    type: 'uint256',
-                  },
-                  {
-                    name: 'revealPeriod',
-                    internalType: 'uint256',
-                    type: 'uint256',
-                  },
-                  {
-                    name: 'arbitrationCost',
-                    internalType: 'uint256',
-                    type: 'uint256',
-                  },
-                  {
-                    name: 'wrongOrMissedSlashBps',
-                    internalType: 'uint256',
-                    type: 'uint256',
-                  },
-                  {
-                    name: 'slashCallerBountyBps',
-                    internalType: 'uint256',
-                    type: 'uint256',
-                  },
-                ],
-              },
             ],
           },
-          { name: 'goalSpendPolicy', internalType: 'address', type: 'address' },
         ],
       },
     ],
-    name: 'deployGoal',
+    name: 'deployManagedGoal',
     outputs: [
       {
         name: 'out',
@@ -9993,139 +9776,422 @@ export const goalFactoryAbi = [
       },
       {
         name: 'p',
-        internalType: 'struct GoalFactory.DeployParams',
+        internalType: 'struct GoalFactory.ManagedGoalParams',
         type: 'tuple',
         components: [
           {
-            name: 'preset',
-            internalType: 'enum GoalFactory.GoalPreset',
-            type: 'uint8',
+            name: 'common',
+            internalType: 'struct GoalFactory.CommonGoalParams',
+            type: 'tuple',
+            components: [
+              {
+                name: 'funding',
+                internalType: 'struct GoalFactory.FundingContext',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'paymentToken',
+                    internalType: 'address',
+                    type: 'address',
+                  },
+                  {
+                    name: 'paymentRevnetId',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                ],
+              },
+              {
+                name: 'revnet',
+                internalType: 'struct GoalFactory.RevnetParams',
+                type: 'tuple',
+                components: [
+                  { name: 'name', internalType: 'string', type: 'string' },
+                  { name: 'ticker', internalType: 'string', type: 'string' },
+                  { name: 'uri', internalType: 'string', type: 'string' },
+                  {
+                    name: 'initialIssuance',
+                    internalType: 'uint112',
+                    type: 'uint112',
+                  },
+                  {
+                    name: 'cashOutTaxRate',
+                    internalType: 'uint16',
+                    type: 'uint16',
+                  },
+                  {
+                    name: 'reservedPercent',
+                    internalType: 'uint16',
+                    type: 'uint16',
+                  },
+                  {
+                    name: 'durationSeconds',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'timing',
+                internalType: 'struct GoalFactory.GoalTimingParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'minRaise',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'minRaiseDurationSeconds',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'success',
+                internalType: 'struct GoalFactory.SuccessParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'successResolver',
+                    internalType: 'address',
+                    type: 'address',
+                  },
+                  {
+                    name: 'successAssertionLiveness',
+                    internalType: 'uint64',
+                    type: 'uint64',
+                  },
+                  {
+                    name: 'successAssertionBond',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'successOracleSpecHash',
+                    internalType: 'bytes32',
+                    type: 'bytes32',
+                  },
+                  {
+                    name: 'successAssertionPolicyHash',
+                    internalType: 'bytes32',
+                    type: 'bytes32',
+                  },
+                ],
+              },
+              {
+                name: 'flowMetadata',
+                internalType: 'struct GoalFactory.FlowMetadataParams',
+                type: 'tuple',
+                components: [
+                  { name: 'title', internalType: 'string', type: 'string' },
+                  {
+                    name: 'description',
+                    internalType: 'string',
+                    type: 'string',
+                  },
+                  { name: 'image', internalType: 'string', type: 'string' },
+                  { name: 'tagline', internalType: 'string', type: 'string' },
+                  { name: 'url', internalType: 'string', type: 'string' },
+                ],
+              },
+              {
+                name: 'underwriting',
+                internalType: 'struct GoalFactory.UnderwritingParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'budgetPremiumPpm',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                  {
+                    name: 'budgetSlashPpm',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'goalSpendPolicy',
+                internalType: 'address',
+                type: 'address',
+              },
+            ],
           },
           { name: 'managedSafe', internalType: 'address', type: 'address' },
           {
-            name: 'funding',
-            internalType: 'struct GoalFactory.FundingContext',
+            name: 'managedBudgetGatePolicy',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'budgetRuntime',
+            internalType: 'struct GoalFactory.BudgetRuntimeParams',
             type: 'tuple',
             components: [
               {
-                name: 'paymentToken',
+                name: 'budgetSuccessResolver',
                 internalType: 'address',
                 type: 'address',
               },
               {
-                name: 'paymentRevnetId',
-                internalType: 'uint256',
-                type: 'uint256',
-              },
-            ],
-          },
-          {
-            name: 'revnet',
-            internalType: 'struct GoalFactory.RevnetParams',
-            type: 'tuple',
-            components: [
-              { name: 'name', internalType: 'string', type: 'string' },
-              { name: 'ticker', internalType: 'string', type: 'string' },
-              { name: 'uri', internalType: 'string', type: 'string' },
-              {
-                name: 'initialIssuance',
-                internalType: 'uint112',
-                type: 'uint112',
-              },
-              {
-                name: 'cashOutTaxRate',
-                internalType: 'uint16',
-                type: 'uint16',
-              },
-              {
-                name: 'reservedPercent',
-                internalType: 'uint16',
-                type: 'uint16',
-              },
-              {
-                name: 'durationSeconds',
-                internalType: 'uint32',
-                type: 'uint32',
-              },
-            ],
-          },
-          {
-            name: 'timing',
-            internalType: 'struct GoalFactory.GoalTimingParams',
-            type: 'tuple',
-            components: [
-              { name: 'minRaise', internalType: 'uint256', type: 'uint256' },
-              {
-                name: 'minRaiseDurationSeconds',
-                internalType: 'uint32',
-                type: 'uint32',
-              },
-            ],
-          },
-          {
-            name: 'success',
-            internalType: 'struct GoalFactory.SuccessParams',
-            type: 'tuple',
-            components: [
-              {
-                name: 'successResolver',
+                name: 'budgetSpendPolicy',
                 internalType: 'address',
                 type: 'address',
               },
               {
-                name: 'successAssertionLiveness',
-                internalType: 'uint64',
-                type: 'uint64',
-              },
-              {
-                name: 'successAssertionBond',
-                internalType: 'uint256',
-                type: 'uint256',
-              },
-              {
-                name: 'successOracleSpecHash',
-                internalType: 'bytes32',
-                type: 'bytes32',
-              },
-              {
-                name: 'successAssertionPolicyHash',
-                internalType: 'bytes32',
-                type: 'bytes32',
+                name: 'oracleBounds',
+                internalType: 'struct IBudgetTCR.OracleValidationBounds',
+                type: 'tuple',
+                components: [
+                  { name: 'liveness', internalType: 'uint64', type: 'uint64' },
+                  {
+                    name: 'bondAmount',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                ],
               },
             ],
           },
+        ],
+      },
+    ],
+    name: 'deployManagedGoalForCommunity',
+    outputs: [
+      {
+        name: 'out',
+        internalType: 'struct GoalFactory.DeployedGoalStack',
+        type: 'tuple',
+        components: [
+          { name: 'goalRevnetId', internalType: 'uint256', type: 'uint256' },
+          { name: 'goalToken', internalType: 'address', type: 'address' },
+          { name: 'goalSuperToken', internalType: 'address', type: 'address' },
+          { name: 'goalTreasury', internalType: 'address', type: 'address' },
+          { name: 'goalFlow', internalType: 'address', type: 'address' },
           {
-            name: 'flowMetadata',
-            internalType: 'struct GoalFactory.FlowMetadataParams',
+            name: 'goalAllocatorStrategy',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'goalFlowAllocationLedgerPipeline',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'stakeVault', internalType: 'address', type: 'address' },
+          {
+            name: 'budgetStakeLedger',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'splitHook', internalType: 'address', type: 'address' },
+          {
+            name: 'jurorSlasherRouter',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'underwriterSlasherRouter',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'successResolver', internalType: 'address', type: 'address' },
+          {
+            name: 'budgetController',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'arbitrator', internalType: 'address', type: 'address' },
+        ],
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      {
+        name: 'p',
+        internalType: 'struct GoalFactory.OpenGoalParams',
+        type: 'tuple',
+        components: [
+          {
+            name: 'common',
+            internalType: 'struct GoalFactory.CommonGoalParams',
             type: 'tuple',
             components: [
-              { name: 'title', internalType: 'string', type: 'string' },
-              { name: 'description', internalType: 'string', type: 'string' },
-              { name: 'image', internalType: 'string', type: 'string' },
-              { name: 'tagline', internalType: 'string', type: 'string' },
-              { name: 'url', internalType: 'string', type: 'string' },
+              {
+                name: 'funding',
+                internalType: 'struct GoalFactory.FundingContext',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'paymentToken',
+                    internalType: 'address',
+                    type: 'address',
+                  },
+                  {
+                    name: 'paymentRevnetId',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                ],
+              },
+              {
+                name: 'revnet',
+                internalType: 'struct GoalFactory.RevnetParams',
+                type: 'tuple',
+                components: [
+                  { name: 'name', internalType: 'string', type: 'string' },
+                  { name: 'ticker', internalType: 'string', type: 'string' },
+                  { name: 'uri', internalType: 'string', type: 'string' },
+                  {
+                    name: 'initialIssuance',
+                    internalType: 'uint112',
+                    type: 'uint112',
+                  },
+                  {
+                    name: 'cashOutTaxRate',
+                    internalType: 'uint16',
+                    type: 'uint16',
+                  },
+                  {
+                    name: 'reservedPercent',
+                    internalType: 'uint16',
+                    type: 'uint16',
+                  },
+                  {
+                    name: 'durationSeconds',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'timing',
+                internalType: 'struct GoalFactory.GoalTimingParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'minRaise',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'minRaiseDurationSeconds',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'success',
+                internalType: 'struct GoalFactory.SuccessParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'successResolver',
+                    internalType: 'address',
+                    type: 'address',
+                  },
+                  {
+                    name: 'successAssertionLiveness',
+                    internalType: 'uint64',
+                    type: 'uint64',
+                  },
+                  {
+                    name: 'successAssertionBond',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'successOracleSpecHash',
+                    internalType: 'bytes32',
+                    type: 'bytes32',
+                  },
+                  {
+                    name: 'successAssertionPolicyHash',
+                    internalType: 'bytes32',
+                    type: 'bytes32',
+                  },
+                ],
+              },
+              {
+                name: 'flowMetadata',
+                internalType: 'struct GoalFactory.FlowMetadataParams',
+                type: 'tuple',
+                components: [
+                  { name: 'title', internalType: 'string', type: 'string' },
+                  {
+                    name: 'description',
+                    internalType: 'string',
+                    type: 'string',
+                  },
+                  { name: 'image', internalType: 'string', type: 'string' },
+                  { name: 'tagline', internalType: 'string', type: 'string' },
+                  { name: 'url', internalType: 'string', type: 'string' },
+                ],
+              },
+              {
+                name: 'underwriting',
+                internalType: 'struct GoalFactory.UnderwritingParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'budgetPremiumPpm',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                  {
+                    name: 'budgetSlashPpm',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'goalSpendPolicy',
+                internalType: 'address',
+                type: 'address',
+              },
             ],
           },
           {
-            name: 'underwriting',
-            internalType: 'struct GoalFactory.UnderwritingParams',
+            name: 'budgetRuntime',
+            internalType: 'struct GoalFactory.BudgetRuntimeParams',
             type: 'tuple',
             components: [
               {
-                name: 'budgetPremiumPpm',
-                internalType: 'uint32',
-                type: 'uint32',
+                name: 'budgetSuccessResolver',
+                internalType: 'address',
+                type: 'address',
               },
               {
-                name: 'budgetSlashPpm',
-                internalType: 'uint32',
-                type: 'uint32',
+                name: 'budgetSpendPolicy',
+                internalType: 'address',
+                type: 'address',
+              },
+              {
+                name: 'oracleBounds',
+                internalType: 'struct IBudgetTCR.OracleValidationBounds',
+                type: 'tuple',
+                components: [
+                  { name: 'liveness', internalType: 'uint64', type: 'uint64' },
+                  {
+                    name: 'bondAmount',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                ],
               },
             ],
           },
           {
-            name: 'budgetTCR',
-            internalType: 'struct GoalFactory.BudgetTCRParams',
+            name: 'openBudgetTCR',
+            internalType: 'struct GoalFactory.OpenBudgetTCRParams',
             type: 'tuple',
             components: [
               {
@@ -10226,6 +10292,268 @@ export const goalFactoryAbi = [
                 ],
               },
               {
+                name: 'arbitratorParams',
+                internalType: 'struct IArbitrator.ArbitratorParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'votingPeriod',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'votingDelay',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'revealPeriod',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'arbitrationCost',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'wrongOrMissedSlashBps',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'slashCallerBountyBps',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    name: 'deployOpenGoal',
+    outputs: [
+      {
+        name: 'out',
+        internalType: 'struct GoalFactory.DeployedGoalStack',
+        type: 'tuple',
+        components: [
+          { name: 'goalRevnetId', internalType: 'uint256', type: 'uint256' },
+          { name: 'goalToken', internalType: 'address', type: 'address' },
+          { name: 'goalSuperToken', internalType: 'address', type: 'address' },
+          { name: 'goalTreasury', internalType: 'address', type: 'address' },
+          { name: 'goalFlow', internalType: 'address', type: 'address' },
+          {
+            name: 'goalAllocatorStrategy',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'goalFlowAllocationLedgerPipeline',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'stakeVault', internalType: 'address', type: 'address' },
+          {
+            name: 'budgetStakeLedger',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'splitHook', internalType: 'address', type: 'address' },
+          {
+            name: 'jurorSlasherRouter',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'underwriterSlasherRouter',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'successResolver', internalType: 'address', type: 'address' },
+          {
+            name: 'budgetController',
+            internalType: 'address',
+            type: 'address',
+          },
+          { name: 'arbitrator', internalType: 'address', type: 'address' },
+        ],
+      },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      {
+        name: 'registry',
+        internalType: 'contract ICommunityGoalRegistry',
+        type: 'address',
+      },
+      {
+        name: 'p',
+        internalType: 'struct GoalFactory.OpenGoalParams',
+        type: 'tuple',
+        components: [
+          {
+            name: 'common',
+            internalType: 'struct GoalFactory.CommonGoalParams',
+            type: 'tuple',
+            components: [
+              {
+                name: 'funding',
+                internalType: 'struct GoalFactory.FundingContext',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'paymentToken',
+                    internalType: 'address',
+                    type: 'address',
+                  },
+                  {
+                    name: 'paymentRevnetId',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                ],
+              },
+              {
+                name: 'revnet',
+                internalType: 'struct GoalFactory.RevnetParams',
+                type: 'tuple',
+                components: [
+                  { name: 'name', internalType: 'string', type: 'string' },
+                  { name: 'ticker', internalType: 'string', type: 'string' },
+                  { name: 'uri', internalType: 'string', type: 'string' },
+                  {
+                    name: 'initialIssuance',
+                    internalType: 'uint112',
+                    type: 'uint112',
+                  },
+                  {
+                    name: 'cashOutTaxRate',
+                    internalType: 'uint16',
+                    type: 'uint16',
+                  },
+                  {
+                    name: 'reservedPercent',
+                    internalType: 'uint16',
+                    type: 'uint16',
+                  },
+                  {
+                    name: 'durationSeconds',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'timing',
+                internalType: 'struct GoalFactory.GoalTimingParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'minRaise',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'minRaiseDurationSeconds',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'success',
+                internalType: 'struct GoalFactory.SuccessParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'successResolver',
+                    internalType: 'address',
+                    type: 'address',
+                  },
+                  {
+                    name: 'successAssertionLiveness',
+                    internalType: 'uint64',
+                    type: 'uint64',
+                  },
+                  {
+                    name: 'successAssertionBond',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'successOracleSpecHash',
+                    internalType: 'bytes32',
+                    type: 'bytes32',
+                  },
+                  {
+                    name: 'successAssertionPolicyHash',
+                    internalType: 'bytes32',
+                    type: 'bytes32',
+                  },
+                ],
+              },
+              {
+                name: 'flowMetadata',
+                internalType: 'struct GoalFactory.FlowMetadataParams',
+                type: 'tuple',
+                components: [
+                  { name: 'title', internalType: 'string', type: 'string' },
+                  {
+                    name: 'description',
+                    internalType: 'string',
+                    type: 'string',
+                  },
+                  { name: 'image', internalType: 'string', type: 'string' },
+                  { name: 'tagline', internalType: 'string', type: 'string' },
+                  { name: 'url', internalType: 'string', type: 'string' },
+                ],
+              },
+              {
+                name: 'underwriting',
+                internalType: 'struct GoalFactory.UnderwritingParams',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'budgetPremiumPpm',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                  {
+                    name: 'budgetSlashPpm',
+                    internalType: 'uint32',
+                    type: 'uint32',
+                  },
+                ],
+              },
+              {
+                name: 'goalSpendPolicy',
+                internalType: 'address',
+                type: 'address',
+              },
+            ],
+          },
+          {
+            name: 'budgetRuntime',
+            internalType: 'struct GoalFactory.BudgetRuntimeParams',
+            type: 'tuple',
+            components: [
+              {
+                name: 'budgetSuccessResolver',
+                internalType: 'address',
+                type: 'address',
+              },
+              {
+                name: 'budgetSpendPolicy',
+                internalType: 'address',
+                type: 'address',
+              },
+              {
                 name: 'oracleBounds',
                 internalType: 'struct IBudgetTCR.OracleValidationBounds',
                 type: 'tuple',
@@ -10238,15 +10566,109 @@ export const goalFactoryAbi = [
                   },
                 ],
               },
+            ],
+          },
+          {
+            name: 'openBudgetTCR',
+            internalType: 'struct GoalFactory.OpenBudgetTCRParams',
+            type: 'tuple',
+            components: [
               {
-                name: 'budgetSuccessResolver',
+                name: 'allocationMechanismAdmin',
                 internalType: 'address',
                 type: 'address',
               },
               {
-                name: 'budgetSpendPolicy',
+                name: 'invalidRoundRewardsSink',
                 internalType: 'address',
                 type: 'address',
+              },
+              {
+                name: 'submissionDepositStrategy',
+                internalType: 'address',
+                type: 'address',
+              },
+              {
+                name: 'submissionBaseDeposit',
+                internalType: 'uint256',
+                type: 'uint256',
+              },
+              {
+                name: 'removalBaseDeposit',
+                internalType: 'uint256',
+                type: 'uint256',
+              },
+              {
+                name: 'submissionChallengeBaseDeposit',
+                internalType: 'uint256',
+                type: 'uint256',
+              },
+              {
+                name: 'removalChallengeBaseDeposit',
+                internalType: 'uint256',
+                type: 'uint256',
+              },
+              {
+                name: 'registrationMetaEvidence',
+                internalType: 'string',
+                type: 'string',
+              },
+              {
+                name: 'clearingMetaEvidence',
+                internalType: 'string',
+                type: 'string',
+              },
+              {
+                name: 'challengePeriodDuration',
+                internalType: 'uint256',
+                type: 'uint256',
+              },
+              {
+                name: 'arbitratorExtraData',
+                internalType: 'bytes',
+                type: 'bytes',
+              },
+              {
+                name: 'budgetBounds',
+                internalType: 'struct IBudgetTCR.BudgetValidationBounds',
+                type: 'tuple',
+                components: [
+                  {
+                    name: 'minFundingLeadTime',
+                    internalType: 'uint64',
+                    type: 'uint64',
+                  },
+                  {
+                    name: 'maxFundingHorizon',
+                    internalType: 'uint64',
+                    type: 'uint64',
+                  },
+                  {
+                    name: 'minExecutionDuration',
+                    internalType: 'uint64',
+                    type: 'uint64',
+                  },
+                  {
+                    name: 'maxExecutionDuration',
+                    internalType: 'uint64',
+                    type: 'uint64',
+                  },
+                  {
+                    name: 'minActivationThreshold',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'maxActivationThreshold',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                  {
+                    name: 'maxRunwayCap',
+                    internalType: 'uint256',
+                    type: 'uint256',
+                  },
+                ],
               },
               {
                 name: 'arbitratorParams',
@@ -10287,11 +10709,10 @@ export const goalFactoryAbi = [
               },
             ],
           },
-          { name: 'goalSpendPolicy', internalType: 'address', type: 'address' },
         ],
       },
     ],
-    name: 'deployGoalForCommunity',
+    name: 'deployOpenGoalForCommunity',
     outputs: [
       {
         name: 'out',
@@ -10430,6 +10851,14 @@ export const goalFactoryAbi = [
       { name: 'expected', internalType: 'address', type: 'address' },
       { name: 'actual', internalType: 'address', type: 'address' },
     ],
+    name: 'INVALID_BUDGET_TCR_FACTORY_CALLER',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'expected', internalType: 'address', type: 'address' },
+      { name: 'actual', internalType: 'address', type: 'address' },
+    ],
     name: 'INVALID_COMMUNITY_DIRECTORY',
   },
   {
@@ -10503,6 +10932,11 @@ export const goalFactoryAbi = [
   },
   { type: 'error', inputs: [], name: 'INVALID_RESERVED_PERCENT' },
   { type: 'error', inputs: [], name: 'INVALID_SCALE' },
+  {
+    type: 'error',
+    inputs: [{ name: 'resolver', internalType: 'address', type: 'address' }],
+    name: 'INVALID_SUCCESS_RESOLVER',
+  },
   { type: 'error', inputs: [], name: 'INVALID_TAX_RATE' },
   {
     type: 'error',
@@ -10542,14 +10976,14 @@ export const goalFactoryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x8Aa7d640C7997b45adB53AB1D703681e8FB449A4)
  */
 export const goalFactoryAddress = {
-  8453: '0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3',
+  8453: '0x8Aa7d640C7997b45adB53AB1D703681e8FB449A4',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x8Aa7d640C7997b45adB53AB1D703681e8FB449A4)
  */
 export const goalFactoryConfig = {
   address: goalFactoryAddress,
@@ -10561,7 +10995,7 @@ export const goalFactoryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xF6f9BebD7450cd7E026344fB3c2a35B304D4bc45)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6b182c20351806678760aCeECd56872e02a8160B)
  */
 export const goalFlowAllocationLedgerPipelineAbi = [
   {
@@ -11029,14 +11463,14 @@ export const goalFlowAllocationLedgerPipelineAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xF6f9BebD7450cd7E026344fB3c2a35B304D4bc45)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6b182c20351806678760aCeECd56872e02a8160B)
  */
 export const goalFlowAllocationLedgerPipelineAddress = {
-  8453: '0xF6f9BebD7450cd7E026344fB3c2a35B304D4bc45',
+  8453: '0x6b182c20351806678760aCeECd56872e02a8160B',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xF6f9BebD7450cd7E026344fB3c2a35B304D4bc45)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6b182c20351806678760aCeECd56872e02a8160B)
  */
 export const goalFlowAllocationLedgerPipelineConfig = {
   address: goalFlowAllocationLedgerPipelineAddress,
@@ -11048,7 +11482,7 @@ export const goalFlowAllocationLedgerPipelineConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x77F0FDBb48350b16809a9A5ee10AE1Ee70a289Ec)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xde6b307BAde08ca436E45D0c1407C5E0518f7FC6)
  */
 export const goalRevnetSplitHookAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -11337,14 +11771,14 @@ export const goalRevnetSplitHookAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x77F0FDBb48350b16809a9A5ee10AE1Ee70a289Ec)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xde6b307BAde08ca436E45D0c1407C5E0518f7FC6)
  */
 export const goalRevnetSplitHookAddress = {
-  8453: '0x77F0FDBb48350b16809a9A5ee10AE1Ee70a289Ec',
+  8453: '0xde6b307BAde08ca436E45D0c1407C5E0518f7FC6',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x77F0FDBb48350b16809a9A5ee10AE1Ee70a289Ec)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xde6b307BAde08ca436E45D0c1407C5E0518f7FC6)
  */
 export const goalRevnetSplitHookConfig = {
   address: goalRevnetSplitHookAddress,
@@ -11356,7 +11790,7 @@ export const goalRevnetSplitHookConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x8355dF264778dbc0e55fd4aC0dbb1f600c8D1346)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x3404C30fb873a286899f6Baf78742A78153Ef9F8)
  */
 export const goalStakeVaultAbi = [
   {
@@ -12290,14 +12724,14 @@ export const goalStakeVaultAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x8355dF264778dbc0e55fd4aC0dbb1f600c8D1346)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x3404C30fb873a286899f6Baf78742A78153Ef9F8)
  */
 export const goalStakeVaultAddress = {
-  8453: '0x8355dF264778dbc0e55fd4aC0dbb1f600c8D1346',
+  8453: '0x3404C30fb873a286899f6Baf78742A78153Ef9F8',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x8355dF264778dbc0e55fd4aC0dbb1f600c8D1346)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x3404C30fb873a286899f6Baf78742A78153Ef9F8)
  */
 export const goalStakeVaultConfig = {
   address: goalStakeVaultAddress,
@@ -12309,7 +12743,7 @@ export const goalStakeVaultConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4EE7167e173b83B0EB3F7DaB7FCA4367cC6907eC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x40d294D92F158783092D7fE85D9b23d13cE148cb)
  */
 export const goalTreasuryAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -13555,14 +13989,14 @@ export const goalTreasuryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4EE7167e173b83B0EB3F7DaB7FCA4367cC6907eC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x40d294D92F158783092D7fE85D9b23d13cE148cb)
  */
 export const goalTreasuryAddress = {
-  8453: '0x4EE7167e173b83B0EB3F7DaB7FCA4367cC6907eC',
+  8453: '0x40d294D92F158783092D7fE85D9b23d13cE148cb',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4EE7167e173b83B0EB3F7DaB7FCA4367cC6907eC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x40d294D92F158783092D7fE85D9b23d13cE148cb)
  */
 export const goalTreasuryConfig = {
   address: goalTreasuryAddress,
@@ -13574,7 +14008,7 @@ export const goalTreasuryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x665423695D1E5B254e568822B488193c13AF9A48)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB9b6aC31841c0394c03512482fB4ae3De4259018)
  */
 export const jurorSlasherRouterAbi = [
   {
@@ -13687,14 +14121,14 @@ export const jurorSlasherRouterAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x665423695D1E5B254e568822B488193c13AF9A48)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB9b6aC31841c0394c03512482fB4ae3De4259018)
  */
 export const jurorSlasherRouterAddress = {
-  8453: '0x665423695D1E5B254e568822B488193c13AF9A48',
+  8453: '0xB9b6aC31841c0394c03512482fB4ae3De4259018',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x665423695D1E5B254e568822B488193c13AF9A48)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB9b6aC31841c0394c03512482fB4ae3De4259018)
  */
 export const jurorSlasherRouterConfig = {
   address: jurorSlasherRouterAddress,
@@ -13706,7 +14140,7 @@ export const jurorSlasherRouterConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xB640EC57e35088e7D864c2E7727fBB85331615B1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x18cfd054E0Ba3a94080F8c60E903Fa76E4940d6f)
  */
 export const linearSpendPolicyAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -13802,14 +14236,14 @@ export const linearSpendPolicyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xB640EC57e35088e7D864c2E7727fBB85331615B1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x18cfd054E0Ba3a94080F8c60E903Fa76E4940d6f)
  */
 export const linearSpendPolicyAddress = {
-  8453: '0xB640EC57e35088e7D864c2E7727fBB85331615B1',
+  8453: '0x18cfd054E0Ba3a94080F8c60E903Fa76E4940d6f',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xB640EC57e35088e7D864c2E7727fBB85331615B1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x18cfd054E0Ba3a94080F8c60E903Fa76E4940d6f)
  */
 export const linearSpendPolicyConfig = {
   address: linearSpendPolicyAddress,
@@ -13821,7 +14255,7 @@ export const linearSpendPolicyConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x7Bd18aE34030646B2F209b4b1F64506a7ADEd1f3)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xDC00b4b3f7fAbf27F737Cd3B53Ed7241420EE510)
  */
 export const managedBudgetControllerAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -14068,6 +14502,11 @@ export const managedBudgetControllerAbi = [
           { name: 'goalFlow', internalType: 'address', type: 'address' },
           { name: 'stackDeployer', internalType: 'address', type: 'address' },
           {
+            name: 'budgetChildStrategyFactory',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
             name: 'budgetGatePolicy',
             internalType: 'address',
             type: 'address',
@@ -14294,7 +14733,7 @@ export const managedBudgetControllerAbi = [
       },
       { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
     ],
-    name: 'BudgetGatePolicyCallFailed',
+    name: 'BudgetGateEnforcementFailed',
   },
   {
     type: 'event',
@@ -14377,58 +14816,6 @@ export const managedBudgetControllerAbi = [
       },
     ],
     name: 'BudgetTreasuryBatchSyncSkipped',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'selector',
-        internalType: 'bytes4',
-        type: 'bytes4',
-        indexed: true,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'BudgetTreasuryCallFailed',
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      {
-        name: 'itemID',
-        internalType: 'bytes32',
-        type: 'bytes32',
-        indexed: true,
-      },
-      {
-        name: 'budgetTreasury',
-        internalType: 'address',
-        type: 'address',
-        indexed: true,
-      },
-      {
-        name: 'selector',
-        internalType: 'bytes4',
-        type: 'bytes4',
-        indexed: true,
-      },
-      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
-    ],
-    name: 'BudgetTreasuryCallFailed',
   },
   {
     type: 'event',
@@ -14563,11 +14950,17 @@ export const managedBudgetControllerAbi = [
   },
   { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
   { type: 'error', inputs: [], name: 'ARRAY_LENGTH_MISMATCH' },
+  { type: 'error', inputs: [], name: 'BUDGET_TREASURY_MISMATCH' },
   { type: 'error', inputs: [], name: 'GOAL_TERMINAL' },
   {
     type: 'error',
     inputs: [{ name: 'policy', internalType: 'address', type: 'address' }],
     name: 'INVALID_BUDGET_GATE_POLICY',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'policy', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_SPEND_POLICY',
   },
   {
     type: 'error',
@@ -14590,6 +14983,18 @@ export const managedBudgetControllerAbi = [
   },
   {
     type: 'error',
+    inputs: [
+      { name: 'stackDeployer', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_STACK_DEPLOYER',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'resolver', internalType: 'address', type: 'address' }],
+    name: 'INVALID_SUCCESS_RESOLVER',
+  },
+  {
+    type: 'error',
     inputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
     name: 'ITEM_ALREADY_EXISTS',
   },
@@ -14599,24 +15004,30 @@ export const managedBudgetControllerAbi = [
   { type: 'error', inputs: [], name: 'InvalidInitialization' },
   {
     type: 'error',
+    inputs: [],
+    name: 'MANAGER_REWARD_DISTRIBUTION_POOL_NOT_CONFIGURED',
+  },
+  {
+    type: 'error',
     inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
     name: 'NOT_A_CONTRACT',
   },
   { type: 'error', inputs: [], name: 'NotInitializing' },
   { type: 'error', inputs: [], name: 'ONLY_AUTHORITY' },
   { type: 'error', inputs: [], name: 'ONLY_PENDING_AUTHORITY' },
+  { type: 'error', inputs: [], name: 'PREMIUM_ESCROW_REQUIRES_ZERO_RATES' },
   { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x7Bd18aE34030646B2F209b4b1F64506a7ADEd1f3)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xDC00b4b3f7fAbf27F737Cd3B53Ed7241420EE510)
  */
 export const managedBudgetControllerAddress = {
-  8453: '0x7Bd18aE34030646B2F209b4b1F64506a7ADEd1f3',
+  8453: '0xDC00b4b3f7fAbf27F737Cd3B53Ed7241420EE510',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x7Bd18aE34030646B2F209b4b1F64506a7ADEd1f3)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xDC00b4b3f7fAbf27F737Cd3B53Ed7241420EE510)
  */
 export const managedBudgetControllerConfig = {
   address: managedBudgetControllerAddress,
@@ -14628,7 +15039,7 @@ export const managedBudgetControllerConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x100d0728d35ae46b37c4f3152E120D0fefa562fC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xCb1F67a079Ea7676266BeD23Ad1F07a697e51435)
  */
 export const premiumEscrowAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -15335,14 +15746,14 @@ export const premiumEscrowAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x100d0728d35ae46b37c4f3152E120D0fefa562fC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xCb1F67a079Ea7676266BeD23Ad1F07a697e51435)
  */
 export const premiumEscrowAddress = {
-  8453: '0x100d0728d35ae46b37c4f3152E120D0fefa562fC',
+  8453: '0xCb1F67a079Ea7676266BeD23Ad1F07a697e51435',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x100d0728d35ae46b37c4f3152E120D0fefa562fC)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xCb1F67a079Ea7676266BeD23Ad1F07a697e51435)
  */
 export const premiumEscrowConfig = {
   address: premiumEscrowAddress,
@@ -15354,7 +15765,7 @@ export const premiumEscrowConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xC6fDe3f1820fFbc1F5A427BcbBbc2636D4770d3a)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4B4E776E9687db8BbE1ed82925AD1A26d9A6E898)
  */
 export const prizePoolSubmissionDepositStrategyAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -15434,14 +15845,14 @@ export const prizePoolSubmissionDepositStrategyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xC6fDe3f1820fFbc1F5A427BcbBbc2636D4770d3a)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4B4E776E9687db8BbE1ed82925AD1A26d9A6E898)
  */
 export const prizePoolSubmissionDepositStrategyAddress = {
-  8453: '0xC6fDe3f1820fFbc1F5A427BcbBbc2636D4770d3a',
+  8453: '0x4B4E776E9687db8BbE1ed82925AD1A26d9A6E898',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xC6fDe3f1820fFbc1F5A427BcbBbc2636D4770d3a)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4B4E776E9687db8BbE1ed82925AD1A26d9A6E898)
  */
 export const prizePoolSubmissionDepositStrategyConfig = {
   address: prizePoolSubmissionDepositStrategyAddress,
@@ -15453,7 +15864,7 @@ export const prizePoolSubmissionDepositStrategyConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x62c2dda0407C8369cd900a75A565Eb2F038eDf71)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xccd9c1060eF9c3E14aA57E5144eCb0C8329DB5cb)
  */
 export const roundFactoryAbi = [
   {
@@ -15729,14 +16140,14 @@ export const roundFactoryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x62c2dda0407C8369cd900a75A565Eb2F038eDf71)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xccd9c1060eF9c3E14aA57E5144eCb0C8329DB5cb)
  */
 export const roundFactoryAddress = {
-  8453: '0x62c2dda0407C8369cd900a75A565Eb2F038eDf71',
+  8453: '0xccd9c1060eF9c3E14aA57E5144eCb0C8329DB5cb',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x62c2dda0407C8369cd900a75A565Eb2F038eDf71)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xccd9c1060eF9c3E14aA57E5144eCb0C8329DB5cb)
  */
 export const roundFactoryConfig = {
   address: roundFactoryAddress,
@@ -15748,7 +16159,7 @@ export const roundFactoryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xcA85ecb180536598F0A8F64CB631FB6E9dD7251d)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xef2BBE0885B4E37083fC396d3c15569a08b2c677)
  */
 export const roundPrizeVaultAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -16018,14 +16429,14 @@ export const roundPrizeVaultAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xcA85ecb180536598F0A8F64CB631FB6E9dD7251d)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xef2BBE0885B4E37083fC396d3c15569a08b2c677)
  */
 export const roundPrizeVaultAddress = {
-  8453: '0xcA85ecb180536598F0A8F64CB631FB6E9dD7251d',
+  8453: '0xef2BBE0885B4E37083fC396d3c15569a08b2c677',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xcA85ecb180536598F0A8F64CB631FB6E9dD7251d)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xef2BBE0885B4E37083fC396d3c15569a08b2c677)
  */
 export const roundPrizeVaultConfig = {
   address: roundPrizeVaultAddress,
@@ -16037,7 +16448,7 @@ export const roundPrizeVaultConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xA84b1e9004667f436A08a3238D2692A2b313CF3C)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xE42dE53c420e62fdB787201Cb629c4E066c67179)
  */
 export const roundSubmissionTcrAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -16968,14 +17379,14 @@ export const roundSubmissionTcrAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xA84b1e9004667f436A08a3238D2692A2b313CF3C)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xE42dE53c420e62fdB787201Cb629c4E066c67179)
  */
 export const roundSubmissionTcrAddress = {
-  8453: '0xA84b1e9004667f436A08a3238D2692A2b313CF3C',
+  8453: '0xE42dE53c420e62fdB787201Cb629c4E066c67179',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xA84b1e9004667f436A08a3238D2692A2b313CF3C)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xE42dE53c420e62fdB787201Cb629c4E066c67179)
  */
 export const roundSubmissionTcrConfig = {
   address: roundSubmissionTcrAddress,
@@ -16987,7 +17398,7 @@ export const roundSubmissionTcrConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x643572dA72826d7F1F1151D2d058Ea48DcD43Cb6)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x7Af9f93691C70615dc824098D94B836ec9e5a5e3)
  */
 export const singleAllocatorStrategyAbi = [
   {
@@ -17131,14 +17542,14 @@ export const singleAllocatorStrategyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x643572dA72826d7F1F1151D2d058Ea48DcD43Cb6)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x7Af9f93691C70615dc824098D94B836ec9e5a5e3)
  */
 export const singleAllocatorStrategyAddress = {
-  8453: '0x643572dA72826d7F1F1151D2d058Ea48DcD43Cb6',
+  8453: '0x7Af9f93691C70615dc824098D94B836ec9e5a5e3',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x643572dA72826d7F1F1151D2d058Ea48DcD43Cb6)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x7Af9f93691C70615dc824098D94B836ec9e5a5e3)
  */
 export const singleAllocatorStrategyConfig = {
   address: singleAllocatorStrategyAddress,
@@ -17150,7 +17561,7 @@ export const singleAllocatorStrategyConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x899f2fFF3c00FE44A97abA858136344C653a1907)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x32f24905da8c1D4f4B1983192e50D26763588090)
  */
 export const stakeCoverageGatePolicyAbi = [
   {
@@ -17205,14 +17616,14 @@ export const stakeCoverageGatePolicyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x899f2fFF3c00FE44A97abA858136344C653a1907)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x32f24905da8c1D4f4B1983192e50D26763588090)
  */
 export const stakeCoverageGatePolicyAddress = {
-  8453: '0x899f2fFF3c00FE44A97abA858136344C653a1907',
+  8453: '0x32f24905da8c1D4f4B1983192e50D26763588090',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x899f2fFF3c00FE44A97abA858136344C653a1907)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x32f24905da8c1D4f4B1983192e50D26763588090)
  */
 export const stakeCoverageGatePolicyConfig = {
   address: stakeCoverageGatePolicyAddress,
@@ -17224,7 +17635,7 @@ export const stakeCoverageGatePolicyConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x93685e9101360172669CD305C46248D773a47474)
  */
 export const umaTreasurySuccessResolverAbi = [
   {
@@ -17708,14 +18119,14 @@ export const umaTreasurySuccessResolverAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x93685e9101360172669CD305C46248D773a47474)
  */
 export const umaTreasurySuccessResolverAddress = {
-  8453: '0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49',
+  8453: '0x93685e9101360172669CD305C46248D773a47474',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x93685e9101360172669CD305C46248D773a47474)
  */
 export const umaTreasurySuccessResolverConfig = {
   address: umaTreasurySuccessResolverAddress,
@@ -17727,7 +18138,7 @@ export const umaTreasurySuccessResolverConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xE7400FF8295Ff863D0EE71DBd84A69Cc8c1Df7A1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x21BC9e0C8a996Cdf463b919D75214a3F00b52357)
  */
 export const underwriterSlasherRouterAbi = [
   {
@@ -18161,14 +18572,14 @@ export const underwriterSlasherRouterAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xE7400FF8295Ff863D0EE71DBd84A69Cc8c1Df7A1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x21BC9e0C8a996Cdf463b919D75214a3F00b52357)
  */
 export const underwriterSlasherRouterAddress = {
-  8453: '0xE7400FF8295Ff863D0EE71DBd84A69Cc8c1Df7A1',
+  8453: '0x21BC9e0C8a996Cdf463b919D75214a3F00b52357',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xE7400FF8295Ff863D0EE71DBd84A69Cc8c1Df7A1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x21BC9e0C8a996Cdf463b919D75214a3F00b52357)
  */
 export const underwriterSlasherRouterConfig = {
   address: underwriterSlasherRouterAddress,

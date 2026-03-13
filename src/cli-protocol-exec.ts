@@ -18,8 +18,14 @@ import {
   type HexBytes,
 } from "./evm.js";
 import { flowParticipantAbi } from "./protocol-flow.js";
-import { ARBITRATOR_PLAN_ACTIONS, TCR_PLAN_ACTIONS } from "./protocol-governance.js";
-import { normalizeProtocolNetwork, type ProtocolNetwork } from "./protocol-addresses.js";
+import {
+  ARBITRATOR_PLAN_ACTIONS,
+  TCR_PLAN_ACTIONS,
+} from "./protocol-governance.js";
+import {
+  normalizeProtocolNetwork,
+  type ProtocolNetwork,
+} from "./protocol-addresses.js";
 import {
   buildProtocolApprovalStep,
   normalizeProtocolValueEth,
@@ -46,45 +52,80 @@ const APPROVAL_STEP = { kind: "erc20-approval" } as const;
 const CLI_PROTOCOL_ACTION_DESCRIPTORS = {
   "goal.create": {
     riskClass: "economic",
-    allowedSteps: [{ kind: "contract-call", contract: "GoalFactory", functionName: "deployGoal" }],
+    allowedSteps: [
+      {
+        kind: "contract-call",
+        contract: "GoalFactory",
+        functionName: "deployOpenGoal",
+      },
+      {
+        kind: "contract-call",
+        contract: "GoalFactory",
+        functionName: "deployManagedGoal",
+      },
+    ],
   },
   "stake.deposit-goal": {
     riskClass: "stake",
     allowedSteps: [
       APPROVAL_STEP,
-      { kind: "contract-call", contract: "GoalStakeVault", functionName: "depositGoal" },
+      {
+        kind: "contract-call",
+        contract: "GoalStakeVault",
+        functionName: "depositGoal",
+      },
     ],
   },
   "stake.deposit-cobuild": {
     riskClass: "stake",
     allowedSteps: [
       APPROVAL_STEP,
-      { kind: "contract-call", contract: "GoalStakeVault", functionName: "depositCobuild" },
+      {
+        kind: "contract-call",
+        contract: "GoalStakeVault",
+        functionName: "depositCobuild",
+      },
     ],
   },
   "stake.opt-in-juror": {
     riskClass: "stake",
     allowedSteps: [
       APPROVAL_STEP,
-      { kind: "contract-call", contract: "GoalStakeVault", functionName: "optInAsJuror" },
+      {
+        kind: "contract-call",
+        contract: "GoalStakeVault",
+        functionName: "optInAsJuror",
+      },
     ],
   },
   "stake.request-juror-exit": {
     riskClass: "stake",
     allowedSteps: [
-      { kind: "contract-call", contract: "GoalStakeVault", functionName: "requestJurorExit" },
+      {
+        kind: "contract-call",
+        contract: "GoalStakeVault",
+        functionName: "requestJurorExit",
+      },
     ],
   },
   "stake.finalize-juror-exit": {
     riskClass: "stake",
     allowedSteps: [
-      { kind: "contract-call", contract: "GoalStakeVault", functionName: "finalizeJurorExit" },
+      {
+        kind: "contract-call",
+        contract: "GoalStakeVault",
+        functionName: "finalizeJurorExit",
+      },
     ],
   },
   "stake.set-juror-delegate": {
     riskClass: "stake",
     allowedSteps: [
-      { kind: "contract-call", contract: "GoalStakeVault", functionName: "setJurorDelegate" },
+      {
+        kind: "contract-call",
+        contract: "GoalStakeVault",
+        functionName: "setJurorDelegate",
+      },
     ],
   },
   "stake.prepare-underwriter-withdrawal": {
@@ -100,35 +141,61 @@ const CLI_PROTOCOL_ACTION_DESCRIPTORS = {
   "stake.withdraw-goal": {
     riskClass: "stake",
     allowedSteps: [
-      { kind: "contract-call", contract: "GoalStakeVault", functionName: "withdrawGoal" },
+      {
+        kind: "contract-call",
+        contract: "GoalStakeVault",
+        functionName: "withdrawGoal",
+      },
     ],
   },
   "stake.withdraw-cobuild": {
     riskClass: "stake",
     allowedSteps: [
-      { kind: "contract-call", contract: "GoalStakeVault", functionName: "withdrawCobuild" },
+      {
+        kind: "contract-call",
+        contract: "GoalStakeVault",
+        functionName: "withdrawCobuild",
+      },
     ],
   },
   "premium.checkpoint": {
     riskClass: "claim",
     allowedSteps: [
-      { kind: "contract-call", contract: "PremiumEscrow", functionName: "checkpoint" },
+      {
+        kind: "contract-call",
+        contract: "PremiumEscrow",
+        functionName: "checkpoint",
+      },
     ],
   },
   "premium.claim": {
     riskClass: "claim",
-    allowedSteps: [{ kind: "contract-call", contract: "PremiumEscrow", functionName: "claim" }],
+    allowedSteps: [
+      {
+        kind: "contract-call",
+        contract: "PremiumEscrow",
+        functionName: "claim",
+      },
+    ],
   },
   "prize-vault.claim": {
     riskClass: "claim",
     allowedSteps: [
-      { kind: "contract-call", contract: "RoundPrizeVault", functionName: "claim" },
+      {
+        kind: "contract-call",
+        contract: "RoundPrizeVault",
+        functionName: "claim",
+      },
     ],
   },
   "prize-vault.downgrade": {
     riskClass: "maintenance",
     allowedSteps: [
-      { kind: "contract-call", contract: "RoundPrizeVault", functionName: "downgrade" },
+      {
+        kind: "contract-call",
+        contract: "RoundPrizeVault",
+        functionName: "downgrade",
+      },
     ],
   },
   "treasury.donate-goal": {
@@ -157,14 +224,22 @@ const CLI_PROTOCOL_ACTION_DESCRIPTORS = {
     riskClass: "governance",
     allowedSteps: [
       APPROVAL_STEP,
-      { kind: "contract-call", contract: "GeneralizedTCR", functionName: "addItem" },
+      {
+        kind: "contract-call",
+        contract: "GeneralizedTCR",
+        functionName: "addItem",
+      },
     ],
   },
   removeItem: {
     riskClass: "governance",
     allowedSteps: [
       APPROVAL_STEP,
-      { kind: "contract-call", contract: "GeneralizedTCR", functionName: "removeItem" },
+      {
+        kind: "contract-call",
+        contract: "GeneralizedTCR",
+        functionName: "removeItem",
+      },
     ],
   },
   challengeRequest: {
@@ -181,7 +256,11 @@ const CLI_PROTOCOL_ACTION_DESCRIPTORS = {
   executeRequest: {
     riskClass: "governance",
     allowedSteps: [
-      { kind: "contract-call", contract: "GeneralizedTCR", functionName: "executeRequest" },
+      {
+        kind: "contract-call",
+        contract: "GeneralizedTCR",
+        functionName: "executeRequest",
+      },
     ],
   },
   executeRequestTimeout: {
@@ -197,7 +276,11 @@ const CLI_PROTOCOL_ACTION_DESCRIPTORS = {
   submitEvidence: {
     riskClass: "governance",
     allowedSteps: [
-      { kind: "contract-call", contract: "GeneralizedTCR", functionName: "submitEvidence" },
+      {
+        kind: "contract-call",
+        contract: "GeneralizedTCR",
+        functionName: "submitEvidence",
+      },
     ],
   },
   withdrawFeesAndRewards: {
@@ -213,7 +296,11 @@ const CLI_PROTOCOL_ACTION_DESCRIPTORS = {
   commitVote: {
     riskClass: "governance",
     allowedSteps: [
-      { kind: "contract-call", contract: "ERC20VotesArbitrator", functionName: "commitVote" },
+      {
+        kind: "contract-call",
+        contract: "ERC20VotesArbitrator",
+        functionName: "commitVote",
+      },
     ],
   },
   commitVoteFor: {
@@ -229,13 +316,21 @@ const CLI_PROTOCOL_ACTION_DESCRIPTORS = {
   revealVote: {
     riskClass: "governance",
     allowedSteps: [
-      { kind: "contract-call", contract: "ERC20VotesArbitrator", functionName: "revealVote" },
+      {
+        kind: "contract-call",
+        contract: "ERC20VotesArbitrator",
+        functionName: "revealVote",
+      },
     ],
   },
   executeRuling: {
     riskClass: "governance",
     allowedSteps: [
-      { kind: "contract-call", contract: "ERC20VotesArbitrator", functionName: "executeRuling" },
+      {
+        kind: "contract-call",
+        contract: "ERC20VotesArbitrator",
+        functionName: "executeRuling",
+      },
     ],
   },
   withdrawVoterRewards: {
@@ -261,33 +356,57 @@ const CLI_PROTOCOL_ACTION_DESCRIPTORS = {
   slashVoter: {
     riskClass: "governance",
     allowedSteps: [
-      { kind: "contract-call", contract: "ERC20VotesArbitrator", functionName: "slashVoter" },
+      {
+        kind: "contract-call",
+        contract: "ERC20VotesArbitrator",
+        functionName: "slashVoter",
+      },
     ],
   },
   slashVoters: {
     riskClass: "governance",
     allowedSteps: [
-      { kind: "contract-call", contract: "ERC20VotesArbitrator", functionName: "slashVoters" },
+      {
+        kind: "contract-call",
+        contract: "ERC20VotesArbitrator",
+        functionName: "slashVoters",
+      },
     ],
   },
   "flow.allocate": {
     riskClass: "economic",
-    allowedSteps: [{ kind: "contract-call", contract: "Flow", functionName: "allocate" }],
+    allowedSteps: [
+      { kind: "contract-call", contract: "Flow", functionName: "allocate" },
+    ],
   },
   "flow.sync-allocation": {
     riskClass: "maintenance",
-    allowedSteps: [{ kind: "contract-call", contract: "Flow", functionName: "syncAllocation" }],
+    allowedSteps: [
+      {
+        kind: "contract-call",
+        contract: "Flow",
+        functionName: "syncAllocation",
+      },
+    ],
   },
   "flow.sync-allocation-for-account": {
     riskClass: "maintenance",
     allowedSteps: [
-      { kind: "contract-call", contract: "Flow", functionName: "syncAllocationForAccount" },
+      {
+        kind: "contract-call",
+        contract: "Flow",
+        functionName: "syncAllocationForAccount",
+      },
     ],
   },
   "flow.clear-stale-allocation": {
     riskClass: "maintenance",
     allowedSteps: [
-      { kind: "contract-call", contract: "Flow", functionName: "clearStaleAllocation" },
+      {
+        kind: "contract-call",
+        contract: "Flow",
+        functionName: "clearStaleAllocation",
+      },
     ],
   },
 } as const satisfies Record<
@@ -312,26 +431,32 @@ const CLI_PROTOCOL_CONTRACT_ABIS = {
 
 type SupportedProtocolContract = keyof typeof CLI_PROTOCOL_CONTRACT_ABIS;
 
-const CLI_PROTOCOL_CONTRACT_FUNCTIONS = Object.entries(CLI_PROTOCOL_ACTION_DESCRIPTORS).reduce(
+const CLI_PROTOCOL_CONTRACT_FUNCTIONS = Object.entries(
+  CLI_PROTOCOL_ACTION_DESCRIPTORS,
+).reduce(
   (registry, [, descriptor]) => {
     for (const step of descriptor.allowedSteps) {
       if (step.kind !== "contract-call") {
         continue;
       }
-      const functions = registry[step.contract as SupportedProtocolContract] ?? new Set<string>();
+      const functions =
+        registry[step.contract as SupportedProtocolContract] ??
+        new Set<string>();
       functions.add(step.functionName);
       registry[step.contract as SupportedProtocolContract] = functions;
     }
     return registry;
   },
-  {} as Partial<Record<SupportedProtocolContract, Set<string>>>
+  {} as Partial<Record<SupportedProtocolContract, Set<string>>>,
 );
 
 export type CliProtocolAction = keyof typeof CLI_PROTOCOL_ACTION_DESCRIPTORS;
 export type CliProtocolStepAction = CliProtocolAction;
 export type CliProtocolPlanAction = CliProtocolAction;
 
-export type CliProtocolStepRequest<TAction extends string = CliProtocolStepAction> = {
+export type CliProtocolStepRequest<
+  TAction extends string = CliProtocolStepAction,
+> = {
   kind: typeof CLI_PROTOCOL_STEP_KIND;
   network: ProtocolNetwork;
   action: TAction;
@@ -340,7 +465,9 @@ export type CliProtocolStepRequest<TAction extends string = CliProtocolStepActio
 };
 
 export type CliProtocolStepLogKind = `protocol-step:${string}`;
-export type CliProtocolPlanRequest<TAction extends string = CliProtocolPlanAction> = {
+export type CliProtocolPlanRequest<
+  TAction extends string = CliProtocolPlanAction,
+> = {
   kind: typeof CLI_PROTOCOL_PLAN_KIND;
   network: ProtocolNetwork;
   action: TAction;
@@ -350,11 +477,14 @@ export type CliProtocolPlanRequest<TAction extends string = CliProtocolPlanActio
 
 export type CliProtocolPlanLogKind = `protocol-plan:${string}`;
 
-function parseCliProtocolAction(value: unknown, fieldPath: string): CliProtocolAction {
+function parseCliProtocolAction(
+  value: unknown,
+  fieldPath: string,
+): CliProtocolAction {
   const action = requireTrimmedString(value, { fieldPath });
   if (!Object.hasOwn(CLI_PROTOCOL_ACTION_DESCRIPTORS, action)) {
     throw new Error(
-      `${fieldPath} must be one of: ${Object.keys(CLI_PROTOCOL_ACTION_DESCRIPTORS).join(", ")}.`
+      `${fieldPath} must be one of: ${Object.keys(CLI_PROTOCOL_ACTION_DESCRIPTORS).join(", ")}.`,
     );
   }
   return action as CliProtocolAction;
@@ -363,7 +493,7 @@ function parseCliProtocolAction(value: unknown, fieldPath: string): CliProtocolA
 function parseProtocolTransaction(
   value: unknown,
   fieldPath: string,
-  options?: { allowValueEth?: boolean }
+  options?: { allowValueEth?: boolean },
 ): {
   to: EvmAddress;
   data: HexBytes;
@@ -372,23 +502,27 @@ function parseProtocolTransaction(
   const record = asJsonRecord(value, `${fieldPath} must be an object.`);
 
   const valueEth = normalizeProtocolValueEth(
-    requireTrimmedString(record.valueEth, { fieldPath: `${fieldPath}.valueEth` }),
-    `${fieldPath}.valueEth`
+    requireTrimmedString(record.valueEth, {
+      fieldPath: `${fieldPath}.valueEth`,
+    }),
+    `${fieldPath}.valueEth`,
   );
   if (options?.allowValueEth !== true && valueEth !== "0") {
-    throw new Error(`${fieldPath}.valueEth must be "0" for protocol-step execution.`);
+    throw new Error(
+      `${fieldPath}.valueEth must be "0" for protocol-step execution.`,
+    );
   }
 
   return {
     to: normalizeEvmAddress(
       requireTrimmedString(record.to, { fieldPath: `${fieldPath}.to` }),
-      `${fieldPath}.to`
+      `${fieldPath}.to`,
     ),
     data: normalizeHex(
       normalizeHexByteString(
         requireTrimmedString(record.data, { fieldPath: `${fieldPath}.data` }),
-        `${fieldPath}.data`
-      )
+        `${fieldPath}.data`,
+      ),
     ) as HexBytes,
     valueEth,
   };
@@ -397,24 +531,34 @@ function parseProtocolTransaction(
 function validateErc20ApprovalStep(
   value: unknown,
   fieldPath: string,
-  options?: { allowValueEth?: boolean }
+  options?: { allowValueEth?: boolean },
 ): ProtocolErc20ApprovalStep {
   const record = asJsonRecord(value, `${fieldPath} must be an object.`);
 
-  const label = requireTrimmedString(record.label, { fieldPath: `${fieldPath}.label` });
+  const label = requireTrimmedString(record.label, {
+    fieldPath: `${fieldPath}.label`,
+  });
   const tokenAddress = normalizeEvmAddress(
-    requireTrimmedString(record.tokenAddress, { fieldPath: `${fieldPath}.tokenAddress` }),
-    `${fieldPath}.tokenAddress`
+    requireTrimmedString(record.tokenAddress, {
+      fieldPath: `${fieldPath}.tokenAddress`,
+    }),
+    `${fieldPath}.tokenAddress`,
   );
   const spenderAddress = normalizeEvmAddress(
-    requireTrimmedString(record.spenderAddress, { fieldPath: `${fieldPath}.spenderAddress` }),
-    `${fieldPath}.spenderAddress`
+    requireTrimmedString(record.spenderAddress, {
+      fieldPath: `${fieldPath}.spenderAddress`,
+    }),
+    `${fieldPath}.spenderAddress`,
   );
   const amount = normalizeUnsignedDecimal(
     requireTrimmedString(record.amount, { fieldPath: `${fieldPath}.amount` }),
-    `${fieldPath}.amount`
+    `${fieldPath}.amount`,
   );
-  const transaction = parseProtocolTransaction(record.transaction, `${fieldPath}.transaction`, options);
+  const transaction = parseProtocolTransaction(
+    record.transaction,
+    `${fieldPath}.transaction`,
+    options,
+  );
   const expected = buildProtocolApprovalStep({
     label,
     tokenAddress,
@@ -428,7 +572,7 @@ function validateErc20ApprovalStep(
     expected.transaction.valueEth !== transaction.valueEth
   ) {
     throw new Error(
-      `${fieldPath}.transaction must match the canonical ERC-20 approval for the declared token, spender, and amount.`
+      `${fieldPath}.transaction must match the canonical ERC-20 approval for the declared token, spender, and amount.`,
     );
   }
 
@@ -445,27 +589,39 @@ function validateErc20ApprovalStep(
 function validateContractCallStep(
   value: unknown,
   fieldPath: string,
-  options?: { allowValueEth?: boolean }
+  options?: { allowValueEth?: boolean },
 ): ProtocolContractCallStep {
   const record = asJsonRecord(value, `${fieldPath} must be an object.`);
 
-  const label = requireTrimmedString(record.label, { fieldPath: `${fieldPath}.label` });
-  const contract = requireTrimmedString(record.contract, { fieldPath: `${fieldPath}.contract` });
+  const label = requireTrimmedString(record.label, {
+    fieldPath: `${fieldPath}.label`,
+  });
+  const contract = requireTrimmedString(record.contract, {
+    fieldPath: `${fieldPath}.contract`,
+  });
   const functionName = requireTrimmedString(record.functionName, {
     fieldPath: `${fieldPath}.functionName`,
   });
-  const transaction = parseProtocolTransaction(record.transaction, `${fieldPath}.transaction`, options);
-  const contractAbi = CLI_PROTOCOL_CONTRACT_ABIS[contract as SupportedProtocolContract];
-  const supportedFunctions = CLI_PROTOCOL_CONTRACT_FUNCTIONS[contract as SupportedProtocolContract];
+  const transaction = parseProtocolTransaction(
+    record.transaction,
+    `${fieldPath}.transaction`,
+    options,
+  );
+  const contractAbi =
+    CLI_PROTOCOL_CONTRACT_ABIS[contract as SupportedProtocolContract];
+  const supportedFunctions =
+    CLI_PROTOCOL_CONTRACT_FUNCTIONS[contract as SupportedProtocolContract];
 
   if (!contractAbi || !supportedFunctions) {
     throw new Error(
-      `${fieldPath}.contract must be one of: ${Object.keys(CLI_PROTOCOL_CONTRACT_FUNCTIONS).join(", ")}.`
+      `${fieldPath}.contract must be one of: ${Object.keys(CLI_PROTOCOL_CONTRACT_FUNCTIONS).join(", ")}.`,
     );
   }
 
   if (!supportedFunctions.has(functionName)) {
-    throw new Error(`${fieldPath}.functionName is not supported for contract "${contract}".`);
+    throw new Error(
+      `${fieldPath}.functionName is not supported for contract "${contract}".`,
+    );
   }
 
   let decodedFunctionName: string;
@@ -478,13 +634,13 @@ function validateContractCallStep(
     throw new Error(
       `${fieldPath}.transaction.data must decode as ${contract}.${functionName}: ${
         error instanceof Error ? error.message : String(error)
-      }`
+      }`,
     );
   }
 
   if (decodedFunctionName !== functionName) {
     throw new Error(
-      `${fieldPath}.transaction.data decodes to ${contract}.${decodedFunctionName}, not ${contract}.${functionName}.`
+      `${fieldPath}.transaction.data decodes to ${contract}.${decodedFunctionName}, not ${contract}.${functionName}.`,
     );
   }
 
@@ -500,25 +656,30 @@ function validateContractCallStep(
 function validateProtocolStep(
   value: unknown,
   fieldPath: string,
-  options?: { allowValueEth?: boolean }
+  options?: { allowValueEth?: boolean },
 ): ProtocolPlanStep {
   const record = asJsonRecord(value, `${fieldPath} must be an object.`);
 
-  const kind = requireTrimmedString(record.kind, { fieldPath: `${fieldPath}.kind` });
+  const kind = requireTrimmedString(record.kind, {
+    fieldPath: `${fieldPath}.kind`,
+  });
   if (kind === "erc20-approval") {
     return validateErc20ApprovalStep(record, fieldPath, options);
   }
   if (kind === "contract-call") {
     return validateContractCallStep(record, fieldPath, options);
   }
-  throw new Error(`${fieldPath}.kind must be "erc20-approval" or "contract-call".`);
+  throw new Error(
+    `${fieldPath}.kind must be "erc20-approval" or "contract-call".`,
+  );
 }
 
 function actionSupportsStep(params: {
   action: CliProtocolAction;
   step: ProtocolPlanStep;
 }): boolean {
-  const allowedSteps = CLI_PROTOCOL_ACTION_DESCRIPTORS[params.action].allowedSteps;
+  const allowedSteps =
+    CLI_PROTOCOL_ACTION_DESCRIPTORS[params.action].allowedSteps;
   return allowedSteps.some((allowedStep) => {
     if (allowedStep.kind !== params.step.kind) {
       return false;
@@ -536,10 +697,12 @@ function actionSupportsStep(params: {
 
 function getCliProtocolActionDescriptor(action: string) {
   const descriptor =
-    CLI_PROTOCOL_ACTION_DESCRIPTORS[action as keyof typeof CLI_PROTOCOL_ACTION_DESCRIPTORS];
+    CLI_PROTOCOL_ACTION_DESCRIPTORS[
+      action as keyof typeof CLI_PROTOCOL_ACTION_DESCRIPTORS
+    ];
   if (!descriptor) {
     throw new Error(
-      `action must be one of: ${Object.keys(CLI_PROTOCOL_ACTION_DESCRIPTORS).join(", ")}.`
+      `action must be one of: ${Object.keys(CLI_PROTOCOL_ACTION_DESCRIPTORS).join(", ")}.`,
     );
   }
   return descriptor;
@@ -547,11 +710,13 @@ function getCliProtocolActionDescriptor(action: string) {
 
 function assertCliProtocolActionRisk(
   action: string,
-  riskClass: ProtocolRiskClass
+  riskClass: ProtocolRiskClass,
 ): asserts action is CliProtocolAction {
   const descriptor = getCliProtocolActionDescriptor(action);
   if (riskClass !== descriptor.riskClass) {
-    throw new Error(`riskClass must be "${descriptor.riskClass}" for action "${action}".`);
+    throw new Error(
+      `riskClass must be "${descriptor.riskClass}" for action "${action}".`,
+    );
   }
 }
 
@@ -574,7 +739,7 @@ function assertActionRiskAndStep(params: {
 
 function parseProtocolPlanSteps(
   value: unknown,
-  fieldPath: string
+  fieldPath: string,
 ): readonly ProtocolPlanStep[] {
   if (!Array.isArray(value)) {
     throw new Error(`${fieldPath} must be an array.`);
@@ -586,20 +751,28 @@ function parseProtocolPlanSteps(
   return value.map((step, index) =>
     validateProtocolStep(step, `${fieldPath}[${index}]`, {
       allowValueEth: true,
-    })
+    }),
   );
 }
 
 function assertProtocolPlanShape(steps: readonly ProtocolPlanStep[]): void {
   const lastStep = steps.at(-1);
-  const contractCallCount = steps.filter((step) => step.kind === "contract-call").length;
+  const contractCallCount = steps.filter(
+    (step) => step.kind === "contract-call",
+  ).length;
 
-  if (!lastStep || lastStep.kind !== "contract-call" || contractCallCount !== 1) {
+  if (
+    !lastStep ||
+    lastStep.kind !== "contract-call" ||
+    contractCallCount !== 1
+  ) {
     throw new Error('steps must end with exactly one "contract-call" step.');
   }
 
   if (steps.slice(0, -1).some((step) => step.kind !== "erc20-approval")) {
-    throw new Error('steps before the final "contract-call" step must all be "erc20-approval".');
+    throw new Error(
+      'steps before the final "contract-call" step must all be "erc20-approval".',
+    );
   }
 
   const finalTarget = lastStep.transaction.to;
@@ -609,7 +782,7 @@ function assertProtocolPlanShape(steps: readonly ProtocolPlanStep[]): void {
     }
     if (step.spenderAddress !== finalTarget) {
       throw new Error(
-        `steps[${index}].spenderAddress must match the final contract-call target address.`
+        `steps[${index}].spenderAddress must match the final contract-call target address.`,
       );
     }
   });
@@ -630,7 +803,9 @@ function assertActionRiskAndPlan(params: {
 
   params.steps.forEach((step, index) => {
     if (!actionSupportsStep({ action, step })) {
-      throw new Error(`steps[${index}] is not supported for action "${params.action}".`);
+      throw new Error(
+        `steps[${index}] is not supported for action "${params.action}".`,
+      );
     }
   });
 }
@@ -645,7 +820,9 @@ export function buildCliProtocolStepRequest(params: {
     kind: CLI_PROTOCOL_STEP_KIND,
     network: normalizeProtocolNetwork(params.network ?? "base"),
     action: params.action,
-    riskClass: params.riskClass ?? CLI_PROTOCOL_ACTION_DESCRIPTORS[params.action].riskClass,
+    riskClass:
+      params.riskClass ??
+      CLI_PROTOCOL_ACTION_DESCRIPTORS[params.action].riskClass,
     step: params.step,
   } satisfies CliProtocolStepRequest<CliProtocolStepAction>;
 
@@ -659,9 +836,12 @@ export function buildCliProtocolStepRequest(params: {
 }
 
 export function validateCliProtocolStepRequest(
-  value: unknown
+  value: unknown,
 ): CliProtocolStepRequest<CliProtocolStepAction> {
-  const record = asJsonRecord(value, "protocol-step request must be an object.");
+  const record = asJsonRecord(
+    value,
+    "protocol-step request must be an object.",
+  );
 
   const kind = requireTrimmedString(record.kind, { fieldPath: "kind" });
   if (kind !== CLI_PROTOCOL_STEP_KIND) {
@@ -682,7 +862,9 @@ export function validateCliProtocolStepRequest(
 
   return {
     kind: CLI_PROTOCOL_STEP_KIND,
-    network: normalizeProtocolNetwork(requireTrimmedString(record.network, { fieldPath: "network" })),
+    network: normalizeProtocolNetwork(
+      requireTrimmedString(record.network, { fieldPath: "network" }),
+    ),
     action,
     riskClass,
     step,
@@ -699,7 +881,9 @@ export function buildCliProtocolPlanRequest(params: {
     kind: CLI_PROTOCOL_PLAN_KIND,
     network: normalizeProtocolNetwork(params.network ?? "base"),
     action: params.action,
-    riskClass: params.riskClass ?? CLI_PROTOCOL_ACTION_DESCRIPTORS[params.action].riskClass,
+    riskClass:
+      params.riskClass ??
+      CLI_PROTOCOL_ACTION_DESCRIPTORS[params.action].riskClass,
     steps: [...params.steps],
   } satisfies CliProtocolPlanRequest<CliProtocolPlanAction>;
 
@@ -713,9 +897,12 @@ export function buildCliProtocolPlanRequest(params: {
 }
 
 export function validateCliProtocolPlanRequest(
-  value: unknown
+  value: unknown,
 ): CliProtocolPlanRequest<CliProtocolPlanAction> {
-  const record = asJsonRecord(value, "protocol-plan request must be an object.");
+  const record = asJsonRecord(
+    value,
+    "protocol-plan request must be an object.",
+  );
 
   const kind = requireTrimmedString(record.kind, { fieldPath: "kind" });
   if (kind !== CLI_PROTOCOL_PLAN_KIND) {
@@ -736,17 +923,23 @@ export function validateCliProtocolPlanRequest(
 
   return {
     kind: CLI_PROTOCOL_PLAN_KIND,
-    network: normalizeProtocolNetwork(requireTrimmedString(record.network, { fieldPath: "network" })),
+    network: normalizeProtocolNetwork(
+      requireTrimmedString(record.network, { fieldPath: "network" }),
+    ),
     action,
     riskClass,
     steps,
   };
 }
 
-export function buildCliProtocolStepLogKind(action: string): CliProtocolStepLogKind {
+export function buildCliProtocolStepLogKind(
+  action: string,
+): CliProtocolStepLogKind {
   return `protocol-step:${action}`;
 }
 
-export function buildCliProtocolPlanLogKind(action: string): CliProtocolPlanLogKind {
+export function buildCliProtocolPlanLogKind(
+  action: string,
+): CliProtocolPlanLogKind {
   return `protocol-plan:${action}`;
 }

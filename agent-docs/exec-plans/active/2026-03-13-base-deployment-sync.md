@@ -2,7 +2,7 @@
 
 ## Goal
 
-Sync `wire` to the latest Base `v1-core` factory + implementation deployment set, regenerate the shared ABI surface, and prepare the next published package cut so direct workspace consumers can move back to a refreshed published semver.
+Sync `wire` to the latest Base `v1-core` factory + implementation deployment set, regenerate the shared ABI surface, publish the refreshed `@cobuild/wire` package, and move direct workspace consumers onto that published semver.
 
 ## Constraints
 
@@ -17,7 +17,8 @@ Sync `wire` to the latest Base `v1-core` factory + implementation deployment set
 - Add newly relevant exported deployment addresses surfaced by the latest factory rollout.
 - Regenerate `src/generated/abis.ts` and re-export any new ABI symbols required by the refreshed deployment set.
 - Keep `protocol-goals` helpers/tests aligned with the refreshed GoalFactory deploy params and `GoalDeployed` stack shape.
-- After a user-approved publish, bump direct workspace consumers to the new released version.
+- Publish the refreshed package after verification.
+- Bump direct workspace consumers to the new released version.
 
 ## Verification
 

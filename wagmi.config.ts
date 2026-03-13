@@ -132,7 +132,8 @@ const PROTOCOL_CONTRACTS: readonly ProtocolContractConfig[] = [
   {
     name: "BudgetTCRDeployer",
     address: baseImplementations.budgetTcrDeployerImpl,
-    artifact: "BudgetTCRDeployer.sol/BudgetTCRDeployer.json",
+    // Keep the published export name stable while sourcing the ABI from the renamed v1-core artifact.
+    artifact: "BudgetStackDeployer.sol/BudgetStackDeployer.json",
   },
   {
     name: "RoundSubmissionTCR",

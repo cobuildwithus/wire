@@ -87,6 +87,16 @@ const deployParams = {
   goalSpendPolicy: "0x6666666666666666666666666666666666666666",
 } as const;
 
+const managedDeployParams = {
+  ...deployParams,
+  preset: "managed",
+  managedSafe: "0x7777777777777777777777777777777777777777",
+  funding: {
+    paymentToken: "0x8888888888888888888888888888888888888888",
+    paymentRevnetId: "139",
+  },
+} as const;
+
 describe("cli protocol-step contract", () => {
   it("builds and validates a goal-create hosted protocol-step request", () => {
     const goalCreatePlan = buildGoalCreateProtocolPlan({
@@ -106,9 +116,29 @@ describe("cli protocol-step contract", () => {
         action: "goal.create",
         riskClass: "economic",
         step: goalCreatePlan.steps[0],
-      })
+      }),
     );
-    expect(request.step.transaction).toEqual(buildGoalCreateTransaction({ deployParams }));
+    expect(request.step.transaction).toEqual(
+      buildGoalCreateTransaction({ deployParams }),
+    );
+  });
+
+  it("accepts managed goal-create protocol-step requests", () => {
+    const goalCreatePlan = buildGoalCreateProtocolPlan({
+      deployParams: managedDeployParams,
+    });
+    const request = buildCliProtocolStepRequest({
+      network: goalCreatePlan.network,
+      action: goalCreatePlan.action,
+      riskClass: goalCreatePlan.riskClass,
+      step: goalCreatePlan.steps[0]!,
+    });
+
+    if (request.step.kind !== "contract-call") {
+      throw new Error("expected goal-create contract-call step");
+    }
+
+    expect(request.step.functionName).toBe("deployManagedGoal");
   });
 
   it("validates canonical approval transactions for approval-bearing actions", () => {
@@ -132,7 +162,9 @@ describe("cli protocol-step contract", () => {
     });
 
     expect(request.action).toBe("stake.deposit-goal");
-    expect(buildCliProtocolStepLogKind(request.action)).toBe("protocol-step:stake.deposit-goal");
+    expect(buildCliProtocolStepLogKind(request.action)).toBe(
+      "protocol-step:stake.deposit-goal",
+    );
   });
 
   it("builds and validates flow maintenance protocol-step requests", () => {
@@ -154,10 +186,10 @@ describe("cli protocol-step contract", () => {
         action: "flow.sync-allocation",
         riskClass: "maintenance",
         step: syncPlan.steps[0],
-      })
+      }),
     );
     expect(buildCliProtocolStepLogKind(syncRequest.action)).toBe(
-      "protocol-step:flow.sync-allocation"
+      "protocol-step:flow.sync-allocation",
     );
 
     const clearPlan = buildFlowClearStaleAllocationPlan({
@@ -172,7 +204,7 @@ describe("cli protocol-step contract", () => {
         action: "flow.clear-stale-allocation",
         riskClass: "maintenance",
         step: clearPlan.steps[0]!,
-      })
+      }),
     ).toMatchObject({
       action: "flow.clear-stale-allocation",
       riskClass: "maintenance",
@@ -197,9 +229,11 @@ describe("cli protocol-step contract", () => {
         action: "goal.create",
         riskClass: "economic",
         steps: plan.steps,
-      })
+      }),
     );
-    expect(buildCliProtocolPlanLogKind(request.action)).toBe("protocol-plan:goal.create");
+    expect(buildCliProtocolPlanLogKind(request.action)).toBe(
+      "protocol-plan:goal.create",
+    );
   });
 
   it("preserves nonzero valueEth when validating protocol-plan contract calls", () => {
@@ -243,7 +277,7 @@ describe("cli protocol-step contract", () => {
         action: "goal.create",
         riskClass: "stake",
         step: buildGoalCreateProtocolPlan({ deployParams }).steps[0],
-      })
+      }),
     ).toThrow('riskClass must be "economic" for action "goal.create"');
   });
 
@@ -269,11 +303,22 @@ describe("cli protocol-step contract", () => {
             valueEth: "1",
           },
         },
-      })
-    ).toThrow('step.transaction.valueEth must be "0" for protocol-step execution.');
+      }),
+    ).toThrow(
+      'step.transaction.valueEth must be "0" for protocol-step execution.',
+    );
   });
 
   it("rejects contract-call payloads that do not decode to the declared function", () => {
+    const expectedFunctionName = buildGoalCreateProtocolPlan({ deployParams })
+      .steps[0];
+    if (
+      !expectedFunctionName ||
+      expectedFunctionName.kind !== "contract-call"
+    ) {
+      throw new Error("missing goal-create contract-call step");
+    }
+
     expect(() =>
       validateCliProtocolStepRequest({
         kind: "protocol-step",
@@ -284,15 +329,17 @@ describe("cli protocol-step contract", () => {
           kind: "contract-call",
           label: "Deploy goal",
           contract: "GoalFactory",
-          functionName: "deployGoal",
+          functionName: expectedFunctionName.functionName,
           transaction: {
             to: "0x47e83655026b6caad68d32919f165ce9c3bd8a8f",
             data: "0x095ea7b3",
             valueEth: "0",
           },
         },
-      })
-    ).toThrow("step.transaction.data must decode as GoalFactory.deployGoal");
+      }),
+    ).toThrow(
+      `step.transaction.data must decode as GoalFactory.${expectedFunctionName.functionName}`,
+    );
   });
 
   it("rejects steps that are not allowed for the declared action", () => {
@@ -304,7 +351,7 @@ describe("cli protocol-step contract", () => {
         action: "premium.claim",
         riskClass: "claim",
         step: goalCreatePlan.steps[0],
-      })
+      }),
     ).toThrow('step is not supported for action "premium.claim"');
   });
 
@@ -332,7 +379,7 @@ describe("cli protocol-step contract", () => {
             },
           },
         ],
-      })
+      }),
     ).toThrow('steps must end with exactly one "contract-call" step.');
   });
 
@@ -349,7 +396,7 @@ describe("cli protocol-step contract", () => {
         action: "premium.claim",
         riskClass: "claim",
         steps: plan.steps,
-      })
+      }),
     ).toThrow('steps[0] is not supported for action "premium.claim".');
   });
 
@@ -362,13 +409,19 @@ describe("cli protocol-step contract", () => {
       approvalMode: "force",
     });
     const badApproval = buildProtocolApprovalStep({
-      label: plan.steps[0]!.kind === "erc20-approval" ? plan.steps[0]!.label : "Approve goal token",
+      label:
+        plan.steps[0]!.kind === "erc20-approval"
+          ? plan.steps[0]!.label
+          : "Approve goal token",
       tokenAddress:
         plan.steps[0]!.kind === "erc20-approval"
           ? plan.steps[0]!.tokenAddress
           : "0x0000000000000000000000000000000000000011",
       spenderAddress: "0x00000000000000000000000000000000000000ff",
-      amount: plan.steps[0]!.kind === "erc20-approval" ? plan.steps[0]!.amount : "100",
+      amount:
+        plan.steps[0]!.kind === "erc20-approval"
+          ? plan.steps[0]!.amount
+          : "100",
     });
 
     expect(() =>
@@ -378,7 +431,9 @@ describe("cli protocol-step contract", () => {
         action: plan.action,
         riskClass: plan.riskClass,
         steps: [badApproval, plan.steps[1]!],
-      })
-    ).toThrow("steps[0].spenderAddress must match the final contract-call target address.");
+      }),
+    ).toThrow(
+      "steps[0].spenderAddress must match the final contract-call target address.",
+    );
   });
 });

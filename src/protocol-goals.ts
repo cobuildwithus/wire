@@ -42,6 +42,7 @@ export const GOAL_FACTORY_DEPLOY_REQUIRED_KEYS = [
 export const GOAL_FACTORY_DEPLOY_OPTIONAL_KEYS = [
   "preset",
   "managedSafe",
+  "managedBudgetGatePolicy",
   "funding",
 ] as const;
 
@@ -133,11 +134,109 @@ const ARBITRATOR_PARAM_KEYS = [
 
 type GoalFactoryDeployParamsRecord = Record<string, unknown>;
 
-export type GoalFactoryDeployParams = ContractFunctionArgs<
+type GoalPresetValue = (typeof GOAL_PRESET_VALUES)[keyof typeof GOAL_PRESET_VALUES];
+
+type GoalFactoryOpenGoalContractParams = ContractFunctionArgs<
   typeof goalFactoryAbi,
   "nonpayable",
-  "deployGoal"
+  "deployOpenGoal"
 >[0];
+
+type GoalFactoryManagedGoalContractParams = ContractFunctionArgs<
+  typeof goalFactoryAbi,
+  "nonpayable",
+  "deployManagedGoal"
+>[0];
+
+type GoalFactoryContractCall =
+  | {
+      functionName: "deployOpenGoal";
+      args: readonly [GoalFactoryOpenGoalContractParams];
+      label: string;
+    }
+  | {
+      functionName: "deployManagedGoal";
+      args: readonly [GoalFactoryManagedGoalContractParams];
+      label: string;
+    };
+
+export type GoalFactoryDeployParams = {
+  preset: GoalPresetValue;
+  managedSafe: EvmAddress;
+  managedBudgetGatePolicy: EvmAddress;
+  funding: {
+    paymentToken: EvmAddress;
+    paymentRevnetId: bigint;
+  };
+  revnet: {
+    name: string;
+    ticker: string;
+    uri: string;
+    initialIssuance: bigint;
+    cashOutTaxRate: number;
+    reservedPercent: number;
+    durationSeconds: number;
+  };
+  timing: {
+    minRaise: bigint;
+    minRaiseDurationSeconds: number;
+  };
+  success: {
+    successResolver: EvmAddress;
+    successAssertionLiveness: bigint;
+    successAssertionBond: bigint;
+    successOracleSpecHash: HexBytes;
+    successAssertionPolicyHash: HexBytes;
+  };
+  flowMetadata: {
+    title: string;
+    description: string;
+    image: string;
+    tagline: string;
+    url: string;
+  };
+  underwriting: {
+    budgetPremiumPpm: number;
+    budgetSlashPpm: number;
+  };
+  budgetTCR: {
+    allocationMechanismAdmin: EvmAddress;
+    invalidRoundRewardsSink: EvmAddress;
+    submissionDepositStrategy: EvmAddress;
+    submissionBaseDeposit: bigint;
+    removalBaseDeposit: bigint;
+    submissionChallengeBaseDeposit: bigint;
+    removalChallengeBaseDeposit: bigint;
+    registrationMetaEvidence: string;
+    clearingMetaEvidence: string;
+    challengePeriodDuration: bigint;
+    arbitratorExtraData: HexBytes;
+    budgetBounds: {
+      minFundingLeadTime: bigint;
+      maxFundingHorizon: bigint;
+      minExecutionDuration: bigint;
+      maxExecutionDuration: bigint;
+      minActivationThreshold: bigint;
+      maxActivationThreshold: bigint;
+      maxRunwayCap: bigint;
+    };
+    oracleBounds: {
+      liveness: bigint;
+      bondAmount: bigint;
+    };
+    budgetSuccessResolver: EvmAddress;
+    budgetSpendPolicy: EvmAddress;
+    arbitratorParams: {
+      votingPeriod: bigint;
+      votingDelay: bigint;
+      revealPeriod: bigint;
+      arbitrationCost: bigint;
+      wrongOrMissedSlashBps: bigint;
+      slashCallerBountyBps: bigint;
+    };
+  };
+  goalSpendPolicy: EvmAddress;
+};
 
 export type GoalFactoryDeployParamsInput =
   | GoalFactoryDeployParams
@@ -149,12 +248,19 @@ export type GoalCreateTransaction = {
   valueEth: "0";
 };
 
-export type GoalCreateWriteContractRequest = {
-  address: EvmAddress;
-  abi: typeof goalFactoryAbi;
-  functionName: "deployGoal";
-  args: readonly [GoalFactoryDeployParams];
-};
+export type GoalCreateWriteContractRequest =
+  | {
+      address: EvmAddress;
+      abi: typeof goalFactoryAbi;
+      functionName: "deployOpenGoal";
+      args: readonly [GoalFactoryOpenGoalContractParams];
+    }
+  | {
+      address: EvmAddress;
+      abi: typeof goalFactoryAbi;
+      functionName: "deployManagedGoal";
+      args: readonly [GoalFactoryManagedGoalContractParams];
+    };
 
 export type GoalCreatePlan = {
   chainId: typeof BASE_CHAIN_ID;
@@ -315,7 +421,7 @@ function normalizeHexBytesValue(
   return normalized as HexBytes;
 }
 
-function normalizeGoalPreset(value: unknown, label: string): number {
+function normalizeGoalPreset(value: unknown, label: string): GoalPresetValue {
   if (value === undefined) {
     return GOAL_PRESET_VALUES.open;
   }
@@ -329,7 +435,7 @@ function normalizeGoalPreset(value: unknown, label: string): number {
     if (/^\d+$/.test(normalized)) {
       const parsed = Number(normalized);
       if (parsed === GOAL_PRESET_VALUES.open || parsed === GOAL_PRESET_VALUES.managed) {
-        return parsed;
+        return parsed as GoalPresetValue;
       }
     }
 
@@ -339,8 +445,8 @@ function normalizeGoalPreset(value: unknown, label: string): number {
   if (typeof value === "number" || typeof value === "bigint") {
     const parsed = Number(normalizeUintBigInt(value, label, 8));
     if (parsed === GOAL_PRESET_VALUES.open || parsed === GOAL_PRESET_VALUES.managed) {
-      return parsed;
-    }
+        return parsed as GoalPresetValue;
+      }
   }
 
   throw new Error(`${label} must be one of: open, managed, 0, 1.`);
@@ -361,10 +467,20 @@ function normalizeGoalFactoryDeployParamsRecord(
   if (input.managedSafe !== undefined && typeof input.managedSafe !== "string") {
     throw new Error("deployParams.managedSafe must be a string.");
   }
+  if (
+    input.managedBudgetGatePolicy !== undefined &&
+    typeof input.managedBudgetGatePolicy !== "string"
+  ) {
+    throw new Error("deployParams.managedBudgetGatePolicy must be a string.");
+  }
 
   const managedSafe = normalizeEvmAddress(
     input.managedSafe ?? ZERO_ADDRESS,
     "deployParams.managedSafe"
+  );
+  const managedBudgetGatePolicy = normalizeEvmAddress(
+    input.managedBudgetGatePolicy ?? ZERO_ADDRESS,
+    "deployParams.managedBudgetGatePolicy"
   );
   if (preset === GOAL_PRESET_VALUES.managed && managedSafe === ZERO_ADDRESS) {
     throw new Error("deployParams.managedSafe is required when deployParams.preset is managed.");
@@ -427,6 +543,7 @@ function normalizeGoalFactoryDeployParamsRecord(
   return {
     preset,
     managedSafe,
+    managedBudgetGatePolicy,
     funding: {
       paymentToken: funding
         ? normalizeEvmAddress(
@@ -725,16 +842,79 @@ export function extractGoalFactoryDeployParams(raw: unknown): GoalFactoryDeployP
   return normalizeGoalFactoryDeployParams(raw);
 }
 
+function resolveGoalFactoryContractCall(
+  deployParams: GoalFactoryDeployParams
+): GoalFactoryContractCall {
+  const common = {
+    funding: deployParams.funding,
+    revnet: deployParams.revnet,
+    timing: deployParams.timing,
+    success: deployParams.success,
+    flowMetadata: deployParams.flowMetadata,
+    underwriting: deployParams.underwriting,
+    goalSpendPolicy: deployParams.goalSpendPolicy,
+  } as const;
+
+  const budgetRuntime = {
+    budgetSuccessResolver: deployParams.budgetTCR.budgetSuccessResolver,
+    budgetSpendPolicy: deployParams.budgetTCR.budgetSpendPolicy,
+    oracleBounds: deployParams.budgetTCR.oracleBounds,
+  } as const;
+
+  if (deployParams.preset === GOAL_PRESET_VALUES.managed) {
+    return {
+      functionName: "deployManagedGoal",
+      args: [
+        {
+          common,
+          managedSafe: deployParams.managedSafe,
+          managedBudgetGatePolicy: deployParams.managedBudgetGatePolicy,
+          budgetRuntime,
+        },
+      ] as const,
+      label: "Deploy managed goal",
+    };
+  }
+
+  return {
+    functionName: "deployOpenGoal",
+    args: [
+      {
+        common,
+        budgetRuntime,
+        openBudgetTCR: {
+          allocationMechanismAdmin: deployParams.budgetTCR.allocationMechanismAdmin,
+          invalidRoundRewardsSink: deployParams.budgetTCR.invalidRoundRewardsSink,
+          submissionDepositStrategy: deployParams.budgetTCR.submissionDepositStrategy,
+          submissionBaseDeposit: deployParams.budgetTCR.submissionBaseDeposit,
+          removalBaseDeposit: deployParams.budgetTCR.removalBaseDeposit,
+          submissionChallengeBaseDeposit: deployParams.budgetTCR.submissionChallengeBaseDeposit,
+          removalChallengeBaseDeposit: deployParams.budgetTCR.removalChallengeBaseDeposit,
+          registrationMetaEvidence: deployParams.budgetTCR.registrationMetaEvidence,
+          clearingMetaEvidence: deployParams.budgetTCR.clearingMetaEvidence,
+          challengePeriodDuration: deployParams.budgetTCR.challengePeriodDuration,
+          arbitratorExtraData: deployParams.budgetTCR.arbitratorExtraData,
+          budgetBounds: deployParams.budgetTCR.budgetBounds,
+          arbitratorParams: deployParams.budgetTCR.arbitratorParams,
+        },
+      },
+    ] as const,
+    label: "Deploy open goal",
+  };
+}
+
 function encodeGoalFactoryDeployGoalDataFromNormalized(deployParams: GoalFactoryDeployParams): Hex {
+  const contractCall = resolveGoalFactoryContractCall(deployParams);
+
   try {
     return encodeFunctionData({
       abi: goalFactoryAbi as Abi,
-      functionName: "deployGoal",
-      args: [deployParams],
+      functionName: contractCall.functionName,
+      args: contractCall.args,
     });
   } catch (error) {
     throw new Error(
-      `Goal deploy params are invalid for GoalFactory.deployGoal: ${
+      `Goal deploy params are invalid for GoalFactory.${contractCall.functionName}: ${
         error instanceof Error ? error.message : String(error)
       }`
     );
@@ -757,13 +937,22 @@ function resolveGoalCreateArtifacts(params: {
     params.factoryAddress ?? protocolAddresses.entrypoints.goalFactory,
     "factoryAddress"
   );
+  const contractCall = resolveGoalFactoryContractCall(deployParams);
   const data = encodeGoalFactoryDeployGoalDataFromNormalized(deployParams);
-  const writeContract: GoalCreateWriteContractRequest = {
-    address: goalFactory,
-    abi: goalFactoryAbi,
-    functionName: "deployGoal",
-    args: [deployParams] as const,
-  };
+  const writeContract: GoalCreateWriteContractRequest =
+    contractCall.functionName === "deployManagedGoal"
+      ? {
+          address: goalFactory,
+          abi: goalFactoryAbi,
+          functionName: "deployManagedGoal",
+          args: contractCall.args,
+        }
+      : {
+          address: goalFactory,
+          abi: goalFactoryAbi,
+          functionName: "deployOpenGoal",
+          args: contractCall.args,
+        };
 
   return {
     chainId: protocolAddresses.chainId,
@@ -793,6 +982,10 @@ export function buildGoalCreateProtocolPlan(params: {
   network?: ProtocolNetwork | string;
 }): GoalCreateProtocolPlan {
   const basePlan = buildGoalCreatePlan(params);
+  const label =
+    basePlan.writeContract.functionName === "deployManagedGoal"
+      ? "Deploy managed goal"
+      : "Deploy open goal";
 
   return {
     chainId: basePlan.chainId,
@@ -807,11 +1000,11 @@ export function buildGoalCreateProtocolPlan(params: {
     steps: [
       buildProtocolCallStep({
         contract: "GoalFactory",
-        functionName: "deployGoal",
-        label: "Deploy goal",
+        functionName: basePlan.writeContract.functionName,
+        label,
         to: basePlan.goalFactory,
         abi: goalFactoryAbi as Abi,
-        args: [basePlan.deployParams],
+        args: basePlan.writeContract.args,
       }),
     ],
   };

@@ -22,10 +22,10 @@ export function normalizeProtocolNetwork(value: string): ProtocolNetwork {
  * - v1-core/deploys/LATEST_IMPLEMENTATIONS.8453.toml
  */
 export const baseEntrypoints = {
-  goalFactory: "0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3",
-  budgetTcrFactory: "0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D",
-  goalFactoryPairDeployer: "0xDE0c5C6fCe39Ce79e290544E4115d99d0dD9589A",
-  goalDeploymentRegistry: "0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67",
+  goalFactory: "0x8Aa7d640C7997b45adB53AB1D703681e8FB449A4",
+  budgetTcrFactory: "0xFf9d8986328841De5e9593f72A18982263291593",
+  goalFactoryPairDeployer: "0xD366d0534ADF7597d59d5f0538D4161049A8f8Fa",
+  goalDeploymentRegistry: "0x5702a03784925Fb0E0dcc2a817B709cF42A3cd4C",
   goalPaymentTerminal: "0x0000000000000000000000000000000000000000",
   cobuildToken: "0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD",
   cobuildSwap: "0x5d09ddd53feffc52f5139a59246ced560d8c45df",
@@ -63,51 +63,51 @@ export const baseEcosystemContracts = {
 } as const;
 
 export const baseImplementations = {
-  goalTreasuryImpl: "0x4EE7167e173b83B0EB3F7DaB7FCA4367cC6907eC",
-  goalStakeVaultImpl: "0x8355dF264778dbc0e55fd4aC0dbb1f600c8D1346",
-  budgetStakeLedgerImpl: "0x6700Da310Ba1b24a6629dBb3370dBcEf54038151",
-  goalFlowAllocationLedgerPipelineImpl: "0xF6f9BebD7450cd7E026344fB3c2a35B304D4bc45",
-  premiumEscrowImpl: "0x100d0728d35ae46b37c4f3152E120D0fefa562fC",
-  jurorSlasherRouterImpl: "0x665423695D1E5B254e568822B488193c13AF9A48",
-  underwriterSlasherRouterImpl: "0xE7400FF8295Ff863D0EE71DBd84A69Cc8c1Df7A1",
-  managedBudgetControllerImpl: "0x7Bd18aE34030646B2F209b4b1F64506a7ADEd1f3",
-  managedGoalAllocatorStrategyImpl: "0x643572dA72826d7F1F1151D2d058Ea48DcD43Cb6",
-  managedBudgetChildStrategyImpl: "0xBF102f4a9A98490c3463ca015Ea19839Ec88C7Ac",
-  managedBudgetChildStrategyFactoryImpl: "0x9d238C4414ffCc79Fb81aE28142FfDD861E6CEfC",
-  customFlowImpl: "0x29a8e4A2640D07C9C1b055119a7b3923Bbb6C7ad",
-  goalRevnetSplitHookImpl: "0x77F0FDBb48350b16809a9A5ee10AE1Ee70a289Ec",
-  budgetTcrImpl: "0x5C54201DaD0eFBc66398395562B3d49d27B92361",
-  erc20VotesArbitratorImpl: "0x96B5535c2F6a6dD5464Ec82Cb974c4a727033cBC",
-  budgetTcrDeployerImpl: "0x4D1bA668a55a842C593aBcbaeE795ce5A245B71d",
-  budgetTreasuryImpl: "0x6F57C337A2B4B5f1eF39A8aE8c197AfE3e9CebBd",
-  roundSubmissionTcrImpl: "0xA84b1e9004667f436A08a3238D2692A2b313CF3C",
-  roundPrizeVaultImpl: "0xcA85ecb180536598F0A8F64CB631FB6E9dD7251d",
-  prizePoolSubmissionDepositStrategyImpl: "0xC6fDe3f1820fFbc1F5A427BcbBbc2636D4770d3a",
-  roundFactoryImpl: "0x62c2dda0407C8369cd900a75A565Eb2F038eDf71",
-  allocationMechanismTcrImpl: "0x40F2E2be9ddA7BAeA903A67A54D65102f5492876",
-  budgetFlowRouterStrategyImpl: "0x4d5D1C0305ceeb54eFd718BF7AC5dF62A09e1633",
-  linearSpendPolicyImpl: "0xB640EC57e35088e7D864c2E7727fBB85331615B1",
+  goalTreasuryImpl: "0x40d294D92F158783092D7fE85D9b23d13cE148cb",
+  goalStakeVaultImpl: "0x3404C30fb873a286899f6Baf78742A78153Ef9F8",
+  budgetStakeLedgerImpl: "0x51B6808Ba6d9855e8247C8F4BB93D71cD3b10d39",
+  goalFlowAllocationLedgerPipelineImpl: "0x6b182c20351806678760aCeECd56872e02a8160B",
+  premiumEscrowImpl: "0xCb1F67a079Ea7676266BeD23Ad1F07a697e51435",
+  jurorSlasherRouterImpl: "0xB9b6aC31841c0394c03512482fB4ae3De4259018",
+  underwriterSlasherRouterImpl: "0x21BC9e0C8a996Cdf463b919D75214a3F00b52357",
+  managedBudgetControllerImpl: "0xDC00b4b3f7fAbf27F737Cd3B53Ed7241420EE510",
+  managedGoalAllocatorStrategyImpl: "0x7Af9f93691C70615dc824098D94B836ec9e5a5e3",
+  managedBudgetChildStrategyImpl: "0x688d62033FC84be90CdeB92f6D1F158B4C0e9c58",
+  managedBudgetChildStrategyFactoryImpl: "0x4F72D656e864C0ED5826F11eCA3eC8F39Ec793A0",
+  customFlowImpl: "0x59E9cD3f0ee1Ffb5C6e39EA104878184f5A853D9",
+  goalRevnetSplitHookImpl: "0xde6b307BAde08ca436E45D0c1407C5E0518f7FC6",
+  budgetTcrImpl: "0x0fc6A845c8Cc3be6DDF7a3Edb4f5d820B590000F",
+  erc20VotesArbitratorImpl: "0x8B29c07b3bb02BFd3be69b4602F86101bC2ec082",
+  budgetTcrDeployerImpl: "0xD9671A34E5dD840337aa933A555CD7B0FC94Cc6c",
+  budgetTreasuryImpl: "0xE63Cb1Ed7a750e541bEBaE710077ab47641627f4",
+  roundSubmissionTcrImpl: "0xE42dE53c420e62fdB787201Cb629c4E066c67179",
+  roundPrizeVaultImpl: "0xef2BBE0885B4E37083fC396d3c15569a08b2c677",
+  prizePoolSubmissionDepositStrategyImpl: "0x4B4E776E9687db8BbE1ed82925AD1A26d9A6E898",
+  roundFactoryImpl: "0xccd9c1060eF9c3E14aA57E5144eCb0C8329DB5cb",
+  allocationMechanismTcrImpl: "0xeD65dd552901D4997d233c9645e5495345c05C64",
+  budgetFlowRouterStrategyImpl: "0x655ED37e9e668327b9866150D102886Eb88a08D0",
+  linearSpendPolicyImpl: "0x18cfd054E0Ba3a94080F8c60E903Fa76E4940d6f",
   cobuildSwapImpl: "0x21a580054e7a5e833f38033f2d958e00e4c50f0f",
 } as const;
 
 export const baseDefaults = {
-  defaultSubmissionDepositStrategy: "0x2a3dbF811EdE9173B17D7131620287F97d73c935",
-  defaultOpenBudgetGatePolicy: "0x899f2fFF3c00FE44A97abA858136344C653a1907",
-  defaultGoalSpendPolicy: "0xfA6bd66309F2890971558E3C01b77071e94Dbcd9",
-  defaultBudgetSpendPolicy: "0xDBFbC5e092b15d6F1d1A2d2Eea7654a8050E0d2a",
+  defaultSubmissionDepositStrategy: "0x6C4d9a68347399ff98518C06D58110Ac1A277b2A",
+  defaultOpenBudgetGatePolicy: "0x32f24905da8c1D4f4B1983192e50D26763588090",
+  defaultGoalSpendPolicy: "0xB5d6E942d2dE2622A9ea7Ef67E68C0E11b2a273e",
+  defaultBudgetSpendPolicy: "0x0d637406708Ea66A3bD1cf5691d8Eb6d8E779506",
   defaultAllocationMechanismAdmin: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
   defaultInvalidRoundRewardsSink: "0x000000000000000000000000000000000000dEaD",
 } as const;
 
 export const COBUILD_PROJECT_ID = 138 as const;
 export const COBUILD_PROJECT_ID_BIGINT = 138n as const;
-export const BASE_SCAFFOLD_START_BLOCK = 43_290_000 as const;
+export const BASE_SCAFFOLD_START_BLOCK = 43_315_703 as const;
 
 export const baseConfig = {
   cobuildProjectId: COBUILD_PROJECT_ID,
   cobuildRevnetId: COBUILD_PROJECT_ID,
   scaffoldStartBlock: BASE_SCAFFOLD_START_BLOCK,
-  fakeUmaTreasurySuccessResolver: "0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49",
+  fakeUmaTreasurySuccessResolver: "0x93685e9101360172669CD305C46248D773a47474",
   fakeUmaOwner: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
   fakeUmaEscalationManager: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
   fakeUmaDomainId: "0x0000000000000000000000000000000000000000000000000000000000000000",

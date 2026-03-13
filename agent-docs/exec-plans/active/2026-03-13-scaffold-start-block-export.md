@@ -6,7 +6,7 @@ Promote the Base scaffold cutover block to the published `@cobuild/wire` protoco
 
 ## Constraints
 
-- Keep the exported start block aligned with the current Base factory rollout at `43_290_000`.
+- Keep the exported start block aligned with the current Base factory rollout at `43_315_703`.
 - Preserve the existing `protocol-addresses` export shape for downstream consumers while extending `baseConfig` additively.
 - Verify the shared export before publishing a new package version.
 
