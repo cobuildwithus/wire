@@ -10,7 +10,7 @@ function dedupeAbiItems<const T extends readonly unknown[]>(abi: T): T {
     const sizeBefore = seen.size;
     seen.add(JSON.stringify(item));
     return seen.size > sizeBefore;
-  }) as T;
+  }) as unknown as T;
 }
 
 export const budgetTcrAbi = dedupeAbiItems(generatedBudgetTcrAbi);
