@@ -31,7 +31,8 @@ If instructions still conflict after applying this order, ask the user before ac
 - Never print or commit full tokens or raw `Authorization` headers.
 - Historical plan docs under `agent-docs/exec-plans/completed/` are immutable snapshots.
 - COORDINATION_LEDGER hard gate for every coding task (single-agent and multi-agent): before any code change, add or update your active entry in `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` with scope and planned symbol add/rename/delete work; do not edit code, generate code, or apply patches until that entry exists; if you cannot update the ledger first, stop and escalate; keep the entry current as scope changes, and remove your entry when done.
-- Any spawned subagent that may review or edit code must read `COORDINATION_LEDGER.md`, follow the same hard gate before making code changes, and must not touch files or symbols owned by another active entry.
+- Ledger rows are active-work notices by default, not hard file locks. Read overlapping rows first, preserve adjacent edits, and coordinate through scope/symbol notes. Treat a row as exclusive only when it explicitly says overlap is unsafe, the lane is a large refactor, or the user gives a conflicting direction.
+- Any spawned subagent that may review or edit code must read `COORDINATION_LEDGER.md`, follow the same hard gate before making code changes, and honor any explicit exclusive/refactor notes on overlapping rows.
 - Keep this file short and route-oriented; move durable detail into `agent-docs/`.
 
 ## How To Work
@@ -40,6 +41,7 @@ If instructions still conflict after applying this order, ask the user before ac
 - Continue working in the current tree even when unrelated external dirty changes appear.
 - Never revert, delete, or rewrite existing edits you did not make unless the user explicitly asks.
 - If architecture-significant behavior changes, update matching docs in `agent-docs/`.
+- Prefer narrow ledger rows and symbol claims. If you need temporary exclusive control of a file or symbol cluster, say so explicitly in the row notes and explain why overlap is unsafe.
 - Treat the published `@cobuild/wire` package as the committed source of truth for sibling repos. Local `wire:use-local` link/file specs are temporary integration helpers only and must be normalized back to a published semver before commit.
 - `wire` releases may sync direct workspace consumers automatically after push by waiting for npm publish visibility and then running `scripts/sync-dependent-repos.sh`. Use `--no-sync-upstreams` or `WIRE_SKIP_UPSTREAM_SYNC=1` when that follow-up should be skipped intentionally.
 - When a `wire` release changes consumed addresses, ABIs, helpers, or runtime contracts, update the affected sibling repos after publish or record why a downstream bump is intentionally deferred.

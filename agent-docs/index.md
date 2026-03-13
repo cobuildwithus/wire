@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-13 (ABI export dedupe patch)
+Last verified: 2026-03-13 (coordination-ledger semantics softened to allow overlap by default)
 
 ## Purpose
 
@@ -33,7 +33,7 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/generated/doc-gardening-report.md` | Generated doc-gardening report. |
 | `agent-docs/exec-plans/active/` | Active execution plan workspace. |
 | `agent-docs/exec-plans/active/README.md` | Active execution plan conventions. |
-| `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` | Cross-agent ownership ledger. |
+| `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` | Cross-agent coordination ledger; rows are notices by default and exclusive only when explicitly marked. |
 | `agent-docs/exec-plans/completed/` | Completed execution plan archive. |
 | `agent-docs/exec-plans/completed/2026-03-10-protocol-phase1-foundation.md` | Completed execution record for Base-only goal-create helper extraction and shared protocol utility cleanup. |
 | `agent-docs/exec-plans/completed/2026-03-10-protocol-stake-premium-phase1.md` | Completed execution record for shared Base-only stake/premium planner and receipt-decoder helpers. |
