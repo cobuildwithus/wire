@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { encodeAbiParameters, encodeEventTopics, encodeFunctionData } from "viem";
+import {
+  encodeAbiParameters,
+  encodeEventTopics,
+  encodeFunctionData,
+  parseAbiItem,
+} from "viem";
 import {
   COBUILD_PROJECT_ID_BIGINT,
   buildGoalCreatePlan,
@@ -229,6 +234,53 @@ const goalDeployedLog = (() => {
   } as const;
 })();
 
+const legacyGoalDeployedLog = (() => {
+  const legacyGoalDeployedEvent = parseAbiItem(
+    "event GoalDeployed(address indexed caller, uint256 indexed goalRevnetId, (uint256 goalRevnetId,address goalToken,address goalSuperToken,address goalTreasury,address goalFlow,address goalFlowAllocationLedgerPipeline,address stakeVault,address budgetStakeLedger,address splitHook,address jurorSlasherRouter,address underwriterSlasherRouter,address successResolver,address budgetTCR,address arbitrator) stack)"
+  );
+
+  const stack = {
+    goalRevnetId: 138n,
+    goalToken: "0x2111111111111111111111111111111111111111",
+    goalSuperToken: "0x2212121212121212121212121212121212121212",
+    goalTreasury: "0x2414141414141414141414141414141414141414",
+    goalFlow: "0x2515151515151515151515151515151515151515",
+    goalFlowAllocationLedgerPipeline: "0x2616161616161616161616161616161616161616",
+    stakeVault: "0x2717171717171717171717171717171717171717",
+    budgetStakeLedger: "0x2818181818181818181818181818181818181818",
+    splitHook: "0x2919191919191919191919191919191919191919",
+    jurorSlasherRouter: "0x2a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a",
+    underwriterSlasherRouter: "0x2b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b",
+    successResolver: "0x2c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c",
+    budgetTCR: "0x2d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d",
+    arbitrator: "0x2e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e",
+  } as const;
+
+  return {
+    address: goalFactoryAddress,
+    blockHash: "0xcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    blockNumber: 2n,
+    data: encodeAbiParameters(
+      legacyGoalDeployedEvent.inputs.filter((input) =>
+        "indexed" in input ? input.indexed !== true : true
+      ),
+      [stack]
+    ),
+    logIndex: 1,
+    removed: false,
+    topics: encodeEventTopics({
+      abi: [legacyGoalDeployedEvent],
+      eventName: "GoalDeployed",
+      args: {
+        caller: "0x2111111111111111111111111111111111111111",
+        goalRevnetId: 138n,
+      },
+    }),
+    transactionHash: "0xdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    transactionIndex: 1,
+  } as const;
+})();
+
 describe("protocol goals contract", () => {
   it("extracts and normalizes deploy params from raw input aliases", () => {
     expect(isGoalFactoryDeployParamsInput(rawDeployParams)).toBe(true);
@@ -393,5 +445,14 @@ describe("protocol goals contract", () => {
         goalFlow: "0x1515151515151515151515151515151515151515",
       },
     });
+  });
+
+  it("keeps decoding legacy GoalDeployed logs from the pre-rollout stack shape", () => {
+    const decoded = decodeGoalDeployedEvent([legacyGoalDeployedLog]);
+    expect(decoded).not.toBeNull();
+    expect(decoded?.goalRevnetId).toBe(138n);
+    expect(decoded?.stack.goalAllocatorStrategy).toBe(ZERO_ADDRESS);
+    expect(decoded?.stack.budgetController).toBe("0x2d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d");
+    expect(decoded?.stack.budgetTCR).toBe("0x2d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d");
   });
 });

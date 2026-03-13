@@ -2,6 +2,7 @@ import {
   encodeFunctionData,
   getAddress,
   isHex,
+  parseAbiItem,
   parseEventLogs,
   size,
   type Abi,
@@ -194,6 +195,19 @@ export type GoalDeployedEvent = {
   goalRevnetId: bigint;
   stack: GoalDeployedStack;
 };
+
+const GOAL_DEPLOYED_EVENT_CURRENT = parseAbiItem(
+  "event GoalDeployed(address indexed caller, uint256 indexed goalRevnetId, (uint256 goalRevnetId,address goalToken,address goalSuperToken,address goalTreasury,address goalFlow,address goalAllocatorStrategy,address goalFlowAllocationLedgerPipeline,address stakeVault,address budgetStakeLedger,address splitHook,address jurorSlasherRouter,address underwriterSlasherRouter,address successResolver,address budgetController,address arbitrator) stack)"
+);
+
+const GOAL_DEPLOYED_EVENT_LEGACY = parseAbiItem(
+  "event GoalDeployed(address indexed caller, uint256 indexed goalRevnetId, (uint256 goalRevnetId,address goalToken,address goalSuperToken,address goalTreasury,address goalFlow,address goalFlowAllocationLedgerPipeline,address stakeVault,address budgetStakeLedger,address splitHook,address jurorSlasherRouter,address underwriterSlasherRouter,address successResolver,address budgetTCR,address arbitrator) stack)"
+);
+
+const GOAL_DEPLOYED_EVENT_ABI = [
+  GOAL_DEPLOYED_EVENT_CURRENT,
+  GOAL_DEPLOYED_EVENT_LEGACY,
+] as const satisfies Abi;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -855,7 +869,10 @@ function normalizeGoalDeployedStack(value: unknown): GoalDeployedStack {
     goalSuperToken: requireAddress("goalSuperToken"),
     goalTreasury: requireAddress("goalTreasury"),
     goalFlow: requireAddress("goalFlow"),
-    goalAllocatorStrategy: requireAddress("goalAllocatorStrategy"),
+    goalAllocatorStrategy:
+      typeof value.goalAllocatorStrategy === "string"
+        ? normalizeEvmAddress(value.goalAllocatorStrategy, "stack.goalAllocatorStrategy")
+        : ZERO_ADDRESS,
     goalFlowAllocationLedgerPipeline: requireAddress("goalFlowAllocationLedgerPipeline"),
     stakeVault: requireAddress("stakeVault"),
     budgetStakeLedger: requireAddress("budgetStakeLedger"),
@@ -871,7 +888,7 @@ function normalizeGoalDeployedStack(value: unknown): GoalDeployedStack {
 
 export function decodeGoalDeployedEvent(logs: readonly unknown[]): GoalDeployedEvent | null {
   const parsed = parseEventLogs({
-    abi: goalFactoryAbi as Abi,
+    abi: GOAL_DEPLOYED_EVENT_ABI,
     logs: logs as any[],
     eventName: "GoalDeployed",
     strict: false,
