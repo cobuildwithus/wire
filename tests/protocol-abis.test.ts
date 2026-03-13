@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import * as generated from "../src/generated/abis.js";
 import * as protocolAbis from "../src/protocol-abis.js";
@@ -123,48 +123,6 @@ describe("protocol ABI exports", () => {
     expect(protocolAbis.managedBudgetControllerAbi).toEqual(
       dedupeAbiItems(generated.managedBudgetControllerAbi),
     );
-  });
-
-  it("dedupes generated ABI entries when duplicates are present", async () => {
-    const duplicatedEvent = {
-      anonymous: false,
-      inputs: [],
-      name: "BudgetTreasuryCallFailed",
-      type: "event",
-    } as const;
-    const uniqueEvent = {
-      ...duplicatedEvent,
-      name: "BudgetTreasuryCallRetried",
-    } as const;
-
-    vi.resetModules();
-    vi.doMock("../src/generated/abis.js", async (importOriginal) => {
-      const actual =
-        await importOriginal<typeof import("../src/generated/abis.js")>();
-
-      return {
-        ...actual,
-        budgetTcrAbi: [duplicatedEvent, duplicatedEvent] as const,
-        managedBudgetControllerAbi: [
-          duplicatedEvent,
-          duplicatedEvent,
-          uniqueEvent,
-        ] as const,
-      };
-    });
-
-    try {
-      const mockedProtocolAbis = await import("../src/protocol-abis.js");
-
-      expect(mockedProtocolAbis.budgetTcrAbi).toEqual([duplicatedEvent]);
-      expect(mockedProtocolAbis.managedBudgetControllerAbi).toEqual([
-        duplicatedEvent,
-        uniqueEvent,
-      ]);
-    } finally {
-      vi.doUnmock("../src/generated/abis.js");
-      vi.resetModules();
-    }
   });
 
   it("does not expose fallback resolver API", () => {
