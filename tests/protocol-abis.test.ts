@@ -3,6 +3,32 @@ import { describe, expect, it } from "vitest";
 import * as generated from "../src/generated/abis.js";
 import * as protocolAbis from "../src/protocol-abis.js";
 
+function countEvent(abi: readonly unknown[], eventName: string): number {
+  return abi.filter(
+    (item): item is { type: string; name?: string } =>
+      typeof item === "object" &&
+      item !== null &&
+      "type" in item &&
+      "name" in item &&
+      typeof (item as { type?: unknown }).type === "string"
+  ).filter((item) => item.type === "event" && item.name === eventName).length;
+}
+
+function dedupeAbiItems<T>(abi: readonly T[]): readonly T[] {
+  const seen = new Set<string>();
+
+  return abi.filter((item) => {
+    const key = JSON.stringify(item);
+
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
+
 describe("protocol ABI exports", () => {
   it("re-exports wagmi-generated ABIs", () => {
     expect(protocolAbis.cobuildSwapImplAbi).toBe(generated.cobuildSwapImplAbi);
@@ -18,7 +44,6 @@ describe("protocol ABI exports", () => {
     expect(protocolAbis.premiumEscrowAbi).toBe(generated.premiumEscrowAbi);
     expect(protocolAbis.goalStakeVaultAbi).toBe(generated.goalStakeVaultAbi);
     expect(protocolAbis.budgetStakeLedgerAbi).toBe(generated.budgetStakeLedgerAbi);
-    expect(protocolAbis.budgetTcrAbi).toBe(generated.budgetTcrAbi);
     expect(protocolAbis.budgetTcrDeployerAbi).toBe(generated.budgetTcrDeployerAbi);
     expect(protocolAbis.budgetTcrFactoryAbi).toBe(generated.budgetTcrFactoryAbi);
     expect(protocolAbis.goalFlowAllocationLedgerPipelineAbi).toBe(
@@ -42,6 +67,19 @@ describe("protocol ABI exports", () => {
       generated.underwriterSlasherRouterAbi
     );
     expect(protocolAbis.jurorSlasherRouterAbi).toBe(generated.jurorSlasherRouterAbi);
+  });
+
+  it("dedupes exact duplicate public ABI events", () => {
+    expect(countEvent(generated.budgetTcrAbi, "BudgetTreasuryCallFailed")).toBe(2);
+    expect(countEvent(protocolAbis.budgetTcrAbi, "BudgetTreasuryCallFailed")).toBe(1);
+    expect(protocolAbis.budgetTcrAbi).toEqual(dedupeAbiItems(generated.budgetTcrAbi));
+    expect(countEvent(generated.managedBudgetControllerAbi, "BudgetTreasuryCallFailed")).toBe(2);
+    expect(countEvent(protocolAbis.managedBudgetControllerAbi, "BudgetTreasuryCallFailed")).toBe(
+      1
+    );
+    expect(protocolAbis.managedBudgetControllerAbi).toEqual(
+      dedupeAbiItems(generated.managedBudgetControllerAbi)
+    );
   });
 
   it("does not expose fallback resolver API", () => {

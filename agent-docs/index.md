@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-12 (active execution plan cleanup)
+Last verified: 2026-03-13 (ABI export dedupe patch)
 
 ## Purpose
 
@@ -50,6 +50,7 @@ Canonical map for docs used by agents working in this repository.
 
 ## Recent Updates
 
+- Normalized public `budgetTcrAbi` and `managedBudgetControllerAbi` exports so their exact duplicate generated ABI items are collapsed for downstream event-name lookups, and documented that contract in the API reference.
 - Added a canonical shared Farcaster/Neynar x402 signing-request helper so downstream hosted/local signers reuse one typed-data domain, validity window, and payment encoder.
 - Removed compatibility-only protocol-notification reason aliases so only canonical success-assertion and reminder spellings reach the shared presenter/routing surface.
 - Expanded shared protocol notification normalization, routing, and presenter coverage for finalize-failed, resolver lifecycle, juror reward, and reminder reason families.
