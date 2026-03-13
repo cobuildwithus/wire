@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.4] - 2026-03-13
+
+### Added
+- sync v1-core deployment artifacts
+
+### Fixed
+- satisfy protocol ABI build types
+
+### Changed
+- keep ABI duplicate mock typecheck-safe
+
 ## [0.3.3] - 2026-03-13
 
 ### Fixed
