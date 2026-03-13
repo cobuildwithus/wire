@@ -154,9 +154,7 @@ describe("protocol ABI exports", () => {
     });
 
     try {
-      const mockedProtocolAbis = await import(
-        "../src/protocol-abis.js?duplicate-case"
-      );
+      const mockedProtocolAbis = await import("../src/protocol-abis.js");
 
       expect(mockedProtocolAbis.budgetTcrAbi).toEqual([duplicatedEvent]);
       expect(mockedProtocolAbis.managedBudgetControllerAbi).toEqual([
