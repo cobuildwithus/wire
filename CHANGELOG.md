@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2026-03-13
+
+### Added
+- sync rerun base deployment rollout
+- sync base factory deployment surface
+
+### Fixed
+- preserve legacy goal deployed decoding
+
+### Changed
+- trim unused presets
+- adopt repo-defined presets
+- bump review-gpt to 0.2.16
+- archive stale active plans
+- allow scoped commits through unrelated red lanes
+
 ## [0.3.0] - 2026-03-12
 
 ### Added
