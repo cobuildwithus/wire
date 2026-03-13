@@ -22,8 +22,11 @@ export function normalizeProtocolNetwork(value: string): ProtocolNetwork {
  * - v1-core/deploys/LATEST_IMPLEMENTATIONS.8453.toml
  */
 export const baseEntrypoints = {
-  goalFactory: "0x47e83655026b6cAAD68D32919f165CE9C3Bd8a8F",
-  budgetTcrFactory: "0x6FDbE9f8330CA9B22d74E21a1e5aA29c7AE4E4fD",
+  goalFactory: "0x0f27EE0Aa0F01A6BcAF64e662977337dA5D476ce",
+  budgetTcrFactory: "0x2EA70b65C2d1243A967C0eac37d63a296A3E40cb",
+  goalFactoryPairDeployer: "0x65F3c0B21bA6ea7C73fe588F581Cd30c694325C9",
+  goalDeploymentRegistry: "0xa7E5161B7eb788217b7BB22549C531300273bb52",
+  goalPaymentTerminal: "0x0000000000000000000000000000000000000000",
   cobuildToken: "0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD",
   cobuildSwap: "0x5d09ddd53feffc52f5139a59246ced560d8c45df",
   cobuildTerminal: "0x5f4eF83207FbaCe6f66f670865A8F2a0D4A689D7",
@@ -60,30 +63,34 @@ export const baseEcosystemContracts = {
 } as const;
 
 export const baseImplementations = {
-  goalTreasuryImpl: "0xCB87F7dac555F907EA07A00127590479AC4558fb",
-  goalStakeVaultImpl: "0x04F131525e66678e867cA12f56d4aC37839DE2ac",
-  budgetStakeLedgerImpl: "0x2CDd4d48362d039cDA6Cf67d62C7cF96C2fb3871",
-  goalFlowAllocationLedgerPipelineImpl: "0x0c449732D3Da563073B6B2126660A857C9dcE124",
-  premiumEscrowImpl: "0x8b9aD109907E86ce2a8c491A97093cA076CC6Cd5",
-  jurorSlasherRouterImpl: "0x728bb0B5BB2Ff87111Bf717CD4D2E00752d08b22",
-  underwriterSlasherRouterImpl: "0xE991c419A59000C902c481a38C6BA329ad6b97FC",
-  customFlowImpl: "0x6ff0Ff68b783dbBE1663BAedF858459C9D51C841",
-  goalRevnetSplitHookImpl: "0x71f3A823650ed7b8D5d88e30551D0ed78071f20E",
-  budgetTcrImpl: "0x8d427390e7A210eaC7d40903d90Ad2170517D332",
-  erc20VotesArbitratorImpl: "0x94BF66E1d1E4C5532680f394C8B25C1070E80aFD",
-  budgetTcrDeployerImpl: "0x760048823Dd1d754c9eaBcdeD9Cb5428Cc3CF863",
-  budgetTreasuryImpl: "0xBc90bad4575bF7ADf9D096211f7AD40F24c8EFD1",
-  roundSubmissionTcrImpl: "0xeC4217c061F84d1Ba97687C9a72B926B0382f747",
-  roundPrizeVaultImpl: "0xf193305823BDE3043C8d2503cBCDFF62b8CC6b17",
-  prizePoolSubmissionDepositStrategyImpl: "0xB3B6ece085C3d078e3752d271eD636c6B185f620",
-  roundFactoryImpl: "0x3ea0A71d0bC5852da2184fe3b2aED8849b4D6e3b",
-  allocationMechanismTcrImpl: "0x98DC19691bECEB21a8DAEc81055E05EDDCDD027e",
-  budgetFlowRouterStrategyImpl: "0xeb20eA7a1f82c0fA568c4227F399b6555F360279",
+  goalTreasuryImpl: "0xbCa5ee495874992B362b39a4B91a61652b7400b4",
+  goalStakeVaultImpl: "0xc9824f73b5EdB097c958AfdA6Dde2c582ef4a230",
+  budgetStakeLedgerImpl: "0x3FBE4B5B74D91F72ab9b71da2814F81EB7a850F1",
+  goalFlowAllocationLedgerPipelineImpl: "0x4BECF8A3db91214558D1Bc100A6feb67c06a53cc",
+  premiumEscrowImpl: "0x3E434C10150BdD96c345ad6F35dB3310A9EDF339",
+  jurorSlasherRouterImpl: "0x63F7164689A5533a89e189280F69cc096f708166",
+  underwriterSlasherRouterImpl: "0xe8fE7344fC7dCE0a04A43731554bD68C9F3e0D42",
+  customFlowImpl: "0xb491420ebE762C0503ef1819a267a721B1e63c63",
+  goalRevnetSplitHookImpl: "0x2f0e749Ee7A459714Ac99485A45494c97e984536",
+  budgetTcrImpl: "0xCb3ec1d7Ba528D3a676FDF92181Dc7b79DB31B78",
+  erc20VotesArbitratorImpl: "0xF88E7FF73F43cbA31DFF5c2fd2bCAe7B710fB8A9",
+  budgetTcrDeployerImpl: "0xDC5baB04c3513fD5453876214f29b6eF11f38CF1",
+  budgetTreasuryImpl: "0x441a50fe02dB270A4f487583F17eFaA1c2005E2C",
+  roundSubmissionTcrImpl: "0x72b11c5803976C72FFC39F871e631Ee7E3daB690",
+  roundPrizeVaultImpl: "0xAac6BDAAF4153261860c5856fA1E9F7404274fD3",
+  prizePoolSubmissionDepositStrategyImpl: "0x9e0F51DDcEa90A79D613c9D0211410C108386EE9",
+  roundFactoryImpl: "0x1772c43D40E1E66fb0C73C27Aa5689053AaCF24a",
+  allocationMechanismTcrImpl: "0xbDde78690EA0618F4521Ac193f410dc3eDE90c77",
+  budgetFlowRouterStrategyImpl: "0x43BA11324bD75B90D7D87e849BBA80A809c0f378",
+  linearSpendPolicyImpl: "0xcC8c047603a07DC71d02F5147718Ce0A0c1a20bF",
   cobuildSwapImpl: "0x21a580054e7a5e833f38033f2d958e00e4c50f0f",
 } as const;
 
 export const baseDefaults = {
-  defaultSubmissionDepositStrategy: "0x9873Cf79c16884e2295039DdDc02dF9E1D92355a",
+  defaultSubmissionDepositStrategy: "0x0e46e93Fba439303AB347361d73C2Fdd48006d22",
+  defaultOpenBudgetGatePolicy: "0x2E00c4bE6BBEDeea7a600f6B8c4ef21bDBBaf536",
+  defaultGoalSpendPolicy: "0x46c08e7FBa9947Ae14e3C7Df3F82DBfF9e951c20",
+  defaultBudgetSpendPolicy: "0x2CFB6B81C69BDF9c11cBeaafFcb657E4039e3536",
   defaultAllocationMechanismAdmin: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
   defaultInvalidRoundRewardsSink: "0x000000000000000000000000000000000000dEaD",
 } as const;
@@ -94,13 +101,18 @@ export const COBUILD_PROJECT_ID_BIGINT = 138n as const;
 export const baseConfig = {
   cobuildProjectId: COBUILD_PROJECT_ID,
   cobuildRevnetId: COBUILD_PROJECT_ID,
-  fakeUmaTreasurySuccessResolver: "0xB6737Fee8A0c49D1A3f23664Df94dcE2EbBE7a12",
+  fakeUmaTreasurySuccessResolver: "0xc9a16Da48BA31C12253Ea438a66247D5d70Df195",
   fakeUmaOwner: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
   fakeUmaEscalationManager: "0x289715fFBB2f4b482e2917D2f183FeAb564ec84F",
   fakeUmaDomainId: "0x0000000000000000000000000000000000000000000000000000000000000000",
 } as const;
 
 export const baseContracts = {
+  GoalFactory: baseEntrypoints.goalFactory,
+  BudgetTCRFactory: baseEntrypoints.budgetTcrFactory,
+  GoalFactoryPairDeployer: baseEntrypoints.goalFactoryPairDeployer,
+  GoalDeploymentRegistry: baseEntrypoints.goalDeploymentRegistry,
+  GoalPaymentTerminal: baseEntrypoints.goalPaymentTerminal,
   CobuildSwap: baseEntrypoints.cobuildSwap,
   CobuildSwapImpl: baseImplementations.cobuildSwapImpl,
   CobuildToken: baseEntrypoints.cobuildToken,
@@ -117,6 +129,11 @@ export const baseContracts = {
   CobuildFlowManager: baseEcosystemContracts.cobuildFlowManager,
   CobuildFlowAllocator: baseEcosystemContracts.cobuildFlowAllocator,
   CustomFlowImpl: baseImplementations.customFlowImpl,
+  LinearSpendPolicyImpl: baseImplementations.linearSpendPolicyImpl,
+  DefaultSubmissionDepositStrategy: baseDefaults.defaultSubmissionDepositStrategy,
+  DefaultOpenBudgetGatePolicy: baseDefaults.defaultOpenBudgetGatePolicy,
+  DefaultGoalSpendPolicy: baseDefaults.defaultGoalSpendPolicy,
+  DefaultBudgetSpendPolicy: baseDefaults.defaultBudgetSpendPolicy,
   JBDirectory: baseEcosystemContracts.jbDirectory,
   JBMultiTerminal: baseEcosystemContracts.jbMultiTerminal,
   JBController: baseEcosystemContracts.jbController,
@@ -145,6 +162,9 @@ export function resolveProtocolAddresses(network: ProtocolNetwork | string = "ba
 
 export const goalFactoryAddress = baseEntrypoints.goalFactory;
 export const budgetTcrFactoryAddress = baseEntrypoints.budgetTcrFactory;
+export const goalFactoryPairDeployerAddress = baseEntrypoints.goalFactoryPairDeployer;
+export const goalDeploymentRegistryAddress = baseEntrypoints.goalDeploymentRegistry;
+export const goalPaymentTerminalAddress = baseEntrypoints.goalPaymentTerminal;
 export const cobuildTokenAddress = baseEntrypoints.cobuildToken;
 export const cobuildSwapAddress = baseEntrypoints.cobuildSwap;
 export const cobuildTerminalAddress = baseEntrypoints.cobuildTerminal;

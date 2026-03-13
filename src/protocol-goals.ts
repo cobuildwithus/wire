@@ -21,6 +21,8 @@ import {
   type ProtocolExecutionPlan,
 } from "./protocol-plans.js";
 import {
+  COBUILD_PROJECT_ID_BIGINT,
+  cobuildTokenAddress,
   normalizeProtocolNetwork,
   resolveProtocolAddresses,
   type ProtocolNetwork,
@@ -36,7 +38,25 @@ export const GOAL_FACTORY_DEPLOY_REQUIRED_KEYS = [
   "goalSpendPolicy",
 ] as const;
 
+export const GOAL_FACTORY_DEPLOY_OPTIONAL_KEYS = [
+  "preset",
+  "managedSafe",
+  "funding",
+] as const;
+
+const GOAL_FACTORY_DEPLOY_SUPPORTED_KEYS = [
+  ...GOAL_FACTORY_DEPLOY_OPTIONAL_KEYS,
+  ...GOAL_FACTORY_DEPLOY_REQUIRED_KEYS,
+] as const;
+
 const GOAL_FACTORY_DEPLOY_ROOT_ALIASES = ["deployParams", "params", "p"] as const;
+
+const GOAL_PRESET_VALUES = {
+  open: 0,
+  managed: 1,
+} as const;
+
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
 
 const REVNET_PARAM_KEYS = [
   "name",
@@ -99,6 +119,8 @@ const BUDGET_BOUNDS_KEYS = [
 
 const ORACLE_BOUNDS_KEYS = ["liveness", "bondAmount"] as const;
 
+const FUNDING_PARAM_KEYS = ["paymentToken", "paymentRevnetId"] as const;
+
 const ARBITRATOR_PARAM_KEYS = [
   "votingPeriod",
   "votingDelay",
@@ -154,6 +176,7 @@ export type GoalDeployedStack = {
   goalSuperToken: EvmAddress;
   goalTreasury: EvmAddress;
   goalFlow: EvmAddress;
+  goalAllocatorStrategy: EvmAddress;
   goalFlowAllocationLedgerPipeline: EvmAddress;
   stakeVault: EvmAddress;
   budgetStakeLedger: EvmAddress;
@@ -161,6 +184,7 @@ export type GoalDeployedStack = {
   jurorSlasherRouter: EvmAddress;
   underwriterSlasherRouter: EvmAddress;
   successResolver: EvmAddress;
+  budgetController: EvmAddress;
   budgetTCR: EvmAddress;
   arbitrator: EvmAddress;
 };
@@ -199,19 +223,20 @@ function expectRecord(value: unknown, label: string): Record<string, unknown> {
 
 function assertExactKeys(
   record: Record<string, unknown>,
-  expectedKeys: readonly string[],
-  label: string
+  requiredKeys: readonly string[],
+  label: string,
+  allowedKeys: readonly string[] = requiredKeys
 ): void {
-  for (const key of expectedKeys) {
+  for (const key of requiredKeys) {
     if (!hasOwn(record, key)) {
       throw new Error(`${label}.${key} is required.`);
     }
   }
 
   for (const key of Object.keys(record)) {
-    if (!expectedKeys.includes(key)) {
+    if (!allowedKeys.includes(key)) {
       throw new Error(
-        `${label}.${key} is not supported. Expected keys: ${expectedKeys.join(", ")}.`
+        `${label}.${key} is not supported. Expected keys: ${allowedKeys.join(", ")}.`
       );
     }
   }
@@ -276,13 +301,69 @@ function normalizeHexBytesValue(
   return normalized as HexBytes;
 }
 
+function normalizeGoalPreset(value: unknown, label: string): number {
+  if (value === undefined) {
+    return GOAL_PRESET_VALUES.open;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized in GOAL_PRESET_VALUES) {
+      return GOAL_PRESET_VALUES[normalized as keyof typeof GOAL_PRESET_VALUES];
+    }
+
+    if (/^\d+$/.test(normalized)) {
+      const parsed = Number(normalized);
+      if (parsed === GOAL_PRESET_VALUES.open || parsed === GOAL_PRESET_VALUES.managed) {
+        return parsed;
+      }
+    }
+
+    throw new Error(`${label} must be one of: open, managed, 0, 1.`);
+  }
+
+  if (typeof value === "number" || typeof value === "bigint") {
+    const parsed = Number(normalizeUintBigInt(value, label, 8));
+    if (parsed === GOAL_PRESET_VALUES.open || parsed === GOAL_PRESET_VALUES.managed) {
+      return parsed;
+    }
+  }
+
+  throw new Error(`${label} must be one of: open, managed, 0, 1.`);
+}
+
 function normalizeGoalFactoryDeployParamsRecord(
   input: Record<string, unknown>
 ): GoalFactoryDeployParams {
-  assertExactKeys(input, GOAL_FACTORY_DEPLOY_REQUIRED_KEYS, "deployParams");
+  assertExactKeys(
+    input,
+    GOAL_FACTORY_DEPLOY_REQUIRED_KEYS,
+    "deployParams",
+    GOAL_FACTORY_DEPLOY_SUPPORTED_KEYS
+  );
+
+  const preset = normalizeGoalPreset(input.preset, "deployParams.preset");
+
+  if (input.managedSafe !== undefined && typeof input.managedSafe !== "string") {
+    throw new Error("deployParams.managedSafe must be a string.");
+  }
+
+  const managedSafe = normalizeEvmAddress(
+    input.managedSafe ?? ZERO_ADDRESS,
+    "deployParams.managedSafe"
+  );
+  if (preset === GOAL_PRESET_VALUES.managed && managedSafe === ZERO_ADDRESS) {
+    throw new Error("deployParams.managedSafe is required when deployParams.preset is managed.");
+  }
 
   const revnet = expectRecord(input.revnet, "deployParams.revnet");
   assertExactKeys(revnet, REVNET_PARAM_KEYS, "deployParams.revnet");
+
+  const funding =
+    input.funding === undefined ? null : expectRecord(input.funding, "deployParams.funding");
+  if (funding) {
+    assertExactKeys(funding, FUNDING_PARAM_KEYS, "deployParams.funding");
+  }
 
   const timing = expectRecord(input.timing, "deployParams.timing");
   assertExactKeys(timing, GOAL_TIMING_PARAM_KEYS, "deployParams.timing");
@@ -330,6 +411,23 @@ function normalizeGoalFactoryDeployParamsRecord(
   );
 
   return {
+    preset,
+    managedSafe,
+    funding: {
+      paymentToken: funding
+        ? normalizeEvmAddress(
+            requireString(funding, "paymentToken", "deployParams.funding"),
+            "deployParams.funding.paymentToken"
+          )
+        : normalizeEvmAddress(cobuildTokenAddress, "deployParams.funding.paymentToken"),
+      paymentRevnetId: funding
+        ? normalizeUintBigInt(
+            funding.paymentRevnetId,
+            "deployParams.funding.paymentRevnetId",
+            256
+          )
+        : COBUILD_PROJECT_ID_BIGINT,
+    },
     revnet: {
       name: requireString(revnet, "name", "deployParams.revnet"),
       ticker: requireString(revnet, "ticker", "deployParams.revnet"),
@@ -726,7 +824,9 @@ function normalizeGoalDeployedStack(value: unknown): GoalDeployedStack {
     throw new Error("GoalDeployed stack payload is missing.");
   }
 
-  const requireAddress = (key: keyof Omit<GoalDeployedStack, "goalRevnetId">): EvmAddress => {
+  const requireAddress = (
+    key: keyof Omit<GoalDeployedStack, "goalRevnetId" | "budgetTCR">
+  ): EvmAddress => {
     const rawValue = value[key];
     if (typeof rawValue !== "string") {
       throw new Error(`GoalDeployed stack field "${String(key)}" is missing.`);
@@ -739,12 +839,23 @@ function normalizeGoalDeployedStack(value: unknown): GoalDeployedStack {
     throw new Error('GoalDeployed stack field "goalRevnetId" is missing.');
   }
 
+  const budgetController =
+    typeof value.budgetController === "string"
+      ? normalizeEvmAddress(value.budgetController, "stack.budgetController")
+      : typeof value.budgetTCR === "string"
+        ? normalizeEvmAddress(value.budgetTCR, "stack.budgetTCR")
+        : null;
+  if (!budgetController) {
+    throw new Error('GoalDeployed stack field "budgetController" is missing.');
+  }
+
   return {
     goalRevnetId,
     goalToken: requireAddress("goalToken"),
     goalSuperToken: requireAddress("goalSuperToken"),
     goalTreasury: requireAddress("goalTreasury"),
     goalFlow: requireAddress("goalFlow"),
+    goalAllocatorStrategy: requireAddress("goalAllocatorStrategy"),
     goalFlowAllocationLedgerPipeline: requireAddress("goalFlowAllocationLedgerPipeline"),
     stakeVault: requireAddress("stakeVault"),
     budgetStakeLedger: requireAddress("budgetStakeLedger"),
@@ -752,7 +863,8 @@ function normalizeGoalDeployedStack(value: unknown): GoalDeployedStack {
     jurorSlasherRouter: requireAddress("jurorSlasherRouter"),
     underwriterSlasherRouter: requireAddress("underwriterSlasherRouter"),
     successResolver: requireAddress("successResolver"),
-    budgetTCR: requireAddress("budgetTCR"),
+    budgetController,
+    budgetTCR: budgetController,
     arbitrator: requireAddress("arbitrator"),
   };
 }

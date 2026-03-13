@@ -6,7 +6,12 @@ import { defineConfig, loadEnv } from "@wagmi/cli";
 import { etherscan } from "@wagmi/cli/plugins";
 import type { Abi } from "viem";
 
-import { baseConfig, baseEntrypoints, baseImplementations } from "./src/protocol-addresses.js";
+import {
+  baseConfig,
+  baseDefaults,
+  baseEntrypoints,
+  baseImplementations,
+} from "./src/protocol-addresses.js";
 
 const BASE_CHAIN_ID = 8453 as const;
 const CONFIG_DIR = dirname(fileURLToPath(import.meta.url));
@@ -28,6 +33,11 @@ const PROTOCOL_CONTRACTS: readonly ProtocolContractConfig[] = [
     name: "GoalFactory",
     address: baseEntrypoints.goalFactory,
     artifact: "GoalFactory.sol/GoalFactory.json",
+  },
+  {
+    name: "GoalDeploymentRegistry",
+    address: baseEntrypoints.goalDeploymentRegistry,
+    artifact: "GoalDeploymentRegistry.sol/GoalDeploymentRegistry.json",
   },
   {
     name: "BudgetTCRFactory",
@@ -135,6 +145,16 @@ const PROTOCOL_CONTRACTS: readonly ProtocolContractConfig[] = [
     artifact: "BudgetFlowRouterStrategy.sol/BudgetFlowRouterStrategy.json",
   },
   {
+    name: "LinearSpendPolicy",
+    address: baseImplementations.linearSpendPolicyImpl,
+    artifact: "LinearSpendPolicy.sol/LinearSpendPolicy.json",
+  },
+  {
+    name: "StakeCoverageGatePolicy",
+    address: baseDefaults.defaultOpenBudgetGatePolicy,
+    artifact: "StakeCoverageGatePolicy.sol/StakeCoverageGatePolicy.json",
+  },
+  {
     name: "CobuildSwapImpl",
     address: baseImplementations.cobuildSwapImpl,
     artifact: "CobuildSwap.sol/CobuildSwap.json",
@@ -142,7 +162,7 @@ const PROTOCOL_CONTRACTS: readonly ProtocolContractConfig[] = [
   {
     name: "CobuildTerminal",
     address: baseEntrypoints.cobuildTerminal,
-    artifact: "CobuildTerminal.sol/CobuildTerminal.json",
+    artifact: "CobuildGoalTerminal.sol/CobuildGoalTerminal.json",
   },
 ] as const;
 

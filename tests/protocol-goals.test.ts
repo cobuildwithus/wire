@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { encodeAbiParameters, encodeEventTopics, encodeFunctionData } from "viem";
 import {
+  COBUILD_PROJECT_ID_BIGINT,
   buildGoalCreatePlan,
   buildGoalCreateProtocolPlan,
   buildGoalCreateTransaction,
@@ -15,7 +16,15 @@ import {
   serializeGoalDeployedEvent,
 } from "../src/index.js";
 
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000" as const;
+
 const normalizedDeployParams = {
+  preset: 0,
+  managedSafe: ZERO_ADDRESS,
+  funding: {
+    paymentToken: "0x62f05b13239b24b8eeff36696344de0db7d2efdd",
+    paymentRevnetId: COBUILD_PROJECT_ID_BIGINT,
+  },
   revnet: {
     name: "Alpha Goal",
     ticker: "ALPHA",
@@ -161,6 +170,16 @@ const rawDeployParams = {
   goalSpendPolicy: "0x6666666666666666666666666666666666666666",
 } as const;
 
+const managedDeployParams = {
+  ...rawDeployParams,
+  preset: "managed",
+  managedSafe: "0x7777777777777777777777777777777777777777",
+  funding: {
+    paymentToken: "0x8888888888888888888888888888888888888888",
+    paymentRevnetId: "139",
+  },
+} as const;
+
 const goalDeployedLog = (() => {
   const goalDeployedEvent = goalFactoryAbi.find(
     (entry) => entry.type === "event" && entry.name === "GoalDeployed"
@@ -175,6 +194,7 @@ const goalDeployedLog = (() => {
     goalSuperToken: "0x1212121212121212121212121212121212121212",
     goalTreasury: "0x1414141414141414141414141414141414141414",
     goalFlow: "0x1515151515151515151515151515151515151515",
+    goalAllocatorStrategy: "0x1525252525252525252525252525252525252525",
     goalFlowAllocationLedgerPipeline: "0x1616161616161616161616161616161616161616",
     stakeVault: "0x1717171717171717171717171717171717171717",
     budgetStakeLedger: "0x1818181818181818181818181818181818181818",
@@ -182,7 +202,7 @@ const goalDeployedLog = (() => {
     jurorSlasherRouter: "0x1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a",
     underwriterSlasherRouter: "0x1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b",
     successResolver: "0x1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c",
-    budgetTCR: "0x1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d",
+    budgetController: "0x1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d",
     arbitrator: "0x1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e",
   } as const;
 
@@ -223,6 +243,48 @@ describe("protocol goals contract", () => {
     expect(() => extractGoalFactoryDeployParams({ nope: true })).toThrow(
       "Goal deploy params must include keys"
     );
+  });
+
+  it("supports explicit preset, managed-safe, and funding overrides", () => {
+    expect(normalizeGoalFactoryDeployParams(managedDeployParams)).toMatchObject({
+      preset: 1,
+      managedSafe: "0x7777777777777777777777777777777777777777",
+      funding: {
+        paymentToken: "0x8888888888888888888888888888888888888888",
+        paymentRevnetId: 139n,
+      },
+    });
+  });
+
+  it("accepts numeric preset values when managed-safe context is explicit", () => {
+    expect(
+      normalizeGoalFactoryDeployParams({
+        ...rawDeployParams,
+        preset: 1,
+        managedSafe: "0x7777777777777777777777777777777777777777",
+      })
+    ).toMatchObject({
+      preset: 1,
+      managedSafe: "0x7777777777777777777777777777777777777777",
+    });
+  });
+
+  it("rejects managed presets without an explicit managedSafe", () => {
+    expect(() =>
+      normalizeGoalFactoryDeployParams({
+        ...rawDeployParams,
+        preset: "managed",
+      })
+    ).toThrow("deployParams.managedSafe is required");
+  });
+
+  it("rejects non-string managedSafe values", () => {
+    expect(() =>
+      normalizeGoalFactoryDeployParams({
+        ...rawDeployParams,
+        managedSafe: 1,
+      })
+    ).toThrow("deployParams.managedSafe must be a string.");
   });
 
   it("rejects stale goal deploy fields that no longer exist on GoalFactory", () => {
@@ -317,6 +379,10 @@ describe("protocol goals contract", () => {
     expect(decoded?.caller).toBe("0x1111111111111111111111111111111111111111");
     expect(decoded?.goalRevnetId).toBe(137n);
     expect(decoded?.stack.goalTreasury).toBe("0x1414141414141414141414141414141414141414");
+    expect(decoded?.stack.goalAllocatorStrategy).toBe(
+      "0x1525252525252525252525252525252525252525"
+    );
+    expect(decoded?.stack.budgetController).toBe("0x1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d");
     expect(decoded?.stack.budgetTCR).toBe("0x1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d");
 
     expect(serializeGoalDeployedEvent(decoded!)).toMatchObject({
