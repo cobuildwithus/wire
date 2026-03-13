@@ -65,6 +65,26 @@ const PROTOCOL_CONTRACTS: readonly ProtocolContractConfig[] = [
     artifact: "PremiumEscrow.sol/PremiumEscrow.json",
   },
   {
+    name: "ManagedBudgetController",
+    address: baseImplementations.managedBudgetControllerImpl,
+    artifact: "ManagedBudgetController.sol/ManagedBudgetController.json",
+  },
+  {
+    name: "SingleAllocatorStrategy",
+    address: baseImplementations.managedGoalAllocatorStrategyImpl,
+    artifact: "SingleAllocatorStrategy.sol/SingleAllocatorStrategy.json",
+  },
+  {
+    name: "BudgetSingleAllocatorStrategy",
+    address: baseImplementations.managedBudgetChildStrategyImpl,
+    artifact: "BudgetSingleAllocatorStrategy.sol/BudgetSingleAllocatorStrategy.json",
+  },
+  {
+    name: "BudgetSingleAllocatorStrategyFactory",
+    address: baseImplementations.managedBudgetChildStrategyFactoryImpl,
+    artifact: "BudgetSingleAllocatorStrategyFactory.sol/BudgetSingleAllocatorStrategyFactory.json",
+  },
+  {
     name: "GoalStakeVault",
     address: baseImplementations.goalStakeVaultImpl,
     artifact: "StakeVault.sol/StakeVault.json",

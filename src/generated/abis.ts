@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xbDde78690EA0618F4521Ac193f410dc3eDE90c77)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x40F2E2be9ddA7BAeA903A67A54D65102f5492876)
  */
 export const allocationMechanismTcrAbi = [
   {
@@ -1357,14 +1357,14 @@ export const allocationMechanismTcrAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xbDde78690EA0618F4521Ac193f410dc3eDE90c77)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x40F2E2be9ddA7BAeA903A67A54D65102f5492876)
  */
 export const allocationMechanismTcrAddress = {
-  8453: '0xbDde78690EA0618F4521Ac193f410dc3eDE90c77',
+  8453: '0x40F2E2be9ddA7BAeA903A67A54D65102f5492876',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xbDde78690EA0618F4521Ac193f410dc3eDE90c77)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x40F2E2be9ddA7BAeA903A67A54D65102f5492876)
  */
 export const allocationMechanismTcrConfig = {
   address: allocationMechanismTcrAddress,
@@ -1376,7 +1376,7 @@ export const allocationMechanismTcrConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x43BA11324bD75B90D7D87e849BBA80A809c0f378)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4d5D1C0305ceeb54eFd718BF7AC5dF62A09e1633)
  */
 export const budgetFlowRouterStrategyAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -1589,14 +1589,14 @@ export const budgetFlowRouterStrategyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x43BA11324bD75B90D7D87e849BBA80A809c0f378)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4d5D1C0305ceeb54eFd718BF7AC5dF62A09e1633)
  */
 export const budgetFlowRouterStrategyAddress = {
-  8453: '0x43BA11324bD75B90D7D87e849BBA80A809c0f378',
+  8453: '0x4d5D1C0305ceeb54eFd718BF7AC5dF62A09e1633',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x43BA11324bD75B90D7D87e849BBA80A809c0f378)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4d5D1C0305ceeb54eFd718BF7AC5dF62A09e1633)
  */
 export const budgetFlowRouterStrategyConfig = {
   address: budgetFlowRouterStrategyAddress,
@@ -1604,11 +1604,246 @@ export const budgetFlowRouterStrategyConfig = {
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BudgetSingleAllocatorStrategy
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xBF102f4a9A98490c3463ca015Ea19839Ec88C7Ac)
+ */
+export const budgetSingleAllocatorStrategyAbi = [
+  {
+    type: 'constructor',
+    inputs: [
+      { name: 'budgetTreasury_', internalType: 'address', type: 'address' },
+      { name: 'allocator_', internalType: 'address', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'STRATEGY_KEY',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'VIRTUAL_WEIGHT',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'key', internalType: 'uint256', type: 'uint256' }],
+    name: 'accountForAllocationKey',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'pure',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'caller', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'allocationKey',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'pure',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'allocator',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'budgetTreasury',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'flow', internalType: 'address', type: 'address' },
+      { name: 'key', internalType: 'uint256', type: 'uint256' },
+      { name: 'caller', internalType: 'address', type: 'address' },
+    ],
+    name: 'canAllocate',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'flow', internalType: 'address', type: 'address' },
+      { name: 'key', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'currentWeight',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'budgetTreasury_', internalType: 'address', type: 'address' },
+      { name: 'allocator_', internalType: 'address', type: 'address' },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'strategyKey',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'pure',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'allocator',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'AllocatorInitialized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'version',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'Initialized',
+  },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  {
+    type: 'error',
+    inputs: [{ name: 'key', internalType: 'uint256', type: 'uint256' }],
+    name: 'INVALID_ALLOCATION_KEY',
+  },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'NOT_A_CONTRACT',
+  },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'bits', internalType: 'uint8', type: 'uint8' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'SafeCastOverflowedUintDowncast',
+  },
+] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xBF102f4a9A98490c3463ca015Ea19839Ec88C7Ac)
+ */
+export const budgetSingleAllocatorStrategyAddress = {
+  8453: '0xBF102f4a9A98490c3463ca015Ea19839Ec88C7Ac',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xBF102f4a9A98490c3463ca015Ea19839Ec88C7Ac)
+ */
+export const budgetSingleAllocatorStrategyConfig = {
+  address: budgetSingleAllocatorStrategyAddress,
+  abi: budgetSingleAllocatorStrategyAbi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// BudgetSingleAllocatorStrategyFactory
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x9d238C4414ffCc79Fb81aE28142FfDD861E6CEfC)
+ */
+export const budgetSingleAllocatorStrategyFactoryAbi = [
+  {
+    type: 'constructor',
+    inputs: [
+      { name: 'implementation_', internalType: 'address', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'implementation',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'address', type: 'address' },
+      { name: 'registrar', internalType: 'address', type: 'address' },
+    ],
+    name: 'prepareChildFlowStrategy',
+    outputs: [{ name: 'strategy', internalType: 'address', type: 'address' }],
+    stateMutability: 'nonpayable',
+  },
+  { type: 'error', inputs: [], name: 'FailedDeployment' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'implementation', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_IMPLEMENTATION',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'registrar', internalType: 'address', type: 'address' }],
+    name: 'INVALID_REGISTRAR',
+  },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'balance', internalType: 'uint256', type: 'uint256' },
+      { name: 'needed', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'InsufficientBalance',
+  },
+] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x9d238C4414ffCc79Fb81aE28142FfDD861E6CEfC)
+ */
+export const budgetSingleAllocatorStrategyFactoryAddress = {
+  8453: '0x9d238C4414ffCc79Fb81aE28142FfDD861E6CEfC',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x9d238C4414ffCc79Fb81aE28142FfDD861E6CEfC)
+ */
+export const budgetSingleAllocatorStrategyFactoryConfig = {
+  address: budgetSingleAllocatorStrategyFactoryAddress,
+  abi: budgetSingleAllocatorStrategyFactoryAbi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // BudgetStakeLedger
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x3FBE4B5B74D91F72ab9b71da2814F81EB7a850F1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6700Da310Ba1b24a6629dBb3370dBcEf54038151)
  */
 export const budgetStakeLedgerAbi = [
   {
@@ -2070,14 +2305,14 @@ export const budgetStakeLedgerAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x3FBE4B5B74D91F72ab9b71da2814F81EB7a850F1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6700Da310Ba1b24a6629dBb3370dBcEf54038151)
  */
 export const budgetStakeLedgerAddress = {
-  8453: '0x3FBE4B5B74D91F72ab9b71da2814F81EB7a850F1',
+  8453: '0x6700Da310Ba1b24a6629dBb3370dBcEf54038151',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x3FBE4B5B74D91F72ab9b71da2814F81EB7a850F1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6700Da310Ba1b24a6629dBb3370dBcEf54038151)
  */
 export const budgetStakeLedgerConfig = {
   address: budgetStakeLedgerAddress,
@@ -2089,7 +2324,7 @@ export const budgetStakeLedgerConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xCb3ec1d7Ba528D3a676FDF92181Dc7b79DB31B78)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x5C54201DaD0eFBc66398395562B3d49d27B92361)
  */
 export const budgetTcrAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -3767,18 +4002,19 @@ export const budgetTcrAbi = [
     name: 'SafeERC20FailedOperation',
   },
   { type: 'error', inputs: [], name: 'TERMINAL_RESOLUTION_FAILED' },
+  { type: 'error', inputs: [], name: 'UNDERWRITER_SLASHER_CONFIG_MISMATCH' },
   { type: 'error', inputs: [], name: 'UNDERWRITER_SLASHER_NOT_CONFIGURED' },
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xCb3ec1d7Ba528D3a676FDF92181Dc7b79DB31B78)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x5C54201DaD0eFBc66398395562B3d49d27B92361)
  */
 export const budgetTcrAddress = {
-  8453: '0xCb3ec1d7Ba528D3a676FDF92181Dc7b79DB31B78',
+  8453: '0x5C54201DaD0eFBc66398395562B3d49d27B92361',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xCb3ec1d7Ba528D3a676FDF92181Dc7b79DB31B78)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x5C54201DaD0eFBc66398395562B3d49d27B92361)
  */
 export const budgetTcrConfig = {
   address: budgetTcrAddress,
@@ -3790,7 +4026,7 @@ export const budgetTcrConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xDC5baB04c3513fD5453876214f29b6eF11f38CF1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4D1bA668a55a842C593aBcbaeE795ce5A245B71d)
  */
 export const budgetTcrDeployerAbi = [
   {
@@ -4092,11 +4328,6 @@ export const budgetTcrDeployerAbi = [
             type: 'address',
           },
           {
-            name: 'premiumEscrowMode',
-            internalType: 'enum IBudgetStackDeployer.PremiumEscrowMode',
-            type: 'uint8',
-          },
-          {
             name: 'premiumEscrowImplementation',
             internalType: 'address',
             type: 'address',
@@ -4127,19 +4358,6 @@ export const budgetTcrDeployerAbi = [
     inputs: [],
     name: 'premiumEscrowImplementation',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
-    inputs: [],
-    name: 'premiumEscrowMode',
-    outputs: [
-      {
-        name: '',
-        internalType: 'enum IBudgetStackDeployer.PremiumEscrowMode',
-        type: 'uint8',
-      },
-    ],
     stateMutability: 'view',
   },
   {
@@ -4235,11 +4453,6 @@ export const budgetTcrDeployerAbi = [
             type: 'address',
           },
           {
-            name: 'premiumEscrowMode',
-            internalType: 'enum IBudgetStackDeployer.PremiumEscrowMode',
-            type: 'uint8',
-          },
-          {
             name: 'premiumEscrowImplementation',
             internalType: 'address',
             type: 'address',
@@ -4318,14 +4531,14 @@ export const budgetTcrDeployerAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xDC5baB04c3513fD5453876214f29b6eF11f38CF1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4D1bA668a55a842C593aBcbaeE795ce5A245B71d)
  */
 export const budgetTcrDeployerAddress = {
-  8453: '0xDC5baB04c3513fD5453876214f29b6eF11f38CF1',
+  8453: '0x4D1bA668a55a842C593aBcbaeE795ce5A245B71d',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xDC5baB04c3513fD5453876214f29b6eF11f38CF1)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4D1bA668a55a842C593aBcbaeE795ce5A245B71d)
  */
 export const budgetTcrDeployerConfig = {
   address: budgetTcrDeployerAddress,
@@ -4337,7 +4550,7 @@ export const budgetTcrDeployerConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x2EA70b65C2d1243A967C0eac37d63a296A3E40cb)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D)
  */
 export const budgetTcrFactoryAbi = [
   {
@@ -4935,14 +5148,14 @@ export const budgetTcrFactoryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x2EA70b65C2d1243A967C0eac37d63a296A3E40cb)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D)
  */
 export const budgetTcrFactoryAddress = {
-  8453: '0x2EA70b65C2d1243A967C0eac37d63a296A3E40cb',
+  8453: '0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x2EA70b65C2d1243A967C0eac37d63a296A3E40cb)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D)
  */
 export const budgetTcrFactoryConfig = {
   address: budgetTcrFactoryAddress,
@@ -4954,7 +5167,7 @@ export const budgetTcrFactoryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x441a50fe02dB270A4f487583F17eFaA1c2005E2C)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6F57C337A2B4B5f1eF39A8aE8c197AfE3e9CebBd)
  */
 export const budgetTreasuryAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -5873,14 +6086,14 @@ export const budgetTreasuryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x441a50fe02dB270A4f487583F17eFaA1c2005E2C)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6F57C337A2B4B5f1eF39A8aE8c197AfE3e9CebBd)
  */
 export const budgetTreasuryAddress = {
-  8453: '0x441a50fe02dB270A4f487583F17eFaA1c2005E2C',
+  8453: '0x6F57C337A2B4B5f1eF39A8aE8c197AfE3e9CebBd',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x441a50fe02dB270A4f487583F17eFaA1c2005E2C)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x6F57C337A2B4B5f1eF39A8aE8c197AfE3e9CebBd)
  */
 export const budgetTreasuryConfig = {
   address: budgetTreasuryAddress,
@@ -7019,7 +7232,7 @@ export const cobuildTerminalConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xF88E7FF73F43cbA31DFF5c2fd2bCAe7B710fB8A9)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x96B5535c2F6a6dD5464Ec82Cb974c4a727033cBC)
  */
 export const erc20VotesArbitratorAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -8021,14 +8234,14 @@ export const erc20VotesArbitratorAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xF88E7FF73F43cbA31DFF5c2fd2bCAe7B710fB8A9)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x96B5535c2F6a6dD5464Ec82Cb974c4a727033cBC)
  */
 export const erc20VotesArbitratorAddress = {
-  8453: '0xF88E7FF73F43cbA31DFF5c2fd2bCAe7B710fB8A9',
+  8453: '0x96B5535c2F6a6dD5464Ec82Cb974c4a727033cBC',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xF88E7FF73F43cbA31DFF5c2fd2bCAe7B710fB8A9)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x96B5535c2F6a6dD5464Ec82Cb974c4a727033cBC)
  */
 export const erc20VotesArbitratorConfig = {
   address: erc20VotesArbitratorAddress,
@@ -8040,7 +8253,7 @@ export const erc20VotesArbitratorConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xb491420ebE762C0503ef1819a267a721B1e63c63)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x29a8e4A2640D07C9C1b055119a7b3923Bbb6C7ad)
  */
 export const flowAbi = [
   {
@@ -8931,14 +9144,14 @@ export const flowAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xb491420ebE762C0503ef1819a267a721B1e63c63)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x29a8e4A2640D07C9C1b055119a7b3923Bbb6C7ad)
  */
 export const flowAddress = {
-  8453: '0xb491420ebE762C0503ef1819a267a721B1e63c63',
+  8453: '0x29a8e4A2640D07C9C1b055119a7b3923Bbb6C7ad',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xb491420ebE762C0503ef1819a267a721B1e63c63)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x29a8e4A2640D07C9C1b055119a7b3923Bbb6C7ad)
  */
 export const flowConfig = { address: flowAddress, abi: flowAbi } as const
 
@@ -8947,7 +9160,7 @@ export const flowConfig = { address: flowAddress, abi: flowAbi } as const
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xa7E5161B7eb788217b7BB22549C531300273bb52)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67)
  */
 export const goalDeploymentRegistryAbi = [
   {
@@ -9100,14 +9313,14 @@ export const goalDeploymentRegistryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xa7E5161B7eb788217b7BB22549C531300273bb52)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67)
  */
 export const goalDeploymentRegistryAddress = {
-  8453: '0xa7E5161B7eb788217b7BB22549C531300273bb52',
+  8453: '0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xa7E5161B7eb788217b7BB22549C531300273bb52)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67)
  */
 export const goalDeploymentRegistryConfig = {
   address: goalDeploymentRegistryAddress,
@@ -9119,7 +9332,7 @@ export const goalDeploymentRegistryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x0f27EE0Aa0F01A6BcAF64e662977337dA5D476ce)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3)
  */
 export const goalFactoryAbi = [
   {
@@ -10329,14 +10542,14 @@ export const goalFactoryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x0f27EE0Aa0F01A6BcAF64e662977337dA5D476ce)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3)
  */
 export const goalFactoryAddress = {
-  8453: '0x0f27EE0Aa0F01A6BcAF64e662977337dA5D476ce',
+  8453: '0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x0f27EE0Aa0F01A6BcAF64e662977337dA5D476ce)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3)
  */
 export const goalFactoryConfig = {
   address: goalFactoryAddress,
@@ -10348,7 +10561,7 @@ export const goalFactoryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4BECF8A3db91214558D1Bc100A6feb67c06a53cc)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xF6f9BebD7450cd7E026344fB3c2a35B304D4bc45)
  */
 export const goalFlowAllocationLedgerPipelineAbi = [
   {
@@ -10816,14 +11029,14 @@ export const goalFlowAllocationLedgerPipelineAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4BECF8A3db91214558D1Bc100A6feb67c06a53cc)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xF6f9BebD7450cd7E026344fB3c2a35B304D4bc45)
  */
 export const goalFlowAllocationLedgerPipelineAddress = {
-  8453: '0x4BECF8A3db91214558D1Bc100A6feb67c06a53cc',
+  8453: '0xF6f9BebD7450cd7E026344fB3c2a35B304D4bc45',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x4BECF8A3db91214558D1Bc100A6feb67c06a53cc)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xF6f9BebD7450cd7E026344fB3c2a35B304D4bc45)
  */
 export const goalFlowAllocationLedgerPipelineConfig = {
   address: goalFlowAllocationLedgerPipelineAddress,
@@ -10835,7 +11048,7 @@ export const goalFlowAllocationLedgerPipelineConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x2f0e749Ee7A459714Ac99485A45494c97e984536)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x77F0FDBb48350b16809a9A5ee10AE1Ee70a289Ec)
  */
 export const goalRevnetSplitHookAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -11124,14 +11337,14 @@ export const goalRevnetSplitHookAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x2f0e749Ee7A459714Ac99485A45494c97e984536)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x77F0FDBb48350b16809a9A5ee10AE1Ee70a289Ec)
  */
 export const goalRevnetSplitHookAddress = {
-  8453: '0x2f0e749Ee7A459714Ac99485A45494c97e984536',
+  8453: '0x77F0FDBb48350b16809a9A5ee10AE1Ee70a289Ec',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x2f0e749Ee7A459714Ac99485A45494c97e984536)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x77F0FDBb48350b16809a9A5ee10AE1Ee70a289Ec)
  */
 export const goalRevnetSplitHookConfig = {
   address: goalRevnetSplitHookAddress,
@@ -11143,7 +11356,7 @@ export const goalRevnetSplitHookConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xc9824f73b5EdB097c958AfdA6Dde2c582ef4a230)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x8355dF264778dbc0e55fd4aC0dbb1f600c8D1346)
  */
 export const goalStakeVaultAbi = [
   {
@@ -12077,14 +12290,14 @@ export const goalStakeVaultAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xc9824f73b5EdB097c958AfdA6Dde2c582ef4a230)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x8355dF264778dbc0e55fd4aC0dbb1f600c8D1346)
  */
 export const goalStakeVaultAddress = {
-  8453: '0xc9824f73b5EdB097c958AfdA6Dde2c582ef4a230',
+  8453: '0x8355dF264778dbc0e55fd4aC0dbb1f600c8D1346',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xc9824f73b5EdB097c958AfdA6Dde2c582ef4a230)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x8355dF264778dbc0e55fd4aC0dbb1f600c8D1346)
  */
 export const goalStakeVaultConfig = {
   address: goalStakeVaultAddress,
@@ -12096,7 +12309,7 @@ export const goalStakeVaultConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xbCa5ee495874992B362b39a4B91a61652b7400b4)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4EE7167e173b83B0EB3F7DaB7FCA4367cC6907eC)
  */
 export const goalTreasuryAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -13342,14 +13555,14 @@ export const goalTreasuryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xbCa5ee495874992B362b39a4B91a61652b7400b4)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4EE7167e173b83B0EB3F7DaB7FCA4367cC6907eC)
  */
 export const goalTreasuryAddress = {
-  8453: '0xbCa5ee495874992B362b39a4B91a61652b7400b4',
+  8453: '0x4EE7167e173b83B0EB3F7DaB7FCA4367cC6907eC',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xbCa5ee495874992B362b39a4B91a61652b7400b4)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x4EE7167e173b83B0EB3F7DaB7FCA4367cC6907eC)
  */
 export const goalTreasuryConfig = {
   address: goalTreasuryAddress,
@@ -13361,7 +13574,7 @@ export const goalTreasuryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x63F7164689A5533a89e189280F69cc096f708166)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x665423695D1E5B254e568822B488193c13AF9A48)
  */
 export const jurorSlasherRouterAbi = [
   {
@@ -13474,14 +13687,14 @@ export const jurorSlasherRouterAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x63F7164689A5533a89e189280F69cc096f708166)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x665423695D1E5B254e568822B488193c13AF9A48)
  */
 export const jurorSlasherRouterAddress = {
-  8453: '0x63F7164689A5533a89e189280F69cc096f708166',
+  8453: '0x665423695D1E5B254e568822B488193c13AF9A48',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x63F7164689A5533a89e189280F69cc096f708166)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x665423695D1E5B254e568822B488193c13AF9A48)
  */
 export const jurorSlasherRouterConfig = {
   address: jurorSlasherRouterAddress,
@@ -13493,7 +13706,7 @@ export const jurorSlasherRouterConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xcC8c047603a07DC71d02F5147718Ce0A0c1a20bF)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB640EC57e35088e7D864c2E7727fBB85331615B1)
  */
 export const linearSpendPolicyAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -13589,14 +13802,14 @@ export const linearSpendPolicyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xcC8c047603a07DC71d02F5147718Ce0A0c1a20bF)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB640EC57e35088e7D864c2E7727fBB85331615B1)
  */
 export const linearSpendPolicyAddress = {
-  8453: '0xcC8c047603a07DC71d02F5147718Ce0A0c1a20bF',
+  8453: '0xB640EC57e35088e7D864c2E7727fBB85331615B1',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xcC8c047603a07DC71d02F5147718Ce0A0c1a20bF)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xB640EC57e35088e7D864c2E7727fBB85331615B1)
  */
 export const linearSpendPolicyConfig = {
   address: linearSpendPolicyAddress,
@@ -13604,11 +13817,818 @@ export const linearSpendPolicyConfig = {
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ManagedBudgetController
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x7Bd18aE34030646B2F209b4b1F64506a7ADEd1f3)
+ */
+export const managedBudgetControllerAbi = [
+  { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'acceptAuthority',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'activeBudgetCount',
+    outputs: [{ name: 'count', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'index', internalType: 'uint256', type: 'uint256' }],
+    name: 'activeBudgetIdAt',
+    outputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'budgetItemID', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'recipientId', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'recipient', internalType: 'address', type: 'address' },
+      {
+        name: 'metadata',
+        internalType: 'struct FlowTypes.RecipientMetadata',
+        type: 'tuple',
+        components: [
+          { name: 'title', internalType: 'string', type: 'string' },
+          { name: 'description', internalType: 'string', type: 'string' },
+          { name: 'image', internalType: 'string', type: 'string' },
+          { name: 'tagline', internalType: 'string', type: 'string' },
+          { name: 'url', internalType: 'string', type: 'string' },
+        ],
+      },
+    ],
+    name: 'addBudgetFlowRecipient',
+    outputs: [
+      { name: 'createdRecipientId', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'recipientAddress', internalType: 'address', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'authority',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'budgetGatePolicy',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'budgetSpendPolicy',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'budgetStackTopology',
+    outputs: [
+      {
+        name: 'topology',
+        internalType: 'struct IBudgetStackTopologyReader.BudgetStackTopology',
+        type: 'tuple',
+        components: [
+          { name: 'childFlow', internalType: 'address', type: 'address' },
+          { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+          { name: 'premiumEscrow', internalType: 'address', type: 'address' },
+          { name: 'strategy', internalType: 'address', type: 'address' },
+          {
+            name: 'allocationMechanism',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'allocationMechanismArbitrator',
+            internalType: 'address',
+            type: 'address',
+          },
+        ],
+      },
+      { name: 'active', internalType: 'bool', type: 'bool' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'budgetTreasury_', internalType: 'address', type: 'address' },
+    ],
+    name: 'budgetStackTopologyForBudgetTreasury',
+    outputs: [
+      {
+        name: 'topology',
+        internalType: 'struct IBudgetStackTopologyReader.BudgetStackTopology',
+        type: 'tuple',
+        components: [
+          { name: 'childFlow', internalType: 'address', type: 'address' },
+          { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+          { name: 'premiumEscrow', internalType: 'address', type: 'address' },
+          { name: 'strategy', internalType: 'address', type: 'address' },
+          {
+            name: 'allocationMechanism',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'allocationMechanismArbitrator',
+            internalType: 'address',
+            type: 'address',
+          },
+        ],
+      },
+      { name: 'active', internalType: 'bool', type: 'bool' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'childFlow_', internalType: 'address', type: 'address' }],
+    name: 'budgetStackTopologyForChildFlow',
+    outputs: [
+      {
+        name: 'topology',
+        internalType: 'struct IBudgetStackTopologyReader.BudgetStackTopology',
+        type: 'tuple',
+        components: [
+          { name: 'childFlow', internalType: 'address', type: 'address' },
+          { name: 'budgetTreasury', internalType: 'address', type: 'address' },
+          { name: 'premiumEscrow', internalType: 'address', type: 'address' },
+          { name: 'strategy', internalType: 'address', type: 'address' },
+          {
+            name: 'allocationMechanism',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'allocationMechanismArbitrator',
+            internalType: 'address',
+            type: 'address',
+          },
+        ],
+      },
+      { name: 'active', internalType: 'bool', type: 'bool' },
+    ],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'budgetSuccessResolver',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'itemID', internalType: 'bytes32', type: 'bytes32' },
+      {
+        name: 'config',
+        internalType: 'struct IManagedBudgetController.BudgetConfig',
+        type: 'tuple',
+        components: [
+          {
+            name: 'metadata',
+            internalType: 'struct FlowTypes.RecipientMetadata',
+            type: 'tuple',
+            components: [
+              { name: 'title', internalType: 'string', type: 'string' },
+              { name: 'description', internalType: 'string', type: 'string' },
+              { name: 'image', internalType: 'string', type: 'string' },
+              { name: 'tagline', internalType: 'string', type: 'string' },
+              { name: 'url', internalType: 'string', type: 'string' },
+            ],
+          },
+          { name: 'fundingDeadline', internalType: 'uint64', type: 'uint64' },
+          { name: 'executionDuration', internalType: 'uint64', type: 'uint64' },
+          {
+            name: 'activationThreshold',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
+          { name: 'runwayCap', internalType: 'uint256', type: 'uint256' },
+          {
+            name: 'successOracleSpecHash',
+            internalType: 'bytes32',
+            type: 'bytes32',
+          },
+          {
+            name: 'successAssertionPolicyHash',
+            internalType: 'bytes32',
+            type: 'bytes32',
+          },
+        ],
+      },
+    ],
+    name: 'createBudget',
+    outputs: [
+      { name: 'childFlow_', internalType: 'address', type: 'address' },
+      { name: 'budgetTreasury_', internalType: 'address', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'goalFlow',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'goalTreasury',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      {
+        name: 'initConfig',
+        internalType: 'struct IManagedBudgetController.InitConfig',
+        type: 'tuple',
+        components: [
+          { name: 'authority', internalType: 'address', type: 'address' },
+          { name: 'goalTreasury', internalType: 'address', type: 'address' },
+          { name: 'goalFlow', internalType: 'address', type: 'address' },
+          { name: 'stackDeployer', internalType: 'address', type: 'address' },
+          {
+            name: 'budgetGatePolicy',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'budgetSuccessResolver',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'budgetSpendPolicy',
+            internalType: 'address',
+            type: 'address',
+          },
+          {
+            name: 'successAssertionLiveness',
+            internalType: 'uint64',
+            type: 'uint64',
+          },
+          {
+            name: 'successAssertionBond',
+            internalType: 'uint256',
+            type: 'uint256',
+          },
+        ],
+      },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'budgetTreasury_', internalType: 'address', type: 'address' },
+    ],
+    name: 'itemIdForBudgetTreasury',
+    outputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'childFlow_', internalType: 'address', type: 'address' }],
+    name: 'itemIdForChildFlow',
+    outputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'pendingAuthority',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'budgetTreasury_', internalType: 'address', type: 'address' },
+    ],
+    name: 'pruneTerminalBudget',
+    outputs: [
+      { name: 'removedFromParent', internalType: 'bool', type: 'bool' },
+      { name: 'goalSynced', internalType: 'bool', type: 'bool' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'removeBudget',
+    outputs: [
+      { name: 'removedFromParent', internalType: 'bool', type: 'bool' },
+      { name: 'terminallyResolved', internalType: 'bool', type: 'bool' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'budgetItemID', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'recipientId', internalType: 'bytes32', type: 'bytes32' },
+    ],
+    name: 'removeBudgetFlowRecipient',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'budgetItemID', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'recipientId', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'enabled', internalType: 'bool', type: 'bool' },
+    ],
+    name: 'setBudgetFlowRecipientEnabled',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'budgetItemID', internalType: 'bytes32', type: 'bytes32' },
+      { name: 'itemIDs', internalType: 'bytes32[]', type: 'bytes32[]' },
+      { name: 'ppm', internalType: 'uint32[]', type: 'uint32[]' },
+    ],
+    name: 'setBudgetFlowWeights',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'itemIDs', internalType: 'bytes32[]', type: 'bytes32[]' },
+      { name: 'ppm', internalType: 'uint32[]', type: 'uint32[]' },
+    ],
+    name: 'setBudgetWeights',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'stackDeployer',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'successAssertionBond',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'successAssertionLiveness',
+    outputs: [{ name: '', internalType: 'uint64', type: 'uint64' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'itemIDs', internalType: 'bytes32[]', type: 'bytes32[]' }],
+    name: 'syncBudgetTreasuries',
+    outputs: [
+      { name: 'attempted', internalType: 'uint256', type: 'uint256' },
+      { name: 'succeeded', internalType: 'uint256', type: 'uint256' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'newAuthority', internalType: 'address', type: 'address' },
+    ],
+    name: 'transferAuthority',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'authority',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'pendingAuthority',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'AuthorityTransferStarted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'previousAuthority',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'nextAuthority',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'AuthorityTransferred',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'callTarget',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'selector',
+        internalType: 'bytes4',
+        type: 'bytes4',
+        indexed: true,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'BudgetGatePolicyCallFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'childFlow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'removedFromParent',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+      {
+        name: 'goalSynced',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetTerminalRecipientPruned',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      { name: 'success', internalType: 'bool', type: 'bool', indexed: false },
+    ],
+    name: 'BudgetTreasuryBatchSyncAttempted',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'reason',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: false,
+      },
+    ],
+    name: 'BudgetTreasuryBatchSyncSkipped',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'selector',
+        internalType: 'bytes4',
+        type: 'bytes4',
+        indexed: true,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'BudgetTreasuryCallFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'selector',
+        internalType: 'bytes4',
+        type: 'bytes4',
+        indexed: true,
+      },
+      { name: 'reason', internalType: 'bytes', type: 'bytes', indexed: false },
+    ],
+    name: 'BudgetTreasuryCallFailed',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'version',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'Initialized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'childFlow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'premiumEscrow',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+      {
+        name: 'strategy',
+        internalType: 'address',
+        type: 'address',
+        indexed: false,
+      },
+    ],
+    name: 'ManagedBudgetCreated',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'budgetItemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'itemIDs',
+        internalType: 'bytes32[]',
+        type: 'bytes32[]',
+        indexed: false,
+      },
+      {
+        name: 'ppm',
+        internalType: 'uint32[]',
+        type: 'uint32[]',
+        indexed: false,
+      },
+    ],
+    name: 'ManagedBudgetFlowWeightsSet',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemID',
+        internalType: 'bytes32',
+        type: 'bytes32',
+        indexed: true,
+      },
+      {
+        name: 'childFlow',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'budgetTreasury',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+      {
+        name: 'removedFromParent',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+      {
+        name: 'terminallyResolved',
+        internalType: 'bool',
+        type: 'bool',
+        indexed: false,
+      },
+    ],
+    name: 'ManagedBudgetRemoved',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'itemIDs',
+        internalType: 'bytes32[]',
+        type: 'bytes32[]',
+        indexed: false,
+      },
+      {
+        name: 'ppm',
+        internalType: 'uint32[]',
+        type: 'uint32[]',
+        indexed: false,
+      },
+    ],
+    name: 'ManagedBudgetWeightsSet',
+  },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  { type: 'error', inputs: [], name: 'ARRAY_LENGTH_MISMATCH' },
+  { type: 'error', inputs: [], name: 'GOAL_TERMINAL' },
+  {
+    type: 'error',
+    inputs: [{ name: 'policy', internalType: 'address', type: 'address' }],
+    name: 'INVALID_BUDGET_GATE_POLICY',
+  },
+  {
+    type: 'error',
+    inputs: [
+      {
+        name: 'childFlowRecipientAdmin',
+        internalType: 'address',
+        type: 'address',
+      },
+    ],
+    name: 'INVALID_CHILD_FLOW_RECIPIENT_ADMIN',
+  },
+  { type: 'error', inputs: [], name: 'INVALID_ITEM_ID' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'premiumEscrow', internalType: 'address', type: 'address' },
+    ],
+    name: 'INVALID_PREMIUM_ESCROW',
+  },
+  {
+    type: 'error',
+    inputs: [{ name: 'itemID', internalType: 'bytes32', type: 'bytes32' }],
+    name: 'ITEM_ALREADY_EXISTS',
+  },
+  { type: 'error', inputs: [], name: 'ITEM_NOT_ACTIVE' },
+  { type: 'error', inputs: [], name: 'ITEM_NOT_DEPLOYED' },
+  { type: 'error', inputs: [], name: 'ITEM_NOT_TERMINAL' },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'NOT_A_CONTRACT',
+  },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  { type: 'error', inputs: [], name: 'ONLY_AUTHORITY' },
+  { type: 'error', inputs: [], name: 'ONLY_PENDING_AUTHORITY' },
+  { type: 'error', inputs: [], name: 'ReentrancyGuardReentrantCall' },
+] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x7Bd18aE34030646B2F209b4b1F64506a7ADEd1f3)
+ */
+export const managedBudgetControllerAddress = {
+  8453: '0x7Bd18aE34030646B2F209b4b1F64506a7ADEd1f3',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x7Bd18aE34030646B2F209b4b1F64506a7ADEd1f3)
+ */
+export const managedBudgetControllerConfig = {
+  address: managedBudgetControllerAddress,
+  abi: managedBudgetControllerAbi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // PremiumEscrow
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x3E434C10150BdD96c345ad6F35dB3310A9EDF339)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x100d0728d35ae46b37c4f3152E120D0fefa562fC)
  */
 export const premiumEscrowAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -14315,14 +15335,14 @@ export const premiumEscrowAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x3E434C10150BdD96c345ad6F35dB3310A9EDF339)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x100d0728d35ae46b37c4f3152E120D0fefa562fC)
  */
 export const premiumEscrowAddress = {
-  8453: '0x3E434C10150BdD96c345ad6F35dB3310A9EDF339',
+  8453: '0x100d0728d35ae46b37c4f3152E120D0fefa562fC',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x3E434C10150BdD96c345ad6F35dB3310A9EDF339)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x100d0728d35ae46b37c4f3152E120D0fefa562fC)
  */
 export const premiumEscrowConfig = {
   address: premiumEscrowAddress,
@@ -14334,7 +15354,7 @@ export const premiumEscrowConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9e0F51DDcEa90A79D613c9D0211410C108386EE9)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xC6fDe3f1820fFbc1F5A427BcbBbc2636D4770d3a)
  */
 export const prizePoolSubmissionDepositStrategyAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -14414,14 +15434,14 @@ export const prizePoolSubmissionDepositStrategyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9e0F51DDcEa90A79D613c9D0211410C108386EE9)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xC6fDe3f1820fFbc1F5A427BcbBbc2636D4770d3a)
  */
 export const prizePoolSubmissionDepositStrategyAddress = {
-  8453: '0x9e0F51DDcEa90A79D613c9D0211410C108386EE9',
+  8453: '0xC6fDe3f1820fFbc1F5A427BcbBbc2636D4770d3a',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x9e0F51DDcEa90A79D613c9D0211410C108386EE9)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xC6fDe3f1820fFbc1F5A427BcbBbc2636D4770d3a)
  */
 export const prizePoolSubmissionDepositStrategyConfig = {
   address: prizePoolSubmissionDepositStrategyAddress,
@@ -14433,7 +15453,7 @@ export const prizePoolSubmissionDepositStrategyConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x1772c43D40E1E66fb0C73C27Aa5689053AaCF24a)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x62c2dda0407C8369cd900a75A565Eb2F038eDf71)
  */
 export const roundFactoryAbi = [
   {
@@ -14709,14 +15729,14 @@ export const roundFactoryAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x1772c43D40E1E66fb0C73C27Aa5689053AaCF24a)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x62c2dda0407C8369cd900a75A565Eb2F038eDf71)
  */
 export const roundFactoryAddress = {
-  8453: '0x1772c43D40E1E66fb0C73C27Aa5689053AaCF24a',
+  8453: '0x62c2dda0407C8369cd900a75A565Eb2F038eDf71',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x1772c43D40E1E66fb0C73C27Aa5689053AaCF24a)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x62c2dda0407C8369cd900a75A565Eb2F038eDf71)
  */
 export const roundFactoryConfig = {
   address: roundFactoryAddress,
@@ -14728,7 +15748,7 @@ export const roundFactoryConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xAac6BDAAF4153261860c5856fA1E9F7404274fD3)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xcA85ecb180536598F0A8F64CB631FB6E9dD7251d)
  */
 export const roundPrizeVaultAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -14998,14 +16018,14 @@ export const roundPrizeVaultAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xAac6BDAAF4153261860c5856fA1E9F7404274fD3)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xcA85ecb180536598F0A8F64CB631FB6E9dD7251d)
  */
 export const roundPrizeVaultAddress = {
-  8453: '0xAac6BDAAF4153261860c5856fA1E9F7404274fD3',
+  8453: '0xcA85ecb180536598F0A8F64CB631FB6E9dD7251d',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xAac6BDAAF4153261860c5856fA1E9F7404274fD3)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xcA85ecb180536598F0A8F64CB631FB6E9dD7251d)
  */
 export const roundPrizeVaultConfig = {
   address: roundPrizeVaultAddress,
@@ -15017,7 +16037,7 @@ export const roundPrizeVaultConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x72b11c5803976C72FFC39F871e631Ee7E3daB690)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xA84b1e9004667f436A08a3238D2692A2b313CF3C)
  */
 export const roundSubmissionTcrAbi = [
   { type: 'constructor', inputs: [], stateMutability: 'nonpayable' },
@@ -15948,14 +16968,14 @@ export const roundSubmissionTcrAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x72b11c5803976C72FFC39F871e631Ee7E3daB690)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xA84b1e9004667f436A08a3238D2692A2b313CF3C)
  */
 export const roundSubmissionTcrAddress = {
-  8453: '0x72b11c5803976C72FFC39F871e631Ee7E3daB690',
+  8453: '0xA84b1e9004667f436A08a3238D2692A2b313CF3C',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x72b11c5803976C72FFC39F871e631Ee7E3daB690)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xA84b1e9004667f436A08a3238D2692A2b313CF3C)
  */
 export const roundSubmissionTcrConfig = {
   address: roundSubmissionTcrAddress,
@@ -15963,11 +16983,174 @@ export const roundSubmissionTcrConfig = {
 } as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// SingleAllocatorStrategy
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x643572dA72826d7F1F1151D2d058Ea48DcD43Cb6)
+ */
+export const singleAllocatorStrategyAbi = [
+  {
+    type: 'constructor',
+    inputs: [
+      { name: 'goalTreasury_', internalType: 'address', type: 'address' },
+      { name: 'allocator_', internalType: 'address', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'STRATEGY_KEY',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'VIRTUAL_WEIGHT',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [{ name: 'key', internalType: 'uint256', type: 'uint256' }],
+    name: 'accountForAllocationKey',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'pure',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'caller', internalType: 'address', type: 'address' },
+      { name: '', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'allocationKey',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'pure',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'allocator',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'flow', internalType: 'address', type: 'address' },
+      { name: 'key', internalType: 'uint256', type: 'uint256' },
+      { name: 'caller', internalType: 'address', type: 'address' },
+    ],
+    name: 'canAllocate',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'flow', internalType: 'address', type: 'address' },
+      { name: 'key', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'currentWeight',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'goalTreasury',
+    outputs: [{ name: '', internalType: 'address', type: 'address' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    inputs: [
+      { name: 'goalTreasury_', internalType: 'address', type: 'address' },
+      { name: 'allocator_', internalType: 'address', type: 'address' },
+    ],
+    name: 'initialize',
+    outputs: [],
+    stateMutability: 'nonpayable',
+  },
+  {
+    type: 'function',
+    inputs: [],
+    name: 'strategyKey',
+    outputs: [{ name: '', internalType: 'string', type: 'string' }],
+    stateMutability: 'pure',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'allocator',
+        internalType: 'address',
+        type: 'address',
+        indexed: true,
+      },
+    ],
+    name: 'AllocatorInitialized',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      {
+        name: 'version',
+        internalType: 'uint64',
+        type: 'uint64',
+        indexed: false,
+      },
+    ],
+    name: 'Initialized',
+  },
+  { type: 'error', inputs: [], name: 'ADDRESS_ZERO' },
+  {
+    type: 'error',
+    inputs: [{ name: 'key', internalType: 'uint256', type: 'uint256' }],
+    name: 'INVALID_ALLOCATION_KEY',
+  },
+  { type: 'error', inputs: [], name: 'InvalidInitialization' },
+  {
+    type: 'error',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'NOT_A_CONTRACT',
+  },
+  { type: 'error', inputs: [], name: 'NotInitializing' },
+  {
+    type: 'error',
+    inputs: [
+      { name: 'bits', internalType: 'uint8', type: 'uint8' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'SafeCastOverflowedUintDowncast',
+  },
+] as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x643572dA72826d7F1F1151D2d058Ea48DcD43Cb6)
+ */
+export const singleAllocatorStrategyAddress = {
+  8453: '0x643572dA72826d7F1F1151D2d058Ea48DcD43Cb6',
+} as const
+
+/**
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x643572dA72826d7F1F1151D2d058Ea48DcD43Cb6)
+ */
+export const singleAllocatorStrategyConfig = {
+  address: singleAllocatorStrategyAddress,
+  abi: singleAllocatorStrategyAbi,
+} as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // StakeCoverageGatePolicy
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x2E00c4bE6BBEDeea7a600f6B8c4ef21bDBBaf536)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x899f2fFF3c00FE44A97abA858136344C653a1907)
  */
 export const stakeCoverageGatePolicyAbi = [
   {
@@ -16022,14 +17205,14 @@ export const stakeCoverageGatePolicyAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x2E00c4bE6BBEDeea7a600f6B8c4ef21bDBBaf536)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x899f2fFF3c00FE44A97abA858136344C653a1907)
  */
 export const stakeCoverageGatePolicyAddress = {
-  8453: '0x2E00c4bE6BBEDeea7a600f6B8c4ef21bDBBaf536',
+  8453: '0x899f2fFF3c00FE44A97abA858136344C653a1907',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0x2E00c4bE6BBEDeea7a600f6B8c4ef21bDBBaf536)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x899f2fFF3c00FE44A97abA858136344C653a1907)
  */
 export const stakeCoverageGatePolicyConfig = {
   address: stakeCoverageGatePolicyAddress,
@@ -16041,7 +17224,7 @@ export const stakeCoverageGatePolicyConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xc9a16Da48BA31C12253Ea438a66247D5d70Df195)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49)
  */
 export const umaTreasurySuccessResolverAbi = [
   {
@@ -16525,14 +17708,14 @@ export const umaTreasurySuccessResolverAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xc9a16Da48BA31C12253Ea438a66247D5d70Df195)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49)
  */
 export const umaTreasurySuccessResolverAddress = {
-  8453: '0xc9a16Da48BA31C12253Ea438a66247D5d70Df195',
+  8453: '0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xc9a16Da48BA31C12253Ea438a66247D5d70Df195)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49)
  */
 export const umaTreasurySuccessResolverConfig = {
   address: umaTreasurySuccessResolverAddress,
@@ -16544,7 +17727,7 @@ export const umaTreasurySuccessResolverConfig = {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xe8fE7344fC7dCE0a04A43731554bD68C9F3e0D42)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xE7400FF8295Ff863D0EE71DBd84A69Cc8c1Df7A1)
  */
 export const underwriterSlasherRouterAbi = [
   {
@@ -16978,14 +18161,14 @@ export const underwriterSlasherRouterAbi = [
 ] as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xe8fE7344fC7dCE0a04A43731554bD68C9F3e0D42)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xE7400FF8295Ff863D0EE71DBd84A69Cc8c1Df7A1)
  */
 export const underwriterSlasherRouterAddress = {
-  8453: '0xe8fE7344fC7dCE0a04A43731554bD68C9F3e0D42',
+  8453: '0xE7400FF8295Ff863D0EE71DBd84A69Cc8c1Df7A1',
 } as const
 
 /**
- * [__View Contract on Base Basescan__](https://basescan.org/address/0xe8fE7344fC7dCE0a04A43731554bD68C9F3e0D42)
+ * [__View Contract on Base Basescan__](https://basescan.org/address/0xE7400FF8295Ff863D0EE71DBd84A69Cc8c1Df7A1)
  */
 export const underwriterSlasherRouterConfig = {
   address: underwriterSlasherRouterAddress,

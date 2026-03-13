@@ -33,10 +33,10 @@ describe("protocol address exports", () => {
     expect(baseAddresses.chainId).toBe(8453);
     expect(COBUILD_PROJECT_ID).toBe(138);
     expect(COBUILD_PROJECT_ID_BIGINT).toBe(138n);
-    expect(goalFactoryAddress).toBe("0x0f27EE0Aa0F01A6BcAF64e662977337dA5D476ce");
-    expect(budgetTcrFactoryAddress).toBe("0x2EA70b65C2d1243A967C0eac37d63a296A3E40cb");
-    expect(goalFactoryPairDeployerAddress).toBe("0x65F3c0B21bA6ea7C73fe588F581Cd30c694325C9");
-    expect(goalDeploymentRegistryAddress).toBe("0xa7E5161B7eb788217b7BB22549C531300273bb52");
+    expect(goalFactoryAddress).toBe("0x88c3E04bE35b16A248d66c48C78aEf4e864eb1B3");
+    expect(budgetTcrFactoryAddress).toBe("0x764c0207a6fc6a4c740649B1e3Cc3c913adfb95D");
+    expect(goalFactoryPairDeployerAddress).toBe("0xDE0c5C6fCe39Ce79e290544E4115d99d0dD9589A");
+    expect(goalDeploymentRegistryAddress).toBe("0x9bCD0b62903Fc20a91BDC43ECfa78a3EFCA77D67");
     expect(goalPaymentTerminalAddress).toBe("0x0000000000000000000000000000000000000000");
     expect(cobuildTokenAddress).toBe("0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD");
     expect(COBUILD_TOKEN_ADDRESS).toBe(cobuildTokenAddress);
@@ -78,6 +78,18 @@ describe("protocol address exports", () => {
     expect(baseContracts.CobuildSwapImpl).toBe(baseImplementations.cobuildSwapImpl);
     expect(baseContracts.CobuildToken).toBe(baseEntrypoints.cobuildToken);
     expect(baseContracts.CustomFlowImpl).toBe(baseImplementations.customFlowImpl);
+    expect(baseContracts.ManagedBudgetControllerImpl).toBe(
+      baseImplementations.managedBudgetControllerImpl
+    );
+    expect(baseContracts.ManagedGoalAllocatorStrategyImpl).toBe(
+      baseImplementations.managedGoalAllocatorStrategyImpl
+    );
+    expect(baseContracts.ManagedBudgetChildStrategyImpl).toBe(
+      baseImplementations.managedBudgetChildStrategyImpl
+    );
+    expect(baseContracts.ManagedBudgetChildStrategyFactoryImpl).toBe(
+      baseImplementations.managedBudgetChildStrategyFactoryImpl
+    );
     expect(baseContracts.LinearSpendPolicyImpl).toBe(baseImplementations.linearSpendPolicyImpl);
     expect(baseContracts.DefaultSubmissionDepositStrategy).toBe(
       baseDefaults.defaultSubmissionDepositStrategy
@@ -93,19 +105,19 @@ describe("protocol address exports", () => {
 
   it("exports the refreshed Base default-policy and fake UMA rollout values", () => {
     expect(baseDefaults.defaultSubmissionDepositStrategy).toBe(
-      "0x0e46e93Fba439303AB347361d73C2Fdd48006d22"
+      "0x2a3dbF811EdE9173B17D7131620287F97d73c935"
     );
     expect(baseDefaults.defaultOpenBudgetGatePolicy).toBe(
-      "0x2E00c4bE6BBEDeea7a600f6B8c4ef21bDBBaf536"
+      "0x899f2fFF3c00FE44A97abA858136344C653a1907"
     );
     expect(baseDefaults.defaultGoalSpendPolicy).toBe(
-      "0x46c08e7FBa9947Ae14e3C7Df3F82DBfF9e951c20"
+      "0xfA6bd66309F2890971558E3C01b77071e94Dbcd9"
     );
     expect(baseDefaults.defaultBudgetSpendPolicy).toBe(
-      "0x2CFB6B81C69BDF9c11cBeaafFcb657E4039e3536"
+      "0xDBFbC5e092b15d6F1d1A2d2Eea7654a8050E0d2a"
     );
     expect(baseAddresses.config.fakeUmaTreasurySuccessResolver).toBe(
-      "0xc9a16Da48BA31C12253Ea438a66247D5d70Df195"
+      "0x492f39cBB8B5A444A684DEfB502C8C41a8Ee5F49"
     );
   });
 
