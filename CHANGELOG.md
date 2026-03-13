@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2026-03-13
+
+### Added
+- export base scaffold start block
+
+### Changed
+- track scaffold start block export
+
 ## [0.3.1] - 2026-03-13
 
 ### Added
