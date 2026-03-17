@@ -9,7 +9,7 @@ Sync `wire` to the latest Base `v1-core` factory + implementation deployment set
 - Treat `v1-core/deploys/*.8453*` as the deployment source of truth.
 - Use local `v1-core/out` artifacts for ABI regeneration when available.
 - Keep committed downstream repos on published `@cobuild/wire` versions only.
-- Do not run the actual release/publish flow without explicit user approval.
+- Release/publish flow is explicitly approved in the current chat turn.
 
 ## Scope
 
@@ -27,3 +27,11 @@ Sync `wire` to the latest Base `v1-core` factory + implementation deployment set
 - `pnpm test:coverage`
 - `bash scripts/check-agent-docs-drift.sh`
 - `bash scripts/doc-gardening.sh --fail-on-issues`
+
+## Current Turn
+
+- Refresh `src/protocol-addresses.ts` from `v1-core/deploys/DeployGoalFactory.8453.txt` and `v1-core/deploys/LATEST_IMPLEMENTATIONS.8453.{txt,toml}` generated on 2026-03-17.
+- Regenerate `src/generated/abis.ts` from sibling `v1-core/out` using `pnpm generate:local`.
+- Publish the resulting patch release and normalize direct consumers (`indexer`, `interface`, and any other direct `@cobuild/wire` workspace consumers) onto that published version, then rerun their typechecks.
+- Verification before release prep passed on 2026-03-17 via `pnpm typecheck`, `pnpm test`, `pnpm test:coverage`, `bash scripts/check-agent-docs-drift.sh`, and `bash scripts/doc-gardening.sh --fail-on-issues`.
+- `pnpm release:dry-run` confirmed the release helper requires a clean git tree before cutting the patch.

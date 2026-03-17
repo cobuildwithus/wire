@@ -35,10 +35,10 @@ describe("protocol address exports", () => {
     expect(COBUILD_PROJECT_ID).toBe(138);
     expect(COBUILD_PROJECT_ID_BIGINT).toBe(138n);
     expect(BASE_SCAFFOLD_START_BLOCK).toBe(43_315_703);
-    expect(goalFactoryAddress).toBe("0x8Aa7d640C7997b45adB53AB1D703681e8FB449A4");
-    expect(budgetTcrFactoryAddress).toBe("0xFf9d8986328841De5e9593f72A18982263291593");
-    expect(goalFactoryPairDeployerAddress).toBe("0xD366d0534ADF7597d59d5f0538D4161049A8f8Fa");
-    expect(goalDeploymentRegistryAddress).toBe("0x5702a03784925Fb0E0dcc2a817B709cF42A3cd4C");
+    expect(goalFactoryAddress).toBe("0xA8a7d64D4bb1Fe9B73F69336a607979CB24B771E");
+    expect(budgetTcrFactoryAddress).toBe("0x39E473250eD0cb7b8BF41faeea9f7BdDb97A1d57");
+    expect(goalFactoryPairDeployerAddress).toBe("0xee3Df653da8bD16ac15B715Aa7297BCa53cA7bCf");
+    expect(goalDeploymentRegistryAddress).toBe("0x5309E5D691d1D02b4776EAd1c4bac2152e9DC225");
     expect(goalPaymentTerminalAddress).toBe("0x0000000000000000000000000000000000000000");
     expect(cobuildTokenAddress).toBe("0x62F05b13239B24B8eEFF36696344dE0Db7D2efDD");
     expect(COBUILD_TOKEN_ADDRESS).toBe(cobuildTokenAddress);
@@ -108,19 +108,19 @@ describe("protocol address exports", () => {
 
   it("exports the refreshed Base default-policy and fake UMA rollout values", () => {
     expect(baseDefaults.defaultSubmissionDepositStrategy).toBe(
-      "0x6C4d9a68347399ff98518C06D58110Ac1A277b2A"
+      "0x51f8038804F42E654759D39E6207884dB7259ae4"
     );
     expect(baseDefaults.defaultOpenBudgetGatePolicy).toBe(
-      "0x32f24905da8c1D4f4B1983192e50D26763588090"
+      "0x1789a58F923EfCb3266552CD4C7479976d54eDfF"
     );
     expect(baseDefaults.defaultGoalSpendPolicy).toBe(
-      "0xB5d6E942d2dE2622A9ea7Ef67E68C0E11b2a273e"
+      "0xe8A9362ad891beEcfF0fF0df58FF44420726daD0"
     );
     expect(baseDefaults.defaultBudgetSpendPolicy).toBe(
-      "0x0d637406708Ea66A3bD1cf5691d8Eb6d8E779506"
+      "0xCD7290e0ae4CEcEB3ED03F24233f636FDda0eA88"
     );
     expect(baseAddresses.config.fakeUmaTreasurySuccessResolver).toBe(
-      "0x93685e9101360172669CD305C46248D773a47474"
+      "0x7A370FCB7bF250053b660601a3f50362C47310E9"
     );
   });
 
