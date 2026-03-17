@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.6] - 2026-03-17
+
+### Added
+- sync base deployment rollout
+
+### Changed
+- soften ledger exclusivity
+
 ## [0.3.5] - 2026-03-13
 
 ### Changed

@@ -1,6 +1,6 @@
 {
   "name": "@cobuild/wire",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "private": false,
   "publishConfig": {
     "access": "public"
