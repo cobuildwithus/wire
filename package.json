@@ -75,7 +75,7 @@
   },
   "devDependencies": {
     "@cobuild/repo-tools": "^0.1.13",
-    "@cobuild/review-gpt": "^0.4.0",
+    "@cobuild/review-gpt": "^0.4.1",
     "@types/node": "^25.2.3",
     "@vitest/coverage-v8": "^4.0.18",
     "@wagmi/cli": "^2.8.0",
