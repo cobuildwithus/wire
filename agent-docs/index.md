@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-13 (coordination-ledger semantics softened to allow overlap by default)
+Last verified: 2026-03-28 (coordination-ledger semantics softened to allow overlap by default, and completion-workflow audit prompts now include explicit 5-to-10-minute wait guidance so review subagents are not canceled early)
 
 ## Purpose
 
@@ -24,10 +24,10 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/references/runtime-ai-flow.md` | Runtime flow notes. |
 | `agent-docs/references/tool-catalog.md` | Tooling references used during development. |
 | `agent-docs/references/testing-ci-map.md` | Verification, CI, review command, release publish workflow, and release helper command map. |
-| `agent-docs/prompts/simplify.md` | Simplification audit prompt. |
-| `agent-docs/prompts/test-coverage-audit.md` | Coverage audit prompt. |
-| `agent-docs/prompts/task-finish-review.md` | Completion review prompt. |
-| `agent-docs/operations/completion-workflow.md` | Completion workflow definition, including unrelated required-check failure commit handling. |
+| `agent-docs/prompts/simplify.md` | Simplification audit prompt with explicit 5-to-10-minute wait guidance for non-trivial diffs. |
+| `agent-docs/prompts/test-coverage-audit.md` | Coverage audit prompt with explicit 5-to-10-minute wait guidance for non-trivial diffs. |
+| `agent-docs/prompts/task-finish-review.md` | Completion review prompt with explicit 5-to-10-minute wait guidance for non-trivial diffs. |
+| `agent-docs/operations/completion-workflow.md` | Completion workflow definition, including unrelated required-check failure commit handling and patient audit wait guidance. |
 | `agent-docs/generated/README.md` | Generated-doc artifact guide. |
 | `agent-docs/generated/doc-inventory.md` | Generated inventory artifact. |
 | `agent-docs/generated/doc-gardening-report.md` | Generated doc-gardening report. |
