@@ -1,6 +1,6 @@
 # @cobuild/wire Agent Docs Index
 
-Last verified: 2026-03-28 (coordination-ledger semantics softened to allow overlap by default, and completion-workflow audit prompts now include explicit 5-to-10-minute wait guidance so review subagents are not canceled early)
+Last verified: 2026-03-30 (completion workflow now folds coverage/proof-gap review into the final completion audit while preserving the legacy coverage prompt path as a compatibility redirect)
 
 ## Purpose
 
@@ -25,9 +25,9 @@ Canonical map for docs used by agents working in this repository.
 | `agent-docs/references/tool-catalog.md` | Tooling references used during development. |
 | `agent-docs/references/testing-ci-map.md` | Verification, CI, review command, release publish workflow, and release helper command map. |
 | `agent-docs/prompts/simplify.md` | Simplification audit prompt with explicit 5-to-10-minute wait guidance for non-trivial diffs. |
-| `agent-docs/prompts/test-coverage-audit.md` | Coverage audit prompt with explicit 5-to-10-minute wait guidance for non-trivial diffs. |
-| `agent-docs/prompts/task-finish-review.md` | Completion review prompt with explicit 5-to-10-minute wait guidance for non-trivial diffs. |
-| `agent-docs/operations/completion-workflow.md` | Completion workflow definition, including unrelated required-check failure commit handling and patient audit wait guidance. |
+| `agent-docs/prompts/test-coverage-audit.md` | Deprecated compatibility redirect that points older references at `agent-docs/prompts/task-finish-review.md`; it is no longer a separate required audit pass. |
+| `agent-docs/prompts/task-finish-review.md` | Final completion review prompt with explicit 5-to-10-minute wait guidance and coverage/proof-gap review for non-trivial diffs. |
+| `agent-docs/operations/completion-workflow.md` | Completion workflow definition, including unrelated required-check failure commit handling, patient audit wait guidance, and coverage/proof-gap review inside the final completion audit. |
 | `agent-docs/generated/README.md` | Generated-doc artifact guide. |
 | `agent-docs/generated/doc-inventory.md` | Generated inventory artifact. |
 | `agent-docs/generated/doc-gardening-report.md` | Generated doc-gardening report. |

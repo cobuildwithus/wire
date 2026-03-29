@@ -1,14 +1,15 @@
 # Completion Workflow
 
-Last verified: 2026-03-28
+Last verified: 2026-03-30
 
 ## Sequence
 
 1. Run the simplify pass. Expect about 5 to 10 minutes on non-trivial diffs; do not rush it or cancel it early just because it has not answered in the first minute.
-2. Run the coverage audit pass. Expect about 5 to 10 minutes on non-trivial diffs; do not rush it or cancel it early just because it has not answered in the first minute.
+2. Run required checks after simplify updates.
 3. Run the final review pass. Expect about 5 to 10 minutes on non-trivial diffs; do not rush it or cancel it early just because it has not answered in the first minute.
-4. Run required checks.
-5. If a required check fails for a credibly unrelated pre-existing reason, still commit your exact touched files after recording the failing command, the failing target, and why your diff did not cause it. If you cannot defend that separation, treat the failure as blocking.
+4. Treat the final review as the remaining coverage/proof-gap audit too. If it finds meaningful missing tests or boundary-level verification, add the smallest high-impact proof before handoff instead of creating a separate coverage-audit pass.
+5. Re-run affected required checks after any post-review fixes.
+6. If a required check fails for a credibly unrelated pre-existing reason, still commit your exact touched files after recording the failing command, the failing target, and why your diff did not cause it. If you cannot defend that separation, treat the failure as blocking.
 
 ## Coordination Ledger
 
@@ -20,6 +21,6 @@ Last verified: 2026-03-28
 
 ## Audit Patience
 
-- Prefer a patient wait window over repeated short polling for simplify, coverage, and final-review subagents.
+- Prefer a patient wait window over repeated short polling for simplify and final-review subagents.
 - A realistic default is 5 to 10 minutes for each audit pass on medium or large diffs.
 - Do not cancel or close an audit subagent early just because it has been running for under 10 minutes unless you have concrete evidence that it is stuck or operating on the wrong scope.

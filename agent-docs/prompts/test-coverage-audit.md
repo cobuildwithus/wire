@@ -1,10 +1,16 @@
-# Test Coverage Audit Prompt
+---
+description: Deprecated compatibility shim for the former standalone coverage-audit prompt
+action: redirect
+---
 
-Read `agent-docs/exec-plans/active/COORDINATION_LEDGER.md` first. Honor any explicit exclusive/refactor notes; otherwise work carefully on top of active rows without reverting adjacent edits.
+This prompt is deprecated.
 
-Runtime expectation:
-- This audit may take 5 to 10 minutes on a non-trivial diff.
-- Work methodically instead of rushing to a shallow answer.
-- Parent agent: allow the run to continue and do not cancel it early unless there is clear evidence the audit is stuck or off scope.
+Do not run a separate `test-coverage-audit` subagent pass.
 
-Identify missing tests for edge cases, invariants, and failure modes introduced by current changes.
+Use `agent-docs/prompts/task-finish-review.md` instead and perform coverage/proof-gap review inside that final completion audit.
+
+When the final audit finds meaningful missing proof:
+- recommend or add the smallest high-impact tests that exercise the highest stable behavior boundary available
+- call out any remaining direct-scenario verification gaps explicitly
+
+This file remains only as a compatibility redirect for older plan docs and references.
